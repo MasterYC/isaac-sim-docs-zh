@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html data-content_root="../" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>场景交互 — Isaac Sim 中文文档</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/nvidia-sphinx-theme.css?v=933278ad" rel="stylesheet" type="text/css"/>
+<link href="../_static/custom.css?v=767de534" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/image_lightbox.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="../_static/isaacsim-design.css?v=6415189c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script defer="" src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<link as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<script rel="preload" src="../_static/modal-table.js"></script>
+<script src="../_static/documentation_options.js?v=d9c7ea69"></script>
+<script src="../_static/doctools.js?v=9bcbadda"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/external-links.js"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=65e89d2a"></script>
+<script src="../_static/isaacsim-config-selector.js?v=58930015"></script>
+<script src="../_static/image_lightbox.js"></script>
+<script src="../_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'motion_generation/scene_interaction';</script>
+<script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '../versions1.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '6.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+<script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+<script src="../_static/version-patch.js?v=3e13fdd2"></script>
+<link href="../_static/favicon.png" rel="icon"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="mobile_robot_control_example.html" rel="next" title="Controllers and the RobotState"/>
+<link href="index.html" rel="prev" title="Motion Generation (Experimental)"/>
+<link as="image" href="https://www.nvidia.com/content/dam/1x1-00000000.png" rel="preload"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<meta content="Sep 18, 2026" name="docbuild:last-update"/>
+<script src="../_static/searchtools.js"></script>
+<script src="../_static/language_data.js"></script>
+<script src="../searchindex.js"></script>
+<!-- Google tag (gtag.js) -->
+<meta content="Motion Generation API 提供了用于与 USD 场景交互的工具，以支持运动规划。
+这些工具将运动生成中的碰撞建模与仿真中的碰撞建模分离开来，使您在表示世界时具有灵活性。 — Isaac Sim 中文文档" name="description"/></head>
+<body data-default-mode="">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none" id="pst-header">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="me-auto navbar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-2" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-2" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-2" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-2" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-3" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-3" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-3" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-3" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Isaac Sim</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">What Is Isaac Sim?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/reference_architecture.html">Reference Architecture and Task Groupings</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/release_notes.html">Release Notes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/known_issues.html">Known Issues</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../migration_guides/index.html">Migration Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/index.html">Isaac Sim 6.1</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/robot_policy_examples.html">Robot Policy Examples Extension 7.0.0</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/index.html">Isaac Sim 6.0</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/migration_strategy.html">Isaac Sim 6.0 Migration Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/project_migration_audit.html">Project Migration Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/core_api_to_core_experimental.html">Core API to Core Experimental API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensor_timing_and_rtx_lidar_asset_migration.html">Sensor Timing and RTX Lidar Asset Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_camera_to_experimental_rtx.html">Camera Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_rtx_to_experimental_rtx.html">RTX Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physics_to_experimental_physics.html">Physics Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lidar_to_physics_raycast.html">PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_generic_to_physics_raycast.html">PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lightbeam_to_physics_raycast.html">PhysX Lightbeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/replicator_domain_randomization_to_experimental.html">Replicator Domain Randomization Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/mobility_gen_recordings_migration.html">MobilityGen Package and Recordings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_control_extensions_to_experimental.html">Manipulator and Wheeled Robot Extension Split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_motion_to_experimental_motion_generation.html">Robot Motion Generation APIs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/cortex_to_open_source_workflows.html">Cortex behavior workflow migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_setup_wizard_and_mesh_merge.html">Robot Wizard and Mesh Merge Tool Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_asset_path_migration.html">Robot Asset Path Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/urdf_mjcf_importer_exporter_pipeline.html">URDF, MJCF, and Robot Asset Pipeline Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_omnigraph_migration.html">ROS 2 OmniGraph Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_sensor_graph_migration.html">ROS 2 Sensor Graph Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_workspace_package_migration.html">ROS 2 Workspace Package Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/benchmark_services_migration.html">Benchmark Services Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/removed_tools_and_replacements.html">Removed Tools and Replacements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/extension_template_generator_to_cli_templates.html">Extension Template Generator to CLI Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ext_isaacsim_replicator_agent_migration_guide.html">Replicator Agent (IRA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/surface_gripper_bindings_import.html">Surface Gripper Bindings</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/index.html">Isaac Sim 4.5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/extensions_renaming.html">Renaming Extensions in Isaac Sim 4.5</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../installation/index.html">Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/requirements.html">Isaac Sim Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/download.html">Download Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/accessing_assets.html">Accessing assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_workstation.html">Workstation Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_container.html">Container Installation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../installation/install_cloud.html">Cloud Deployment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_launchable.html">Isaac Launchable Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_brev.html">NVIDIA Brev Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_aws.html">AWS Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_azure.html">Azure Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_gcp.html">Google Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_tencent.html">Tencent Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_alibaba.html">Alibaba Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_volcano.html">Volcano Engine Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_baidu.html">Baidu Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_remote_setup.html">Remote Workstation Deployment</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/manual_livestream_clients.html">Livestream Clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_python.html">Python Environment Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_faq.html">Setup Tips</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/help.html">Help &amp; FAQ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/isaac_sim_forums.html">Isaac Sim Developer Resources</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview/faq_index.html">FAQ</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../overview/troubleshooting.html">Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../assets/usd_assets_overview.html">Isaac Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_robots.html">Robot Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_wheeled.html">Wheeled Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_manipulator.html">Manipulator Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_humanoid.html">Humanoid Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_quadruped.html">Quadruped Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_holonomic.html">Holonomic Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_aerial.html">Aerial Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_isaac_sim_simple.html">Isaac Sim Simple Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_mobile_manipulator.html">Mobile Manipulator Robot Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_sensors.html">Sensor Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_camera_depth_sensors.html">Camera Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_depth_sensors.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nonvisual_sensors.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_radar_sensors.html">RTX Radar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_tactile_sensors.html">Tactile Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_imu_sensors.html">IMU Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_props.html">Prop Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_environments.html">Environment Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_third_party.html">Third-Party USD Assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_real_to_sim_index.html">Real to Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nurec.html">Neural Volume Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/nurec_utils.html">NuRec Rendering Utilities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/asset_utilities/index.html">Asset Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/open_usd.html">OpenUSD Fundamentals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/usd_tools.html">USD Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_omni_warehouse_creator.html">Warehouse Creator Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_isaacsim_asset_gen_conveyor.html">Conveyor Belt Utility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/tutorial_static_assets.html">Static Warehouse Assets</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/quickstart_index.html">Isaac Sim Basics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim.html">Isaac Sim Basic Usage Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim_robot.html">Basic Robot Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/python_scripting_concepts.html">Standalone vs Interactive Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/core_api_overview.html">Core API Overview</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../core_api_tutorials/index.html">Core API Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_world.html">Hello World</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_robot.html">Hello Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_manipulator.html">Adding a Manipulator Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_multiple_robots.html">Adding Multiple Robots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_multiple_tasks.html">Multiple Robot Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_props.html">Adding Props</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/tutorial_list.html">Tutorial Table</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/menu_examples.html">Interactive Examples Reference Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/standalone_examples_list.html">Standalone Examples Reference List</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../learn/gallery_view.html">Gallery View</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../gui/index.html">GUI</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_user_interface.html">User Interface Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_keyboard_shortcuts.html">Keyboard Shortcuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_create.html">Create Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_replicator.html">Replicator Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/preferences.html">Preferences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/selection-modes.html">Selection Modes</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/browsers.html">Browsers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/content_browser.html">Content Browser</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/material-browser.html" title="(in Omniverse Extensions)"><span>Material Browser</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/asset-browser.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">NVIDIA Asset Browser</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/layouts.html">Layout Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/intro_to_usd.html">Working with USD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/tutorial_search_extension.html">SimReady Content Browser Search Extension Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../learn/build_and_simulate_robots.html">Setup and Simulate Robots</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../importer_exporter/importers_exporters.html">Importers and Exporters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_mjcf.html">MJCF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_onshape.html" title="(in Omniverse Extensions)"><span>Onshape importer</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_cad-converter.html" title="(in Omniverse Extensions)"><span>CAD Converter</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_isaac_shapenet.html">ShapeNet Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/formats.html">Formats</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../importer_exporter/importer_exporter_tutorials.html">Importer and Exporter Tutorials Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_urdf.html">Tutorial: Import URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/export_urdf.html">Tutorial: Export URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_mjcf.html">Tutorial: Import MJCF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/shapenet_importer.html">Tutorial: ShapeNet Importer</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_setup/index.html">Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/basic_stage_and_robot_setup.html">Basic Stage and Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_environment_setup.html">Stage Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_assemble_robot.html">Assemble a Simple Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_simple_robot.html">Articulate a Basic Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_camera_sensors.html">Add Camera and Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/rig_mobile_robot.html">Rig a Mobile Robot</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/setup_a_manipulator.html">Setup a Manipulator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_import_assemble_manipulator.html">Setup a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_configure_manipulator.html">Configure a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_generate_robot_config.html">Generate Robot Configuration File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_pickplace_example.html">Pick and Place Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/rig_closed_loop_structures.html">Setup a Closed-Loop Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_rig_legged_robot.html">Setup a Legged Robot</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../openusd_tuning_tutorials/index.html">Setup a Dexterous Hand in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/setup.html">Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_01_asset_structure.html">Import Robot and USD Asset Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_02_inspect_asset.html">Inspect Asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_03_collider_pairs.html">Collider Pairs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_04_joint_drive_tuning.html">Joint Drive Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_05_joint_gains_tuning.html">Joint Gains Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/practice.html">Using the Dexterous Hand in Practice</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/tuning_and_optimization.html">Tuning and Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/joint_tuning.html">Tuning Joint Drive Gains</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/optimizing_asset.html">Asset Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_franka_system_identification.html">Identify Franka System Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_system_identification_simsim.html">Validate Identification with Sim-to-Sim Recovery</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_tutorials.html">Asset Transformer Tutorial Series</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/editing_tools.html">Editor Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_poser.html">Robot Poser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_util_merge_mesh.html">Mesh merge tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_gain_tuner.html">Gain Tuner Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_sysid.html">System Identification Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_collision_detector.html">Robot Self-Collision Detector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/assemble_robots.html">Robot Assembler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_surface_gripper.html">Surface Gripper Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/grasp_editor.html">Grasp Editor</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/inspector_tools.html">Inspector Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_inspector.html">Robot Inspector Window</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/joint_inspector.html">Joint Inspector</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/newton_robot_setup_tips.html">Robot Setup Tips for Newton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/troubleshooting.html">Robot Setup Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_validation.html">Asset Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer.html">Asset Transformer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_api.html">Asset Transformer API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_rules.html">Asset Transformer Rules Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_structure.html">Asset Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/robot_schema.html">Robot Schema</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_simulation/index.html">Robot Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/articulation_controller.html">Articulation Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/mobile_robot_controllers.html">Mobile Robot Controllers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_setup_virtual_gantry.html">Virtual Gantry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_tips.html">Robot Simulation Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_core_concepts.html">Useful Links</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../robot_motion_experimental/index.html">Robot Motion</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../robot_motion_experimental/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">Motion Generation (Experimental)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">Scene Interaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mobile_robot_control_example.html">Controllers and the RobotState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="trajectory_planning.html">Trajectory Planning and Execution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../controllers/index.html">Controllers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_differential_drive.html">Differential Drive Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_ackermann.html">Ackermann Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_holonomic.html">Holonomic Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cumotion/index.html">cuMotion Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_xrdf_editor.html">Generating an XRDF file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_world_interface.html">cuMotion World Interface Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_rmpflow.html">RMPflow Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_graph_planner.html">Graph-Based Motion Planner Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_generator.html">Trajectory Generator Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_optimizer.html">Trajectory Optimizer Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../pink/index.html">PINK Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_ik_controller.html">IK Controller Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_multi_task.html">Multi-Task Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples/manipulation_franka_pick_place.html">Franka Pick and Place Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../state_machine_tutorials/tutorial_state_machines.html">State Machines for Robot Behavior</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../manipulators/motion_generation_overview.html">(Deprecated) Robot Motion Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/concepts/index.html">Motion Generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_robot_description_editor.html">Lula Robot Description and XRDF Editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_rmpflow.html">Lula RMPflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_rrt.html">Lula RRT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_kinematics.html">Lula Kinematics Solver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_trajectory_generator.html">Lula Trajectory Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_configure_rmpflow_denso.html">Configuring RMPflow for a New Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_curobo.html">cuRobo and cuMotion</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../newton_actuators_tutorials/index.html">Newton Actuators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_python.html">Set Up Actuators from Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_usd.html">Author and Parse Actuators from USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_ui.html">Author Actuators from UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_omnigraph.html">Drive an Actuated Robot from OmniGraph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_tips.html">Tips</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../physics/index.html">Physics Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../physics/simulation_fundamentals.html">Physics Simulation Fundamentals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/new_physics_engine.html">Physics Data Flow and Engine Integration</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../physics/newton_physics.html">Newton Physics Backend</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact.html">Hydroelastic Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact_walkthrough.html">Configure Hydroelastic Contact for a Nut-and-Bolt Assembly</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_resources.html">Omniverse Physics and PhysX Limitations</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/sim_management.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Simulation Management</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/joint_inspector.html">Physics Inspector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_static_collision.html">Physics Static Collision Extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/ext_isaacsim_inspect_physics.html">Simulation Data Visualizer</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/physics_debug_wnd.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Debug Window</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/sensors_and_physics.html">Sensor Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_camera.html">Camera Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_depth.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_structured_light.html">Structured Light Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_usd_tutorial.html">Authoring a Camera Sensor USD Asset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx.html">RTX Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_lidar.html">RTX Lidar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_radar.html">RTX Radar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_acoustic.html">RTX Acoustic Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_annotators.html">RTX Sensor Annotators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_materials.html">RTX Sensor Non-Visual Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_multitick_rendering.html">Multi-Tick Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_custom.html">Creating Custom RTX Sensor Profiles</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physics.html">Physics-based Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_articulation_force.html">Articulation Joint Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_contact.html">Contact Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_effort.html">Effort Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_imu.html">IMU Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_joint_state.html">Joint State Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_raycast.html">Physics Raycast Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/sensor_schema.html">Sensor Schema</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physx.html">(Deprecated) PhysX SDK Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_generic.html">(Deprecated) PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lidar.html">(Deprecated) PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lightbeam.html">(Deprecated) PhysX Lightbeam Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_proximity.html">(Deprecated) Proximity Sensor</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/develop_and_integrate.html">Develop and Integrate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../development_tools/index.html">Development Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/workflows.html">Development Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/vscode.html">Visual Studio Code (VS Code)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/python_server.html">Python Server (Remote Code Execution)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/jupyter_notebook.html">Jupyter Notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/omniverse_script_editor.html">Omniverse Script Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/isaac_sim_mcp.html">Isaac Sim MCP Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/agent_skills.html">Agent Skills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/carb_settings.html">Modify Carb Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/updating_extensions.html">Adding and Updating Extensions Guide</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../python_scripting/index.html">Python Scripting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/manual_standalone_python.html">Python Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/environment_setup.html">Scene Setup Snippets and Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/util_snippets.html">Util Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/robots_simulation.html">Robot Simulation Snippets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../omnigraph/index.html">OmniGraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/interface.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Interface</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/getting-started/core_concepts.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Core Concepts</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_shortcuts.html">Commonly Used OmniGraph Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_python_nodes.html">Custom Python Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_cpp_nodes.html">Custom C++ Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_ipc_nodes.html">Building Custom IPC OmniGraph Nodes</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Additional Resources</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/tutorials/gentle_intro.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Basic OmniGraph Tutorial</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_tutorial.html">Isaac Sim OmniGraph Tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_scripting.html">OmniGraph via Python Scripting Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../external_interfaces/index.html">External Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../external_interfaces/tutorial_zmq_carter_warehouse.html">ZeroMQ Bridge</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/templates_index.html">Templates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/cli_extension_templates.html">CLI Extension Templates</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../utilities/extension_template_generator.html">(Deprecated) Extension Template Generator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../utilities/extension_templates_tutorial.html">Extension Template Generator Explained</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/vscode_extension_template_generator.html">Advanced Extension Template Generator from VS Code</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/debugging/index.html">Debugging and Profiling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_isaacsim_util_debug_draw.html">Debug Drawing Extension API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_omni_kit_commands.html">Omniverse Commands Tool Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/omniverse_tools.html">Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/tutorial_advanced_python_debugging.html">Debugging With Visual Studio Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/profiling_performance.html">Profiling Performance Using Tracy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../digital_twin/index.html">Other Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/warehouse_logistics/logistics_tutorial_cuopt.html">NVIDIA cuOpt</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_1_overview.html">(Deprecated) Isaac Cortex: Overview</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_2_decider_networks.html">Decider networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_3_example_peck_games.html">Behavior Examples: Peck Games</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_4_franka_block_stacking.html">Walkthrough: Franka Block Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_5_ur10_bin_stacking.html">Walkthrough: UR10 Bin Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_7_cortex_extension.html">Building Cortex Based Extensions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/ext_isaacsim_asset_generator_occupancy_map.html">Occupancy Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/rtsp_camera_streaming.html">Live Camera Streaming over RTSP</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../workflows/top_5/index.html">Top 5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_putting_it_all_together.html">Bring a new mobile base and navigate with ROS2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_setup_tutorials/tutorial_manipulator_workflow.html">Manipulator workflow: URDF to pick and place</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_mobility_gen.html">Data Generation with MobilityGen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_cosmos.html">Cosmos Synthetic Data Generation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow.html">Humanoid workflow: Train locomotion in AGILE and deploy in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_prepare_usd.html">Stage 1: Prepare the humanoid USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_create_task.html">Stage 2: Create a custom humanoid task in AGILE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_configure_mdp.html">Stage 3: Configure and validate the locomotion MDP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_train.html">Stage 4: Train, evaluate, and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_deploy.html">Stage 5: Deploy the policy</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../isaac_lab_tutorials/index.html">Deploying Policies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_policy_deployment.html">Deploying policies in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_policy_example.html">Reinforcement Learning Policies Examples in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_instanceable_assets.html">Instanceable Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ros2_tutorials/index.html">ROS 2</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/overview/index.html">Overview and Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/overview/ros2_reference_architecture.html">ROS 2 Reference Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/tutorial_series/index.html">ROS 2 Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_turtlebot.html">URDF Import: Turtlebot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_drive_turtlebot.html">Driving TurtleBot using ROS 2 Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_clock.html">ROS 2 Clock</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtf.html">ROS 2 Publish Real Time Factor (RTF)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_camera.html">ROS 2 Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtx_lidar.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_tf.html">ROS 2 Transform Trees and Odometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_publish_rate.html">ROS 2 Setting Publish Rates</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/index.html">Advanced Sensor Topics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_noise.html">Add Noise to Camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_publishing.html">Publishing Camera’s Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_compressed_image.html">ROS 2 Compressed Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_rtx_radar.html">RTX Radar Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/robot_control/index.html">Robot Control</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_manipulation.html">ROS 2 Joint Control: Extension Python Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_ackermann_controller.html">ROS 2 Ackermann Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_rl_controller.html">Running a Reinforcement Learning Policy through ROS 2 and Isaac Sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation.html">ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_multi_navigation.html">Multiple Robot ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation_heightmap.html">ROS 2 Navigation with Heightmap Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_moveit.html">MoveIt 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_control.html">ROS 2 Control</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/index.html">Bridge Configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_python.html">ROS 2 Bridge in Standalone Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_launch.html">ROS 2 Launch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_simulation_control.html">ROS 2 Simulation Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_qos.html">ROS 2 Quality of Service (QoS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_auto_namespace.html">Automatic ROS 2 Namespace Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_name_override.html">NameOverride Attribute</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/index.html">Custom Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_publisher_subscriber.html">ROS 2 Generic Publisher and Subscriber</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_server_client.html">ROS 2 Generic Server and Client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_prim_service.html">ROS 2 Service for Manipulating Prims Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_message_python.html">ROS 2 Python Custom Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_omnigraph_node_python.html">ROS 2 Python Custom OmniGraph Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_omnigraph_cpp_node.html">ROS 2 Custom C++ OmniGraph Node</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/urdf_import_export/index.html">URDF Import and Export</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/help/index.html">Help and Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/ros2_faq.html">ROS 2 Frequently Asked Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../nvidia_isaac_ros/isaac_ros_tutorials.html">NVIDIA Isaac ROS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../synthetic_data_generation/index.html">Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../replicator_tutorials/index.html">Perception Data Generation (Replicator)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_recorder.html">Synthetic Data Recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_getting_started.html">Getting Started Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_sdg_workflows.html">SDG Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_scene_based_sdg.html">Scene Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_object_based_sdg.html">Object Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_infinigen_sdg.html">Environment Based Synthetic Dataset Generation with Infinigen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_amr_navigation.html">Randomization in Simulation – AMR Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_ur10_palletizing.html">Randomization in Simulation – UR10 Palletizing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_augmentation.html">Data Augmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_custom_og_randomizer.html">Custom Replicator Randomization Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_modular_scripting.html">Modular Behavior Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_randomizers.html">Randomization Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_snippets.html">Useful Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../action_and_event_data_generation/index.html">Action and Event Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_agent.html">Actor Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration.html">Configuration File Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_sample_configs.html">Sample Configs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_anim_robot.html">Animated Robot Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration_editor.html">Configuration Editor API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_custom_writer_example.html">Example: RTSP Streaming with CustomWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_visual_noise_example.html">Visual Noise and Image Degradation Effects Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_behavior_tree_gen.html">Behavior Tree Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/context_files_and_schemas.html">Context Files and Metadata Schemas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/required_inputs.html">Required inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/example_walkthrough.html">Example Walkthrough</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/three_api_functions.html">Using the API Functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_object.html">Object Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/ext_chat_iro.html">Chat IRO: Natural Language Interface for Isaac Sim Replicator Object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/setting.html">Setting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable.html">Mutable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/camera.html">Camera</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/geometry.html">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/force.html">Force</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/light.html">Light</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable_attribute.html">Mutable Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/transformation.html">Transformation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/harmonizer.html">Harmonizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/empty_space_detection.html">Empty Space Detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/macro.html">Macro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/distribution_visualizer.html">Distribution Visualizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/randomization_dependency.html">Randomization Dependency: Incremental Examples</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_caption.html">VLM Scene Captioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_incident.html">Physical Space Event Generation</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_sensors_rtx_placement.html">RTX Sensors Placement and Calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_placement.html">Camera Placement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_calibration.html">Camera Calibration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/example_event_reactive_actors.html">Reacting to Events with Actor Triggers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_omni_metropolis_pipeline.html">Omni Metropolis Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_telemetry.html">Telemetry and Performance Tracking</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_grasping_sdg.html">Grasping Synthetic Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_teleop_sdg.html">Teleoperation Synthetic Data Generation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_python_api.html">API Documentation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference Information</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/community_highlights.html">Community Project Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_conventions.html">Isaac Sim Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/rendering_modes.html">Rendering modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/sim_performance_optimization_handbook.html">Isaac Sim Performance Optimization Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/benchmarks.html">Isaac Sim Benchmarks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../omniverse_usd/index.html">Omniverse and USD</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/building_cpp_usd_plugins.html">Building C++ USD Plugins Against the Standalone Installer</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/data-collection.html">Data Collection &amp; Usage</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/legal.html">Licenses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses-isaac-sim.html">Isaac Sim License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-additional.html">Isaac Sim Additional Software and Materials License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-webrtc-streaming-client.html">Isaac Sim WebRTC Streaming Client License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/NVIDIA_Omniverse_License_Agreement.html">Omniverse License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licensing-notices-disclaimers.html">Licensing Disclaimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses.html">Other Licenses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/redistributable-ov-software.html">Redistributable Omniverse Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-faq.html">License FAQ</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="../index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li class="breadcrumb-item"><a class="nav-link" href="../learn/build_and_simulate_robots.html">Setup and Simulate Robots</a></li>
+<li class="breadcrumb-item"><a class="nav-link" href="../robot_motion_experimental/index.html">Robot Motion (Experimental)</a></li>
+<li class="breadcrumb-item"><a class="nav-link" href="index.html">Motion Generation (Experimental)</a></li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Scene Interaction</span></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="header-article-items__end">
+<div class="header-article-item">
+<div class="header-article-item">
+<div class="d-flex justify-content-end w-100">
+<a href="https://surveys.hotjar.com/4904bf71-6484-47a7-83ff-4715cceabdb5" id="openPopupButton">Is this page helpful?</a>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="scene-interaction">
+<h1>场景交互<a class="headerlink" href="#scene-interaction" title="Link to this heading">#</a></h1>
+<div class="isaacsim-page-type-tag sd-mb-3 docutils">
+<span class="isaacsim-card-tag isaacsim-card-tag--neutral isaacsim-card-tag--kind-category">Tool Reference</span></div>
+<p>Motion Generation API 提供了用于与 USD 场景交互的工具，以支持运动规划。
+这些工具将运动生成中的碰撞建模与仿真中的碰撞建模分离开来，使您在表示世界时具有灵活性。</p>
+<p>本节中的所有代码示例均取自一个完整的、可运行的示例文件：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Scene interaction with SceneQuery, WorldInterface, ObstacleStrategy, and WorldBinding</span>
+./python.sh<span class="w"> </span>standalone_examples/api/isaacsim.robot_motion.experimental.motion_generation/scene_interaction_example.py
+</pre></div>
+</div>
+<section id="scenequery-finding-objects">
+<h2>SceneQuery：查找对象<a class="headerlink" href="#scenequery-finding-objects" title="Link to this heading">#</a></h2>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">SceneQuery</span></code> 允许您在 USD 场景中搜索符合特定条件的对象。
+它对于在场景中找到障碍物、机器人或其他对象非常有用。</p>
+<p>最常见的用法是在某个区域内查找碰撞对象：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">demonstrate_scene_query</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Demonstrate using SceneQuery to find objects in the scene.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Collision prim paths inside the search bounds, excluding the ground plane.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Create a scene query</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">SceneQuery</span><span class="p">()</span>
+
+    <span class="c1"># Find all collision objects in a bounding box</span>
+    <span class="c1"># This searches for prims with PhysicsCollisionAPI in the specified region</span>
+    <span class="n">search_origin</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>  <span class="c1"># Center of search region</span>
+    <span class="n">search_min</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">]</span>  <span class="c1"># Minimum bounds (relative to origin)</span>
+    <span class="n">search_max</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]</span>  <span class="c1"># Maximum bounds (relative to origin)</span>
+
+    <span class="n">collision_objects</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">get_prims_in_aabb</span><span class="p">(</span>
+        <span class="n">search_box_origin</span><span class="o">=</span><span class="n">search_origin</span><span class="p">,</span>
+        <span class="n">search_box_minimum</span><span class="o">=</span><span class="n">search_min</span><span class="p">,</span>
+        <span class="n">search_box_maximum</span><span class="o">=</span><span class="n">search_max</span><span class="p">,</span>
+        <span class="n">tracked_api</span><span class="o">=</span><span class="n">mg</span><span class="o">.</span><span class="n">TrackableApi</span><span class="o">.</span><span class="n">PHYSICS_COLLISION</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># You can also exclude specific prims (e.g., the robot itself)</span>
+    <span class="c1"># In this example, we exclude the ground plane</span>
+    <span class="n">filtered_objects</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">get_prims_in_aabb</span><span class="p">(</span>
+        <span class="n">search_box_origin</span><span class="o">=</span><span class="n">search_origin</span><span class="p">,</span>
+        <span class="n">search_box_minimum</span><span class="o">=</span><span class="n">search_min</span><span class="p">,</span>
+        <span class="n">search_box_maximum</span><span class="o">=</span><span class="n">search_max</span><span class="p">,</span>
+        <span class="n">tracked_api</span><span class="o">=</span><span class="n">mg</span><span class="o">.</span><span class="n">TrackableApi</span><span class="o">.</span><span class="n">PHYSICS_COLLISION</span><span class="p">,</span>
+        <span class="n">exclude_prim_paths</span><span class="o">=</span><span class="p">[</span><span class="s2">"/Environment/groundCollider"</span><span class="p">],</span>  <span class="c1"># Exclude ground plane (and children) from results</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Find all robots in the stage (if any)</span>
+    <span class="n">robots</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">get_robots_in_stage</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">filtered_objects</span>
+
+
+</pre></div>
+</div>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">SceneQuery</span></code> 使用 <code class="xref py py-class docutils literal notranslate"><span class="pre">TrackableApi</span></code> 来筛选要搜索的 USD API。当前支持的 API 包括：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PHYSICS_COLLISION</span></code> - 具有碰撞几何体的对象</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PHYSICS_RIGID_BODY</span></code> - 刚体对象</p></li>
+</ul>
+<p>您还可以包含或排除特定的 prim 路径及其子节点，从而轻松过滤掉机器人本身或聚焦于特定区域。</p>
+</section>
+<section id="obstaclestrategy-representation-management">
+<h2>ObstacleStrategy：表示管理<a class="headerlink" href="#obstaclestrategy-representation-management" title="Link to this heading">#</a></h2>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleStrategy</span></code> 管理将 USD 场景对象传递给规划库时的表示方式。
+它配置 <code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleConfiguration</span></code> 对象，这些对象定义了每个障碍物的表示类型和安全容差。</p>
+<section id="obstacleconfiguration-structure">
+<h3>ObstacleConfiguration 结构<a class="headerlink" href="#obstacleconfiguration-structure" title="Link to this heading">#</a></h3>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleConfiguration</span></code> 是一个包含两个组件的结构：</p>
+<ul class="simple">
+<li><p><strong>表示（Representation）</strong> - 障碍物在规划库中的表示方式（例如，球体、网格、有向包围盒）</p></li>
+<li><p><strong>安全容差</strong> - 为避障而在障碍物周围应用的填充距离</p></li>
+</ul>
+</section>
+<section id="valid-representations-per-usd-type">
+<h3>每种 USD 类型的有效表示形式<a class="headerlink" href="#valid-representations-per-usd-type" title="Link to this heading">#</a></h3>
+<p>每种 USD 形状类型（Sphere、Cube、Mesh）都有其各自可用的一组有效表示形式：</p>
+<ul class="simple">
+<li><p><strong>Sphere</strong> - 可以表示为 <code class="docutils literal notranslate"><span class="pre">SPHERE</span></code> 或 <code class="docutils literal notranslate"><span class="pre">OBB</span></code></p></li>
+<li><p><strong>Cube</strong> - 可以表示为 <code class="docutils literal notranslate"><span class="pre">CUBE</span></code> 或 <code class="docutils literal notranslate"><span class="pre">OBB</span></code></p></li>
+<li><p><strong>Mesh</strong> - 可以表示为 <code class="docutils literal notranslate"><span class="pre">MESH</span></code>、<code class="docutils literal notranslate"><span class="pre">TRIANGULATED_MESH</span></code> 或 <code class="docutils literal notranslate"><span class="pre">OBB</span></code></p></li>
+<li><p><strong>Cone、Capsule、Cylinder</strong> - 可以表示为其原生形状或 <code class="docutils literal notranslate"><span class="pre">OBB</span></code></p></li>
+<li><p><strong>Plane</strong> - 只能表示为 <code class="docutils literal notranslate"><span class="pre">PLANE</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>由于 <code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleRepresentation</span></code> 是 <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code>，因此在创建 <code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleConfiguration</span></code> 对象时，您可以使用枚举值（例如 <code class="docutils literal notranslate"><span class="pre">ObstacleRepresentation.OBB</span></code>）或直接使用字符串（例如 <code class="docutils literal notranslate"><span class="pre">"obb"</span></code>）。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>API 的未来版本中将添加更多表示形式类型。</p>
+</div>
+</section>
+<section id="obstaclestrategy-management">
+<h3>ObstacleStrategy 管理<a class="headerlink" href="#obstaclestrategy-management" title="Link to this heading">#</a></h3>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleStrategy</span></code> 使用三级优先级系统来确定每个障碍物的配置。默认情况下，每种形状类型都以其原生表示形式表示，且安全容差为零（例如，Mesh 对象映射到 <code class="docutils literal notranslate"><span class="pre">MESH</span></code> 表示形式，安全容差为 0.0）。</p>
+<p><strong>默认配置和全局安全容差</strong></p>
+<p>内置默认值将每种形状类型映射到其原生表示形式。您可以使用 <code class="xref py py-meth docutils literal notranslate"><span class="pre">ObstacleStrategy.set_default_safety_tolerance()</span></code> 调整所有这些默认映射的安全容差。此便捷方法仅影响默认配置，不会修改形状级覆盖或 prim 级覆盖。</p>
+<p><strong>形状级覆盖</strong></p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">ObstacleStrategy.set_default_configuration()</span></code> 允许您为整个形状类型（例如，所有 Mesh 对象）设置配置覆盖项。这些形状级别的覆盖项优先于默认配置和任何全局安全容差设置。例如，您可以配置所有 Mesh 对象使用 <code class="docutils literal notranslate"><span class="pre">OBB</span></code> 表示形式并指定特定的安全容差，而忽略默认设置。</p>
+<p><strong>Prim 级别覆盖项</strong></p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">ObstacleStrategy.set_configuration_overrides()</span></code> 为特定的 prim 路径设置配置覆盖项。这些 prim 级别的覆盖项具有最高优先级，优先于默认配置和形状级别的覆盖项。这允许您自定义单个障碍物（例如，特定的 Mesh prim 使用 <code class="docutils literal notranslate"><span class="pre">TRIANGULATED_MESH</span></code> 表示形式），同时为同类型的其他对象保持形状级别的默认设置。</p>
+<p>在查询特定障碍物的配置时，<code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleStrategy</span></code> 按优先级顺序检查这些层级：首先检查 prim 级别覆盖项，然后检查形状级别覆盖项，最后检查默认配置。</p>
+<p>以下是配置 <code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleStrategy</span></code> 的方法：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">demonstrate_obstacle_strategy</span><span class="p">(</span><span class="n">obstacle_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">mg</span><span class="o">.</span><span class="n">ObstacleStrategy</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Demonstrate configuring obstacle representations with ObstacleStrategy.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obstacle_paths: Collision prim paths that may receive per-object configuration overrides.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Obstacle strategy configured with mesh representations and safety tolerances.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Create an obstacle strategy</span>
+    <span class="n">strategy</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">ObstacleStrategy</span><span class="p">()</span>
+
+    <span class="c1"># Set default representation for Mesh shape type to OBB with large safety tolerance</span>
+    <span class="c1"># of 0.15 meters.</span>
+    <span class="n">strategy</span><span class="o">.</span><span class="n">set_default_configuration</span><span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">mg</span><span class="o">.</span><span class="n">ObstacleConfiguration</span><span class="p">(</span><span class="n">representation</span><span class="o">=</span><span class="s2">"obb"</span><span class="p">,</span> <span class="n">safety_tolerance</span><span class="o">=</span><span class="mf">0.15</span><span class="p">))</span>
+
+    <span class="c1"># Set per-object overrides for specific prims</span>
+    <span class="c1"># Mesh2 needs more faithful representation for interaction, so use triangulated mesh</span>
+    <span class="c1"># with smaller safety tolerance (1cm)</span>
+    <span class="n">overrides</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">mesh2_path</span> <span class="o">=</span> <span class="s2">"/World/Mesh2"</span>
+    <span class="k">if</span> <span class="n">mesh2_path</span> <span class="ow">in</span> <span class="n">obstacle_paths</span><span class="p">:</span>
+        <span class="n">overrides</span><span class="p">[</span><span class="n">mesh2_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">ObstacleConfiguration</span><span class="p">(</span><span class="n">representation</span><span class="o">=</span><span class="s2">"triangulated_mesh"</span><span class="p">,</span> <span class="n">safety_tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">strategy</span><span class="o">.</span><span class="n">set_configuration_overrides</span><span class="p">(</span><span class="n">overrides</span><span class="p">)</span>
+
+    <span class="c1"># Set default safety tolerance for all other shapes</span>
+    <span class="c1"># This will be overridden for all Mesh types (which will have 15cm padding),</span>
+    <span class="c1"># And for "/World/Mesh2" (which will have 1cm padding).</span>
+    <span class="n">strategy</span><span class="o">.</span><span class="n">set_default_safety_tolerance</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>  <span class="c1"># 5cm padding</span>
+
+    <span class="k">return</span> <span class="n">strategy</span>
+
+
+</pre></div>
+</div>
+</section>
+</section>
+<section id="worldinterface-connecting-to-motion-planning-libraries">
+<h2>WorldInterface：连接到运动规划库<a class="headerlink" href="#worldinterface-connecting-to-motion-planning-libraries" title="Link to this heading">#</a></h2>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> 是一个抽象接口，充当障碍物数据与您的运动规划库之间的桥梁。</p>
+<p>不同的运动规划库拥有各自的世界表示形式。
+<code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> 允许您将障碍物数据（位置、方向、形状）转换为您的规划库所期望的任何格式。</p>
+<p>您通过创建一个类来实现 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code>，该类：</p>
+<ul class="simple">
+<li><p>接收障碍物数据作为 warp 数组和数据结构（而不是直接接收 USD 对象）</p></li>
+<li><p>实现将障碍物（球体、盒子、网格）添加到您的规划库的方法</p></li>
+<li><p>实现用于更新障碍物变换和属性的方法</p></li>
+</ul>
+<p>可以将 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> 视为一个适配器：它接收 warp 数组形式的障碍物数据，并将其转换为您特定运动规划库所需的格式。
+要获取障碍物数据，您可以使用 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldBinding</span></code>，它负责处理 USD 场景提取并输出 warp 数组。
+由于 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldBinding</span></code> 的输出和 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> 的输入均为 warp 数组，因此该系统具有模块化特性；您可以在两者之间插入中间处理步骤，
+例如感知算法、噪声注入、滤波或您需要的任何其他数据转换。</p>
+<p>以下是您需要实现的三种主要类型方法的示例：</p>
+<p><strong>添加障碍物</strong> - 在您的规划世界中初始化对象：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">add_spheres</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">prim_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">radii</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">scales</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">safety_tolerances</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">poses</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">enabled_array</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add spheres to your planning library using the provided data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            prim_paths: Prim paths (Useful as unique identifiers)</span>
+<span class="sd">            radii: Sphere radii as warp array (shape [N, 1])</span>
+<span class="sd">            scales: Scale factors as warp array</span>
+<span class="sd">            safety_tolerances: Safety margins as warp array (shape [N, 1])</span>
+<span class="sd">            poses: Tuple of (positions, orientations) as warp arrays</span>
+<span class="sd">            enabled_array: Enabled flags as warp array (shape [N, 1])</span>
+<span class="sd">        """</span>
+        <span class="n">positions</span><span class="p">,</span> <span class="n">orientations</span> <span class="o">=</span> <span class="n">poses</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prim_paths</span><span class="p">):</span>
+            <span class="c1"># Extract data from warp arrays (all are shape [N, 1])</span>
+            <span class="n">radius</span> <span class="o">=</span> <span class="n">radii</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">safety_tolerances</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">orientation</span> <span class="o">=</span> <span class="n">orientations</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="c1"># Add to your planning library here!</span>
+            <span class="c1"># e.g., self.world_model.add_sphere(path, radius, position, orientation)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"sphere"</span><span class="p">,</span>
+                <span class="s2">"radius"</span><span class="p">:</span> <span class="n">radius</span><span class="p">,</span>
+                <span class="s2">"position"</span><span class="p">:</span> <span class="n">position</span><span class="p">,</span>
+                <span class="s2">"orientation"</span><span class="p">:</span> <span class="n">orientation</span><span class="p">,</span>
+            <span class="p">}</span>
+
+</pre></div>
+</div>
+<p><strong>更新变换</strong> - 常用于实时更新，或在创建轨迹规划之前使用：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">update_obstacle_transforms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prim_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">poses</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Update transforms of existing obstacles in your planning library.</span>
+
+<span class="sd">        Called frequently for real-time updates, or just before creating a trajectory plan.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            prim_paths: Prim paths of obstacles to update</span>
+<span class="sd">            poses: Tuple of (positions, orientations) as warp arrays</span>
+<span class="sd">        """</span>
+        <span class="n">positions</span><span class="p">,</span> <span class="n">orientations</span> <span class="o">=</span> <span class="n">poses</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prim_paths</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">:</span>
+                <span class="c1"># Extract positions and orientations from warp arrays</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">orientation</span> <span class="o">=</span> <span class="n">orientations</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
+
+                <span class="c1"># Update transforms in your planning library</span>
+                <span class="c1"># e.g., self.world_model.update_obstacle_pose(path, position, orientation)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="s2">"position"</span><span class="p">]</span> <span class="o">=</span> <span class="n">position</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="s2">"orientation"</span><span class="p">]</span> <span class="o">=</span> <span class="n">orientation</span>
+
+</pre></div>
+</div>
+<p><strong>更新属性</strong> - 当形状属性发生变化时调用：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">update_sphere_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prim_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">radii</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Update sphere-specific properties for existing obstacles.</span>
+
+<span class="sd">        Called when shape properties change (e.g., radius changes).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            prim_paths: Prim paths of spheres to update</span>
+<span class="sd">            radii: New sphere radii as warp array (shape [N, 1]), or None to skip</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">radii</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prim_paths</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="s2">"type"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"sphere"</span><span class="p">:</span>
+                <span class="c1"># Extract new radius from warp array</span>
+                <span class="n">new_radius</span> <span class="o">=</span> <span class="n">radii</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># Update sphere properties in your planning library</span>
+                <span class="c1"># e.g., self.world_model.update_sphere_radius(path, new_radius)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="s2">"radius"</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_radius</span>
+
+</pre></div>
+</div>
+</section>
+<section id="worldbinding-synchronizing-the-planning-library">
+<h2>WorldBinding：同步规划库<a class="headerlink" href="#worldbinding-synchronizing-the-planning-library" title="Link to this heading">#</a></h2>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">WorldBinding</span></code> 是一个便捷类，它会自动：</p>
+<ol class="arabic simple">
+<li><p>跟踪 USD 场景中指定的 prims</p></li>
+<li><p>使用 <code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleStrategy</span></code> 确定它们的表示方式</p></li>
+<li><p>从 USD 中提取初始障碍物数据（位置、方向、形状、尺度和启用状态）</p></li>
+<li><p>调用您的 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> 实现来添加障碍物并更新其变换</p></li>
+</ol>
+<p>这使被跟踪的障碍物变换与仿真场景保持同步。<code class="xref py py-class docutils literal notranslate"><span class="pre">WorldBinding</span></code> 负责处理 USD 交互，而您的 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> 则处理提取的数据。</p>
+<p>要将 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldBinding</span></code> 与您的 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> 实现配合使用：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">demonstrate_world_binding</span><span class="p">(</span>
+    <span class="n">obstacle_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">obstacle_strategy</span><span class="p">:</span> <span class="n">mg</span><span class="o">.</span><span class="n">ObstacleStrategy</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mg</span><span class="o">.</span><span class="n">WorldBinding</span><span class="p">,</span> <span class="n">ExampleWorldInterface</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Demonstrate using WorldBinding to synchronize scene to planning library.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obstacle_paths: Collision prim paths for the binding to track.</span>
+<span class="sd">        obstacle_strategy: Representation and safety-tolerance policy for tracked obstacles.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Initialized binding and the planning-world adapter populated by that binding.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Create WorldInterface adapter for your planning library</span>
+    <span class="n">world_interface</span> <span class="o">=</span> <span class="n">ExampleWorldInterface</span><span class="p">()</span>
+
+    <span class="c1"># Create world binding</span>
+    <span class="n">binding</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">WorldBinding</span><span class="p">(</span>
+        <span class="n">world_interface</span><span class="o">=</span><span class="n">world_interface</span><span class="p">,</span>
+        <span class="n">obstacle_strategy</span><span class="o">=</span><span class="n">obstacle_strategy</span><span class="p">,</span>
+        <span class="n">tracked_prims</span><span class="o">=</span><span class="n">obstacle_paths</span><span class="p">,</span>
+        <span class="n">tracked_collision_api</span><span class="o">=</span><span class="n">mg</span><span class="o">.</span><span class="n">TrackableApi</span><span class="o">.</span><span class="n">PHYSICS_COLLISION</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Initialize the binding (populates your planning library's world)</span>
+    <span class="n">binding</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+
+    <span class="c1"># In your simulation loop, update the poses of moving obstacles:</span>
+    <span class="c1"># binding.synchronize_transforms()</span>
+
+    <span class="k">return</span> <span class="n">binding</span><span class="p">,</span> <span class="n">world_interface</span>
+
+
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p><strong>初始化期间的场景验证</strong></p>
+<p>调用 <code class="xref py py-meth docutils literal notranslate"><span class="pre">WorldBinding.initialize()</span></code> 时，绑定会自动对所有被跟踪的 prim 执行场景验证。对于每个被跟踪的 prim，它会搜索层级结构中的所有父 prim，以确保：</p>
+<ul class="simple">
+<li><p>没有父 prim 具有除 [1,1,1]（单位缩放）以外的局部缩放</p></li>
+<li><p>没有父 prim 具有除 [1,1,1]（单位缩放）以外的点缩放（<code class="docutils literal notranslate"><span class="pre">xformOp:scale:unitsResolve</span></code>）</p></li>
+</ul>
+<p>此验证可防止当对祖先 prim 应用非单位缩放时可能发生的参考帧意外剪切。如果找到任何无效的祖先 prim，初始化将引发 <code class="xref py py-class docutils literal notranslate"><span class="pre">AssertionError</span></code>，其中包含有关哪些 prim 具有无效缩放的详细信息。</p>
+<p>通常，应避免在任何具有子 prim 的 prim 上应用非均匀缩放（或除 [1,1,1] 以外的任何缩放）。此限制将来可能会放宽，但目前它确保局部缩放与世界缩放匹配，这是正确执行世界空间操作所必需的。</p>
+</div>
+<section id="synchronizing-transforms">
+<h3>同步变换<a class="headerlink" href="#synchronizing-transforms" title="Link to this heading">#</a></h3>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">WorldBinding</span></code> 初始化障碍物属性一次，并提供 <code class="xref py py-meth docutils literal notranslate"><span class="pre">WorldBinding.synchronize_transforms()</span></code> 用于同步障碍物的位置和方向：</p>
+<ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">WorldBinding.synchronize_transforms()</span></code> 更新所有被跟踪障碍物的姿态。每帧调用它，或在刚体障碍物移动时调用。初始化后对形状属性、局部缩放和启用碰撞状态的更改不会同步；创建新的 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldBinding</span></code> 以捕获新配置。</p></li>
+</ul>
+</section>
+</section>
+<section id="how-it-all-fits-together">
+<h2>整体集成<a class="headerlink" href="#how-it-all-fits-together" title="Link to this heading">#</a></h2>
+<p>场景交互组件在两个独立的工作流中工作：</p>
+<p><strong>配置工作流</strong> - 查找并配置障碍物表示：</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/isim_6.0_full_tut_external_scene_interaction_configuration_workflow.svg"><img alt="Configuration workflow for scene interaction" src="../_images/isim_6.0_full_tut_external_scene_interaction_configuration_workflow.svg" style="width: 100%;"/>
+</a>
+<figcaption><p><span class="caption-text">SceneQuery 在 USD 场景中查找对象，ObstacleStrategy 配置这些对象的表示方式，WorldBinding 初始化规划库的世界模型。</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p></figcaption>
+</figure>
+<p><strong>数据流</strong> - 提取并转换障碍物数据：</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/isim_6.0_full_tut_external_scene_interaction_data_flow.svg"><img alt="Data flow from USD to planning library" src="../_images/isim_6.0_full_tut_external_scene_interaction_data_flow.svg" style="width: 90%;"/>
+</a>
+<figcaption><p><span class="caption-text">WorldBinding 从 USD 中提取更新的变换和属性，并更新 WorldInterface。</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p></figcaption>
+</figure>
+</section>
+<section id="complete-workflow">
+<h2>完整工作流<a class="headerlink" href="#complete-workflow" title="Link to this heading">#</a></h2>
+<p>以下是展示所有组件如何协同工作的完整示例。请注意，场景设置函数创建了一个基本示例场景，但强调该场景可以来自任何地方：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">setup_scene</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Create a simple example scene with obstacles.</span>
+
+<span class="sd">    The scene is created from the default template, which includes a ground plane and lights.</span>
+<span class="sd">    In practice, your scene could come from:</span>
+<span class="sd">    - A USD file loaded via open_stage()</span>
+<span class="sd">    - Procedurally generated content</span>
+<span class="sd">    - A database or asset library</span>
+<span class="sd">    - Any other source - the Motion Generation API doesn't care where the scene comes from</span>
+<span class="sd">    """</span>
+    <span class="c1"># Create a new stage from the default template.</span>
+    <span class="n">stage_utils</span><span class="o">.</span><span class="n">create_new_stage</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="s2">"default stage"</span><span class="p">)</span>
+    <span class="n">stage_utils</span><span class="o">.</span><span class="n">set_stage_units</span><span class="p">(</span><span class="n">meters_per_unit</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c1"># Add some example obstacles</span>
+    <span class="c1"># These will be found by SceneQuery and synchronized via WorldBinding</span>
+    <span class="n">Cube</span><span class="p">(</span><span class="s2">"/World/Obstacle1"</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span> <span class="n">sizes</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">Sphere</span><span class="p">(</span><span class="s2">"/World/Obstacle2"</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span> <span class="n">radii</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+    <span class="c1"># Apply collision APIs to obstacles so they can be found by SceneQuery</span>
+    <span class="n">GeomPrim</span><span class="p">([</span><span class="s2">"/World/Obstacle1"</span><span class="p">,</span> <span class="s2">"/World/Obstacle2"</span><span class="p">],</span> <span class="n">apply_collision_apis</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Make obstacles rigid bodies so they fall under gravity</span>
+    <span class="n">RigidPrim</span><span class="p">([</span><span class="s2">"/World/Obstacle1"</span><span class="p">,</span> <span class="s2">"/World/Obstacle2"</span><span class="p">],</span> <span class="n">masses</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c1"># Add two simple meshes</span>
+    <span class="c1"># Mesh1: Will use default OBB representation with large safety tolerance</span>
+    <span class="c1"># we will start with mesh with some initial orientation.</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span>
+    <span class="n">Mesh</span><span class="p">(</span>
+        <span class="s2">"/World/Mesh1"</span><span class="p">,</span>
+        <span class="n">primitives</span><span class="o">=</span><span class="s2">"Cube"</span><span class="p">,</span>
+        <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+        <span class="n">scales</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="c1"># create quaternion:</span>
+        <span class="n">orientations</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Mesh2: Will be overridden to use TRIANGULATED_MESH with small safety tolerance</span>
+    <span class="c1"># This mesh might need more faithful representation for interaction</span>
+    <span class="n">Mesh</span><span class="p">(</span><span class="s2">"/World/Mesh2"</span><span class="p">,</span> <span class="n">primitives</span><span class="o">=</span><span class="s2">"Sphere"</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="n">scales</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+
+    <span class="c1"># Apply collision APIs to meshes so they can be found by SceneQuery</span>
+    <span class="n">mesh_geom</span> <span class="o">=</span> <span class="n">GeomPrim</span><span class="p">([</span><span class="s2">"/World/Mesh1"</span><span class="p">,</span> <span class="s2">"/World/Mesh2"</span><span class="p">],</span> <span class="n">apply_collision_apis</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Set collision approximation to convexHull - this is for physics simulation,</span>
+    <span class="c1"># and is independent of the motion generation library representation!</span>
+    <span class="n">mesh_geom</span><span class="o">.</span><span class="n">set_collision_approximations</span><span class="p">([</span><span class="s2">"convexHull"</span><span class="p">,</span> <span class="s2">"convexHull"</span><span class="p">])</span>
+
+    <span class="c1"># Make meshes rigid bodies so they fall under gravity</span>
+    <span class="n">RigidPrim</span><span class="p">([</span><span class="s2">"/World/Mesh1"</span><span class="p">,</span> <span class="s2">"/World/Mesh2"</span><span class="p">],</span> <span class="n">masses</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c1"># Set camera view</span>
+    <span class="n">ViewportManager</span><span class="o">.</span><span class="n">set_camera_view</span><span class="p">(</span><span class="s2">"/OmniverseKit_Persp"</span><span class="p">,</span> <span class="n">eye</span><span class="o">=</span><span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span> <span class="n">target</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Scene setup complete"</span><span class="p">)</span>
+
+
+</pre></div>
+</div>
+<p>主函数演示了完整的工作流，包括使用不同的同步方法：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Run the complete scene interaction workflow."""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Motion Generation API - Scene Interaction Example"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c1"># Setup scene (could come from anywhere - USD file, procedural, etc.)</span>
+    <span class="n">setup_scene</span><span class="p">()</span>
+
+    <span class="c1"># Initialize physics</span>
+    <span class="n">SimulationManager</span><span class="o">.</span><span class="n">setup_simulation</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">60.0</span><span class="p">)</span>
+
+    <span class="c1"># Step 1: Find obstacles using SceneQuery</span>
+    <span class="n">obstacle_paths</span> <span class="o">=</span> <span class="n">demonstrate_scene_query</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obstacle_paths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">No obstacles found in scene. Exiting."</span><span class="p">)</span>
+        <span class="n">simulation_app</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Step 2: Configure obstacle representations</span>
+    <span class="n">obstacle_strategy</span> <span class="o">=</span> <span class="n">demonstrate_obstacle_strategy</span><span class="p">(</span><span class="n">obstacle_paths</span><span class="p">)</span>
+
+    <span class="c1"># Step 3: Create WorldInterface and WorldBinding</span>
+    <span class="n">binding</span><span class="p">,</span> <span class="n">world_interface</span> <span class="o">=</span> <span class="n">demonstrate_world_binding</span><span class="p">(</span><span class="n">obstacle_paths</span><span class="p">,</span> <span class="n">obstacle_strategy</span><span class="p">)</span>
+
+    <span class="c1"># Step 4: Demonstrate updating (simulate scene changes)</span>
+
+    <span class="c1"># Pick a target object to print its pose</span>
+    <span class="n">target_path</span> <span class="o">=</span> <span class="s2">"/World/Mesh1"</span>
+
+    <span class="c1"># let objects float for a few seconds:</span>
+    <span class="n">app_utils</span><span class="o">.</span><span class="n">update_app</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+
+    <span class="n">app_utils</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">synchronize_world</span><span class="p">(</span><span class="n">_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Synchronize and print the target obstacle after each application update."""</span>
+        <span class="n">binding</span><span class="o">.</span><span class="n">synchronize_transforms</span><span class="p">()</span>
+
+        <span class="n">obstacle</span> <span class="o">=</span> <span class="n">world_interface</span><span class="o">.</span><span class="n">obstacles</span><span class="p">[</span><span class="n">target_path</span><span class="p">]</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">obstacle</span><span class="p">[</span><span class="s2">"position"</span><span class="p">]</span>
+        <span class="n">orientation</span> <span class="o">=</span> <span class="n">obstacle</span><span class="p">[</span><span class="s2">"orientation"</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  WorldBinding update - </span><span class="si">{</span><span class="n">target_path</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Position: [</span><span class="si">{</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"    Orientation (quat wxyz): [</span><span class="si">{</span><span class="n">orientation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">orientation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">orientation</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">orientation</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]"</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Run simulation loop</span>
+    <span class="n">app_utils</span><span class="o">.</span><span class="n">update_app</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">synchronize_world</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Summary"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  SceneQuery found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">obstacle_paths</span><span class="p">)</span><span class="si">}</span><span class="s2"> obstacles"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  WorldInterface translated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">world_interface</span><span class="o">.</span><span class="n">obstacles</span><span class="p">)</span><span class="si">}</span><span class="s2"> obstacles to planning library"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  WorldBinding kept planning library synchronized with scene"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Complete workflow demonstrated successfully!"</span><span class="p">)</span>
+
+    <span class="c1"># Stop timeline</span>
+    <span class="n">app_utils</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+    <span class="c1"># Keep window open for a moment to see results</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Closing soon..."</span><span class="p">)</span>
+    <span class="n">app_utils</span><span class="o">.</span><span class="n">update_app</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+
+    <span class="n">simulation_app</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+</pre></div>
+</div>
+</section>
+<section id="running-the-example">
+<h2>运行示例<a class="headerlink" href="#running-the-example" title="Link to this heading">#</a></h2>
+<p>运行独立示例时，请验证是否收到一组在模拟中下落的对象。该示例演示了 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldBinding</span></code> 如何在对象移动时将障碍物数据从 USD 场景同步到您的规划库。</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/isim_6.0_full_tut_viewport_falling_objects_capture.webp"><img alt="../_images/isim_6.0_full_tut_viewport_falling_objects_capture.webp" src="../_images/isim_6.0_full_tut_viewport_falling_objects_capture.webp" style="width: 100%;"/>
+</a>
+<figcaption><p><span class="caption-text">在重力作用下下落的对象。</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p></figcaption>
+</figure>
+<p>您应该在终端中看到显示同步更新的输出。正如预期，同步结果显示 <code class="docutils literal notranslate"><span class="pre">/World/Mesh1</span></code>（薄盒）自由下落，然后在撞击地面时旋转。</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.484]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.473]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.459]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.443]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.424]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.402]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.377]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.350]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.320]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.287]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.252]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.500, 0.214]
+  Orientation (quat wxyz): [0.924, 0.383, 0.000, 0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.486, 0.203]
+  Orientation (quat wxyz): [0.936, 0.353, 0.000, -0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.472, 0.192]
+  Orientation (quat wxyz): [0.948, 0.320, -0.000, -0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.458, 0.178]
+  Orientation (quat wxyz): [0.959, 0.284, -0.000, -0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.443, 0.163]
+  Orientation (quat wxyz): [0.970, 0.245, -0.000, -0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.429, 0.146]
+  Orientation (quat wxyz): [0.979, 0.203, -0.000, -0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.415, 0.126]
+  Orientation (quat wxyz): [0.988, 0.158, -0.000, -0.000]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.401, 0.104]
+  Orientation (quat wxyz): [0.994, 0.109, -0.000, -0.001]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.387, 0.079]
+  Orientation (quat wxyz): [0.998, 0.058, -0.000, -0.001]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.374, 0.053]
+  Orientation (quat wxyz): [1.000, 0.004, -0.000, -0.001]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.373, 0.050]
+  Orientation (quat wxyz): [1.000, -0.000, -0.000, -0.001]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.373, 0.050]
+  Orientation (quat wxyz): [1.000, 0.000, -0.000, -0.001]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.373, 0.050]
+  Orientation (quat wxyz): [1.000, -0.000, 0.000, -0.001]
+WorldBinding update - /World/Mesh1:
+  Position: [-1.500, -1.373, 0.050]
+  Orientation (quat wxyz): [1.000, 0.000, 0.000, -0.001]
+</pre></div>
+</div>
+</section>
+<section id="summary">
+<h2>总结<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>场景交互组件按以下顺序协同工作：</p>
+<ol class="arabic simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SceneQuery</span></code> - 在 USD 场景中搜索符合特定条件的对象（例如碰撞对象、机器人）</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleStrategy</span></code> - 配置将 USD 对象传递给规划库时的表示方式（表示类型和安全容差）</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> - 定义您需实现的接口，用于将障碍物数据（作为 warp 数组）转换为规划库的格式</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">WorldBinding</span></code> - 从 USD 中提取初始障碍物数据，应用 <code class="xref py py-class docutils literal notranslate"><span class="pre">ObstacleStrategy</span></code> 配置，并同步跟踪的障碍物变换</p></li>
+</ol>
+<p>这种关注点分离意味着您可以：
+* 为规划和仿真使用不同的碰撞表示
+* 高效更新规划库的世界状态
+* 针对每个对象自定义障碍物表示
+* 通过实现 <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> 与任意运动规划库集成
+* 使用纯数据结构 - <code class="xref py py-class docutils literal notranslate"><span class="pre">WorldInterface</span></code> 不需要直接与 USD 交互</p>
+</section>
+<section id="next-steps">
+<h2>后续步骤<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>为特定需求构建自定义控制器</p></li>
+<li><p>组合控制器以实现复杂行为</p></li>
+</ul>
+<p>有关详细的 API 参考，请参阅各个类的文档。</p>
+</section>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="index.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Motion Generation (Experimental)</p>
+</div>
+</a>
+<a class="right-next" href="mobile_robot_control_example.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Controllers and the RobotState</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="page-toc" id="pst-page-toc-nav">
+<ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scenequery-finding-objects">SceneQuery: Finding Objects</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#obstaclestrategy-representation-management">ObstacleStrategy: Representation Management</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#obstacleconfiguration-structure">ObstacleConfiguration Structure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#valid-representations-per-usd-type">Valid Representations per USD Type</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#obstaclestrategy-management">ObstacleStrategy Management</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worldinterface-connecting-to-motion-planning-libraries">WorldInterface: Connecting to Motion Planning Libraries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worldbinding-synchronizing-the-planning-library">WorldBinding: Synchronizing the Planning Library</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#synchronizing-transforms">Synchronizing transforms</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-it-all-fits-together">How It All Fits Together</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-workflow">Complete Workflow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-example">Running the Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer="" src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="../_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Your Privacy Choices</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2023-2026, NVIDIA Corporation.
+      <br/>
+</p>
+</div>
+<div class="footer-item"><p class="last-updated">
+  Last updated on Sep 18, 2026.
+  <br/>
+</p></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

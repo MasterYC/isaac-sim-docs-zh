@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html data-content_root="../" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Asset Transformer 规则参考 — Isaac Sim 中文文档</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/nvidia-sphinx-theme.css?v=933278ad" rel="stylesheet" type="text/css"/>
+<link href="../_static/custom.css?v=767de534" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/image_lightbox.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="../_static/isaacsim-design.css?v=6415189c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script defer="" src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<link as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<script rel="preload" src="../_static/modal-table.js"></script>
+<script src="../_static/documentation_options.js?v=d9c7ea69"></script>
+<script src="../_static/doctools.js?v=9bcbadda"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/external-links.js"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=65e89d2a"></script>
+<script src="../_static/isaacsim-config-selector.js?v=58930015"></script>
+<script src="../_static/image_lightbox.js"></script>
+<script src="../_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'robot_setup/asset_transformer_rules';</script>
+<script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '../versions1.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '6.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+<script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+<script src="../_static/version-patch.js?v=3e13fdd2"></script>
+<link href="../_static/favicon.png" rel="icon"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="asset_structure.html" rel="next" title="Asset Structure"/>
+<link href="asset_transformer_api.html" rel="prev" title="Asset Transformer API"/>
+<link as="image" href="https://www.nvidia.com/content/dam/1x1-00000000.png" rel="preload"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<meta content="Sep 18, 2026" name="docbuild:last-update"/>
+<script src="../_static/searchtools.js"></script>
+<script src="../_static/language_data.js"></script>
+<script src="../searchindex.js"></script>
+<!-- Google tag (gtag.js) -->
+<meta content="有关一般用法，请参阅 Asset Transformer 。有关 API 和自定义规则开发，请参阅 Asset Transformer API 。 — Isaac Sim 中文文档" name="description"/></head>
+<body data-default-mode="">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none" id="pst-header">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="me-auto navbar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-2" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-2" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-2" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-2" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-3" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-3" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-3" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-3" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Isaac Sim</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">What Is Isaac Sim?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/reference_architecture.html">Reference Architecture and Task Groupings</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/release_notes.html">Release Notes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/known_issues.html">Known Issues</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../migration_guides/index.html">Migration Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/index.html">Isaac Sim 6.1</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/robot_policy_examples.html">Robot Policy Examples Extension 7.0.0</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/index.html">Isaac Sim 6.0</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/migration_strategy.html">Isaac Sim 6.0 Migration Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/project_migration_audit.html">Project Migration Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/core_api_to_core_experimental.html">Core API to Core Experimental API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensor_timing_and_rtx_lidar_asset_migration.html">Sensor Timing and RTX Lidar Asset Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_camera_to_experimental_rtx.html">Camera Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_rtx_to_experimental_rtx.html">RTX Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physics_to_experimental_physics.html">Physics Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lidar_to_physics_raycast.html">PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_generic_to_physics_raycast.html">PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lightbeam_to_physics_raycast.html">PhysX Lightbeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/replicator_domain_randomization_to_experimental.html">Replicator Domain Randomization Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/mobility_gen_recordings_migration.html">MobilityGen Package and Recordings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_control_extensions_to_experimental.html">Manipulator and Wheeled Robot Extension Split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_motion_to_experimental_motion_generation.html">Robot Motion Generation APIs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/cortex_to_open_source_workflows.html">Cortex behavior workflow migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_setup_wizard_and_mesh_merge.html">Robot Wizard and Mesh Merge Tool Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_asset_path_migration.html">Robot Asset Path Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/urdf_mjcf_importer_exporter_pipeline.html">URDF, MJCF, and Robot Asset Pipeline Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_omnigraph_migration.html">ROS 2 OmniGraph Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_sensor_graph_migration.html">ROS 2 Sensor Graph Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_workspace_package_migration.html">ROS 2 Workspace Package Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/benchmark_services_migration.html">Benchmark Services Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/removed_tools_and_replacements.html">Removed Tools and Replacements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/extension_template_generator_to_cli_templates.html">Extension Template Generator to CLI Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ext_isaacsim_replicator_agent_migration_guide.html">Replicator Agent (IRA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/surface_gripper_bindings_import.html">Surface Gripper Bindings</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/index.html">Isaac Sim 4.5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/extensions_renaming.html">Renaming Extensions in Isaac Sim 4.5</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../installation/index.html">Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/requirements.html">Isaac Sim Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/download.html">Download Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/accessing_assets.html">Accessing assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_workstation.html">Workstation Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_container.html">Container Installation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../installation/install_cloud.html">Cloud Deployment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_launchable.html">Isaac Launchable Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_brev.html">NVIDIA Brev Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_aws.html">AWS Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_azure.html">Azure Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_gcp.html">Google Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_tencent.html">Tencent Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_alibaba.html">Alibaba Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_volcano.html">Volcano Engine Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_baidu.html">Baidu Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_remote_setup.html">Remote Workstation Deployment</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/manual_livestream_clients.html">Livestream Clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_python.html">Python Environment Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_faq.html">Setup Tips</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/help.html">Help &amp; FAQ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/isaac_sim_forums.html">Isaac Sim Developer Resources</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview/faq_index.html">FAQ</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../overview/troubleshooting.html">Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../assets/usd_assets_overview.html">Isaac Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_robots.html">Robot Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_wheeled.html">Wheeled Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_manipulator.html">Manipulator Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_humanoid.html">Humanoid Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_quadruped.html">Quadruped Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_holonomic.html">Holonomic Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_aerial.html">Aerial Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_isaac_sim_simple.html">Isaac Sim Simple Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_mobile_manipulator.html">Mobile Manipulator Robot Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_sensors.html">Sensor Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_camera_depth_sensors.html">Camera Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_depth_sensors.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nonvisual_sensors.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_radar_sensors.html">RTX Radar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_tactile_sensors.html">Tactile Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_imu_sensors.html">IMU Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_props.html">Prop Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_environments.html">Environment Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_third_party.html">Third-Party USD Assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_real_to_sim_index.html">Real to Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nurec.html">Neural Volume Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/nurec_utils.html">NuRec Rendering Utilities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/asset_utilities/index.html">Asset Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/open_usd.html">OpenUSD Fundamentals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/usd_tools.html">USD Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_omni_warehouse_creator.html">Warehouse Creator Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_isaacsim_asset_gen_conveyor.html">Conveyor Belt Utility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/tutorial_static_assets.html">Static Warehouse Assets</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/quickstart_index.html">Isaac Sim Basics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim.html">Isaac Sim Basic Usage Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim_robot.html">Basic Robot Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/python_scripting_concepts.html">Standalone vs Interactive Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/core_api_overview.html">Core API Overview</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../core_api_tutorials/index.html">Core API Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_world.html">Hello World</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_robot.html">Hello Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_manipulator.html">Adding a Manipulator Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_multiple_robots.html">Adding Multiple Robots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_multiple_tasks.html">Multiple Robot Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_props.html">Adding Props</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/tutorial_list.html">Tutorial Table</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/menu_examples.html">Interactive Examples Reference Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/standalone_examples_list.html">Standalone Examples Reference List</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../learn/gallery_view.html">Gallery View</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../gui/index.html">GUI</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_user_interface.html">User Interface Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_keyboard_shortcuts.html">Keyboard Shortcuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_create.html">Create Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_replicator.html">Replicator Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/preferences.html">Preferences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/selection-modes.html">Selection Modes</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/browsers.html">Browsers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/content_browser.html">Content Browser</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/material-browser.html" title="(in Omniverse Extensions)"><span>Material Browser</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/asset-browser.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">NVIDIA Asset Browser</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/layouts.html">Layout Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/intro_to_usd.html">Working with USD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/tutorial_search_extension.html">SimReady Content Browser Search Extension Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../learn/build_and_simulate_robots.html">Setup and Simulate Robots</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../importer_exporter/importers_exporters.html">Importers and Exporters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_mjcf.html">MJCF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_onshape.html" title="(in Omniverse Extensions)"><span>Onshape importer</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_cad-converter.html" title="(in Omniverse Extensions)"><span>CAD Converter</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_isaac_shapenet.html">ShapeNet Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/formats.html">Formats</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../importer_exporter/importer_exporter_tutorials.html">Importer and Exporter Tutorials Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_urdf.html">Tutorial: Import URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/export_urdf.html">Tutorial: Export URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_mjcf.html">Tutorial: Import MJCF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/shapenet_importer.html">Tutorial: ShapeNet Importer</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">Robot Setup</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/basic_stage_and_robot_setup.html">Basic Stage and Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_environment_setup.html">Stage Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_assemble_robot.html">Assemble a Simple Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_simple_robot.html">Articulate a Basic Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_camera_sensors.html">Add Camera and Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/rig_mobile_robot.html">Rig a Mobile Robot</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/setup_a_manipulator.html">Setup a Manipulator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_import_assemble_manipulator.html">Setup a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_configure_manipulator.html">Configure a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_generate_robot_config.html">Generate Robot Configuration File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_pickplace_example.html">Pick and Place Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/rig_closed_loop_structures.html">Setup a Closed-Loop Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_rig_legged_robot.html">Setup a Legged Robot</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../openusd_tuning_tutorials/index.html">Setup a Dexterous Hand in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/setup.html">Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_01_asset_structure.html">Import Robot and USD Asset Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_02_inspect_asset.html">Inspect Asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_03_collider_pairs.html">Collider Pairs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_04_joint_drive_tuning.html">Joint Drive Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_05_joint_gains_tuning.html">Joint Gains Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/practice.html">Using the Dexterous Hand in Practice</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/tuning_and_optimization.html">Tuning and Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/joint_tuning.html">Tuning Joint Drive Gains</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/optimizing_asset.html">Asset Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_franka_system_identification.html">Identify Franka System Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_system_identification_simsim.html">Validate Identification with Sim-to-Sim Recovery</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="asset_transformer_tutorials.html">Asset Transformer Tutorial Series</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="editing_tools.html">Editor Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="robot_poser.html">Robot Poser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_isaacsim_util_merge_mesh.html">Mesh merge tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_isaacsim_robot_setup_gain_tuner.html">Gain Tuner Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_isaacsim_robot_setup_sysid.html">System Identification Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_isaacsim_robot_setup_collision_detector.html">Robot Self-Collision Detector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="assemble_robots.html">Robot Assembler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_surface_gripper.html">Surface Gripper Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/grasp_editor.html">Grasp Editor</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="inspector_tools.html">Inspector Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="robot_inspector.html">Robot Inspector Window</a></li>
+<li class="toctree-l4"><a class="reference internal" href="joint_inspector.html">Joint Inspector</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="newton_robot_setup_tips.html">Robot Setup Tips for Newton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="troubleshooting.html">Robot Setup Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="asset_validation.html">Asset Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="asset_transformer.html">Asset Transformer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="asset_transformer_api.html">Asset Transformer API</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Asset Transformer Rules Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="asset_structure.html">Asset Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/robot_schema.html">Robot Schema</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_simulation/index.html">Robot Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/articulation_controller.html">Articulation Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/mobile_robot_controllers.html">Mobile Robot Controllers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_setup_virtual_gantry.html">Virtual Gantry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_tips.html">Robot Simulation Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_core_concepts.html">Useful Links</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_motion_experimental/index.html">Robot Motion</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_motion_experimental/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../motion_generation/index.html">Motion Generation (Experimental)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/scene_interaction.html">Scene Interaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/mobile_robot_control_example.html">Controllers and the RobotState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/trajectory_planning.html">Trajectory Planning and Execution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../controllers/index.html">Controllers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_differential_drive.html">Differential Drive Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_ackermann.html">Ackermann Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_holonomic.html">Holonomic Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cumotion/index.html">cuMotion Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_xrdf_editor.html">Generating an XRDF file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_world_interface.html">cuMotion World Interface Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_rmpflow.html">RMPflow Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_graph_planner.html">Graph-Based Motion Planner Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_generator.html">Trajectory Generator Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_optimizer.html">Trajectory Optimizer Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../pink/index.html">PINK Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_ik_controller.html">IK Controller Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_multi_task.html">Multi-Task Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples/manipulation_franka_pick_place.html">Franka Pick and Place Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../state_machine_tutorials/tutorial_state_machines.html">State Machines for Robot Behavior</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../manipulators/motion_generation_overview.html">(Deprecated) Robot Motion Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/concepts/index.html">Motion Generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_robot_description_editor.html">Lula Robot Description and XRDF Editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_rmpflow.html">Lula RMPflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_rrt.html">Lula RRT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_kinematics.html">Lula Kinematics Solver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_trajectory_generator.html">Lula Trajectory Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_configure_rmpflow_denso.html">Configuring RMPflow for a New Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_curobo.html">cuRobo and cuMotion</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../newton_actuators_tutorials/index.html">Newton Actuators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_python.html">Set Up Actuators from Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_usd.html">Author and Parse Actuators from USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_ui.html">Author Actuators from UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_omnigraph.html">Drive an Actuated Robot from OmniGraph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_tips.html">Tips</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../physics/index.html">Physics Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../physics/simulation_fundamentals.html">Physics Simulation Fundamentals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/new_physics_engine.html">Physics Data Flow and Engine Integration</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../physics/newton_physics.html">Newton Physics Backend</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact.html">Hydroelastic Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact_walkthrough.html">Configure Hydroelastic Contact for a Nut-and-Bolt Assembly</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_resources.html">Omniverse Physics and PhysX Limitations</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/sim_management.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Simulation Management</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/joint_inspector.html">Physics Inspector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_static_collision.html">Physics Static Collision Extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/ext_isaacsim_inspect_physics.html">Simulation Data Visualizer</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/physics_debug_wnd.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Debug Window</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/sensors_and_physics.html">Sensor Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_camera.html">Camera Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_depth.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_structured_light.html">Structured Light Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_usd_tutorial.html">Authoring a Camera Sensor USD Asset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx.html">RTX Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_lidar.html">RTX Lidar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_radar.html">RTX Radar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_acoustic.html">RTX Acoustic Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_annotators.html">RTX Sensor Annotators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_materials.html">RTX Sensor Non-Visual Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_multitick_rendering.html">Multi-Tick Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_custom.html">Creating Custom RTX Sensor Profiles</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physics.html">Physics-based Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_articulation_force.html">Articulation Joint Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_contact.html">Contact Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_effort.html">Effort Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_imu.html">IMU Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_joint_state.html">Joint State Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_raycast.html">Physics Raycast Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/sensor_schema.html">Sensor Schema</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physx.html">(Deprecated) PhysX SDK Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_generic.html">(Deprecated) PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lidar.html">(Deprecated) PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lightbeam.html">(Deprecated) PhysX Lightbeam Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_proximity.html">(Deprecated) Proximity Sensor</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/develop_and_integrate.html">Develop and Integrate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../development_tools/index.html">Development Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/workflows.html">Development Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/vscode.html">Visual Studio Code (VS Code)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/python_server.html">Python Server (Remote Code Execution)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/jupyter_notebook.html">Jupyter Notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/omniverse_script_editor.html">Omniverse Script Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/isaac_sim_mcp.html">Isaac Sim MCP Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/agent_skills.html">Agent Skills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/carb_settings.html">Modify Carb Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/updating_extensions.html">Adding and Updating Extensions Guide</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../python_scripting/index.html">Python Scripting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/manual_standalone_python.html">Python Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/environment_setup.html">Scene Setup Snippets and Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/util_snippets.html">Util Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/robots_simulation.html">Robot Simulation Snippets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../omnigraph/index.html">OmniGraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/interface.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Interface</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/getting-started/core_concepts.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Core Concepts</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_shortcuts.html">Commonly Used OmniGraph Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_python_nodes.html">Custom Python Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_cpp_nodes.html">Custom C++ Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_ipc_nodes.html">Building Custom IPC OmniGraph Nodes</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Additional Resources</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/tutorials/gentle_intro.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Basic OmniGraph Tutorial</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_tutorial.html">Isaac Sim OmniGraph Tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_scripting.html">OmniGraph via Python Scripting Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../external_interfaces/index.html">External Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../external_interfaces/tutorial_zmq_carter_warehouse.html">ZeroMQ Bridge</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/templates_index.html">Templates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/cli_extension_templates.html">CLI Extension Templates</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../utilities/extension_template_generator.html">(Deprecated) Extension Template Generator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../utilities/extension_templates_tutorial.html">Extension Template Generator Explained</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/vscode_extension_template_generator.html">Advanced Extension Template Generator from VS Code</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/debugging/index.html">Debugging and Profiling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_isaacsim_util_debug_draw.html">Debug Drawing Extension API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_omni_kit_commands.html">Omniverse Commands Tool Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/omniverse_tools.html">Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/tutorial_advanced_python_debugging.html">Debugging With Visual Studio Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/profiling_performance.html">Profiling Performance Using Tracy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../digital_twin/index.html">Other Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/warehouse_logistics/logistics_tutorial_cuopt.html">NVIDIA cuOpt</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_1_overview.html">(Deprecated) Isaac Cortex: Overview</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_2_decider_networks.html">Decider networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_3_example_peck_games.html">Behavior Examples: Peck Games</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_4_franka_block_stacking.html">Walkthrough: Franka Block Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_5_ur10_bin_stacking.html">Walkthrough: UR10 Bin Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_7_cortex_extension.html">Building Cortex Based Extensions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/ext_isaacsim_asset_generator_occupancy_map.html">Occupancy Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/rtsp_camera_streaming.html">Live Camera Streaming over RTSP</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../workflows/top_5/index.html">Top 5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_putting_it_all_together.html">Bring a new mobile base and navigate with ROS2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_setup_tutorials/tutorial_manipulator_workflow.html">Manipulator workflow: URDF to pick and place</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_mobility_gen.html">Data Generation with MobilityGen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_cosmos.html">Cosmos Synthetic Data Generation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow.html">Humanoid workflow: Train locomotion in AGILE and deploy in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_prepare_usd.html">Stage 1: Prepare the humanoid USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_create_task.html">Stage 2: Create a custom humanoid task in AGILE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_configure_mdp.html">Stage 3: Configure and validate the locomotion MDP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_train.html">Stage 4: Train, evaluate, and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_deploy.html">Stage 5: Deploy the policy</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../isaac_lab_tutorials/index.html">Deploying Policies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_policy_deployment.html">Deploying policies in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_policy_example.html">Reinforcement Learning Policies Examples in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_instanceable_assets.html">Instanceable Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ros2_tutorials/index.html">ROS 2</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/overview/index.html">Overview and Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/overview/ros2_reference_architecture.html">ROS 2 Reference Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/tutorial_series/index.html">ROS 2 Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_turtlebot.html">URDF Import: Turtlebot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_drive_turtlebot.html">Driving TurtleBot using ROS 2 Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_clock.html">ROS 2 Clock</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtf.html">ROS 2 Publish Real Time Factor (RTF)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_camera.html">ROS 2 Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtx_lidar.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_tf.html">ROS 2 Transform Trees and Odometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_publish_rate.html">ROS 2 Setting Publish Rates</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/index.html">Advanced Sensor Topics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_noise.html">Add Noise to Camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_publishing.html">Publishing Camera’s Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_compressed_image.html">ROS 2 Compressed Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_rtx_radar.html">RTX Radar Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/robot_control/index.html">Robot Control</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_manipulation.html">ROS 2 Joint Control: Extension Python Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_ackermann_controller.html">ROS 2 Ackermann Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_rl_controller.html">Running a Reinforcement Learning Policy through ROS 2 and Isaac Sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation.html">ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_multi_navigation.html">Multiple Robot ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation_heightmap.html">ROS 2 Navigation with Heightmap Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_moveit.html">MoveIt 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_control.html">ROS 2 Control</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/index.html">Bridge Configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_python.html">ROS 2 Bridge in Standalone Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_launch.html">ROS 2 Launch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_simulation_control.html">ROS 2 Simulation Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_qos.html">ROS 2 Quality of Service (QoS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_auto_namespace.html">Automatic ROS 2 Namespace Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_name_override.html">NameOverride Attribute</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/index.html">Custom Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_publisher_subscriber.html">ROS 2 Generic Publisher and Subscriber</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_server_client.html">ROS 2 Generic Server and Client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_prim_service.html">ROS 2 Service for Manipulating Prims Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_message_python.html">ROS 2 Python Custom Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_omnigraph_node_python.html">ROS 2 Python Custom OmniGraph Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_omnigraph_cpp_node.html">ROS 2 Custom C++ OmniGraph Node</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/urdf_import_export/index.html">URDF Import and Export</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/help/index.html">Help and Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/ros2_faq.html">ROS 2 Frequently Asked Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../nvidia_isaac_ros/isaac_ros_tutorials.html">NVIDIA Isaac ROS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../synthetic_data_generation/index.html">Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../replicator_tutorials/index.html">Perception Data Generation (Replicator)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_recorder.html">Synthetic Data Recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_getting_started.html">Getting Started Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_sdg_workflows.html">SDG Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_scene_based_sdg.html">Scene Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_object_based_sdg.html">Object Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_infinigen_sdg.html">Environment Based Synthetic Dataset Generation with Infinigen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_amr_navigation.html">Randomization in Simulation – AMR Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_ur10_palletizing.html">Randomization in Simulation – UR10 Palletizing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_augmentation.html">Data Augmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_custom_og_randomizer.html">Custom Replicator Randomization Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_modular_scripting.html">Modular Behavior Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_randomizers.html">Randomization Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_snippets.html">Useful Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../action_and_event_data_generation/index.html">Action and Event Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_agent.html">Actor Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration.html">Configuration File Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_sample_configs.html">Sample Configs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_anim_robot.html">Animated Robot Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration_editor.html">Configuration Editor API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_custom_writer_example.html">Example: RTSP Streaming with CustomWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_visual_noise_example.html">Visual Noise and Image Degradation Effects Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_behavior_tree_gen.html">Behavior Tree Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/context_files_and_schemas.html">Context Files and Metadata Schemas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/required_inputs.html">Required inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/example_walkthrough.html">Example Walkthrough</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/three_api_functions.html">Using the API Functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_object.html">Object Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/ext_chat_iro.html">Chat IRO: Natural Language Interface for Isaac Sim Replicator Object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/setting.html">Setting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable.html">Mutable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/camera.html">Camera</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/geometry.html">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/force.html">Force</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/light.html">Light</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable_attribute.html">Mutable Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/transformation.html">Transformation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/harmonizer.html">Harmonizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/empty_space_detection.html">Empty Space Detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/macro.html">Macro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/distribution_visualizer.html">Distribution Visualizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/randomization_dependency.html">Randomization Dependency: Incremental Examples</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_caption.html">VLM Scene Captioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_incident.html">Physical Space Event Generation</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_sensors_rtx_placement.html">RTX Sensors Placement and Calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_placement.html">Camera Placement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_calibration.html">Camera Calibration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/example_event_reactive_actors.html">Reacting to Events with Actor Triggers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_omni_metropolis_pipeline.html">Omni Metropolis Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_telemetry.html">Telemetry and Performance Tracking</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_grasping_sdg.html">Grasping Synthetic Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_teleop_sdg.html">Teleoperation Synthetic Data Generation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_python_api.html">API Documentation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference Information</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/community_highlights.html">Community Project Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_conventions.html">Isaac Sim Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/rendering_modes.html">Rendering modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/sim_performance_optimization_handbook.html">Isaac Sim Performance Optimization Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/benchmarks.html">Isaac Sim Benchmarks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../omniverse_usd/index.html">Omniverse and USD</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/building_cpp_usd_plugins.html">Building C++ USD Plugins Against the Standalone Installer</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/data-collection.html">Data Collection &amp; Usage</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/legal.html">Licenses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses-isaac-sim.html">Isaac Sim License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-additional.html">Isaac Sim Additional Software and Materials License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-webrtc-streaming-client.html">Isaac Sim WebRTC Streaming Client License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/NVIDIA_Omniverse_License_Agreement.html">Omniverse License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licensing-notices-disclaimers.html">Licensing Disclaimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses.html">Other Licenses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/redistributable-ov-software.html">Redistributable Omniverse Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-faq.html">License FAQ</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="../index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li class="breadcrumb-item"><a class="nav-link" href="../learn/build_and_simulate_robots.html">Setup and Simulate Robots</a></li>
+<li class="breadcrumb-item"><a class="nav-link" href="index.html">Robot Setup</a></li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Asset Transformer Rules Reference</span></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="header-article-items__end">
+<div class="header-article-item">
+<div class="header-article-item">
+<div class="d-flex justify-content-end w-100">
+<a href="https://surveys.hotjar.com/4904bf71-6484-47a7-83ff-4715cceabdb5" id="openPopupButton">Is this page helpful?</a>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="asset-transformer-rules-reference">
+<span id="isaac-sim-app-asset-transformer-rules"></span><h1>Asset Transformer 规则参考<a class="headerlink" href="#asset-transformer-rules-reference" title="Link to this heading">#</a></h1>
+<div class="isaacsim-page-type-tag sd-mb-3 docutils">
+<span class="isaacsim-card-tag isaacsim-card-tag--neutral isaacsim-card-tag--kind-category">Tool Reference</span></div>
+<p>本页提供了 Asset Transformer 所有可用转换规则的参考。</p>
+<p>有关一般用法，请参阅 <a class="reference internal" href="asset_transformer.html#isaac-sim-app-asset-transformer"><span class="std std-ref">Asset Transformer</span></a>。有关 API 和自定义规则开发，请参阅 <a class="reference internal" href="asset_transformer_api.html#isaac-sim-app-asset-transformer-api"><span class="std std-ref">Asset Transformer API</span></a>。</p>
+<section id="rules-overview">
+<h2>规则概览<a class="headerlink" href="#rules-overview" title="Link to this heading">#</a></h2>
+<p>规则根据其功能分为四个包：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 30.0%"/>
+<col style="width: 50.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>包</p></th>
+<th class="head"><p>规则</p></th>
+<th class="head"><p>用途</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>核心路由</strong></p></td>
+<td><p>SchemaRoutingRule, PropertyRoutingRule, PrimRoutingRule, RemoveSchemaRule</p></td>
+<td><p>将 USD 意见路由到专用图层</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>性能</strong></p></td>
+<td><p>MaterialsRoutingRule, GeometriesRoutingRule</p></td>
+<td><p>通过去重和实例化优化资产</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>结构</strong></p></td>
+<td><p>FlattenRule, VariantRoutingRule, InterfaceConnectionRule</p></td>
+<td><p>重组 USD 组合结构</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Isaac Sim</strong></p></td>
+<td><p>RobotSchemaRule, MakeListsNonExplicitRule, PhysicsJointPoseFixRule, MergeMeshRule, MjcToPhysxConversionRule, UrdfToMjcPhysxConversionRule, PhysxToMjcConversionRule</p></td>
+<td><p>应用 Isaac Sim 特定的转换</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>在 Asset Transformer UI 中，<strong>Rule Type</strong> 下拉列表通过其短类名（例如 <code class="docutils literal notranslate"><span class="pre">SchemaRoutingRule</span></code>）列出每个规则，并在 <strong>Package</strong> 列中按作用域对规则进行分组。此处显示的作用域标记与本页面类别的对应关系如下：<strong>Core Routing</strong> 对应 <code class="docutils literal notranslate"><span class="pre">core</span></code>，<strong>Performance</strong> 对应 <code class="docutils literal notranslate"><span class="pre">perf</span></code>，<strong>Structure</strong> 对应 <code class="docutils literal notranslate"><span class="pre">structure</span></code>，<strong>Isaac Sim</strong> 对应 <code class="docutils literal notranslate"><span class="pre">isaac_sim</span></code>。下方列出的每个规则的 <strong>Fully Qualified Type</strong> 是存储在 profile JSON 中并传递给 API 的值；UI 根据所选作用域和类名组合生成该值。</p>
+</div>
+</section>
+<section id="available-rules">
+<h2>可用规则<a class="headerlink" href="#available-rules" title="Link to this heading">#</a></h2>
+<p>选择一个类别选项卡以查看可用规则。展开每个规则以查看详细的参数和执行逻辑。</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-0">
+Core Routing</label><div class="sd-tab-content docutils">
+<p>这些规则将 USD 意见（模式、属性、prim）从源层路由到专用的目标层。路由过程通过在目标层中创建覆盖意见并从源层中移除原始意见，从而保留组合语义。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">SchemaRoutingRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将已应用的 API 模式及其关联属性路由到单独的层。这支持模块化组织，允许选择性加载物理模式、机器人模式或其他 API 模式。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.core.schemas.SchemaRoutingRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">schemas</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要路由的 API 模式模式列表。支持通配符（例如，<code class="docutils literal notranslate"><span class="pre">Physics*</span></code> 匹配 <code class="docutils literal notranslate"><span class="pre">PhysicsRigidBodyAPI</span></code>、<code class="docutils literal notranslate"><span class="pre">PhysicsMassAPI</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">ignore_schemas</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要从路由中排除的 Schema 模式。覆盖 <code class="docutils literal notranslate"><span class="pre">schemas</span></code> 中的正向匹配。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">stage_name</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">输出 USD 文件名（默认值：<code class="docutils literal notranslate"><span class="pre">schemas.usda</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">prim_names</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">用于筛选要处理的 Prim 名称的通配符模式（默认：<code class="docutils literal notranslate"><span class="pre">["*"]</span></code> 匹配所有）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">ignore_prim_names</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要从处理中排除的 Prim 名称模式</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Schema 发现</strong>：遍历 Stage 中的所有 Prim，并收集与指定模式匹配的已应用 API Schema。</p></li>
+<li><p class="sd-card-text"><strong>属性命名空间解析</strong>：对于每个匹配的 Schema，确定属性命名空间前缀（例如，<code class="docutils literal notranslate"><span class="pre">PhysicsRigidBodyAPI</span></code> 使用 <code class="docutils literal notranslate"><span class="pre">physics:</span></code> 命名空间，<code class="docutils literal notranslate"><span class="pre">PhysicsDriveAPI:angular</span></code> 使用 <code class="docutils literal notranslate"><span class="pre">drive:angular:</span></code>）。</p></li>
+<li><p class="sd-card-text"><strong>Schema 传输</strong>：使用 USD 的 <code class="docutils literal notranslate"><span class="pre">TokenListOp</span></code> 从源层的 <code class="docutils literal notranslate"><span class="pre">apiSchemas</span></code> 元数据中移除 Schema 标记，并将其前置到目标层。</p></li>
+<li><p class="sd-card-text"><strong>属性传输</strong>：使用 <code class="docutils literal notranslate"><span class="pre">Sdf.CopySpec</span></code> 将属于该 Schema 命名空间的所有属性从源层复制到目标层，然后从源层中移除它们。</p></li>
+<li><p class="sd-card-text"><strong>层管理</strong>：设置目标层的默认 Prim 以匹配源层，并保存这两个层。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">PropertyRoutingRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将匹配名称模式的属性路由到单独的层。这允许将特定的属性命名空间（例如，物理属性、自定义属性）组织到模块化层中。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.core.properties.PropertyRoutingRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">properties</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">用于匹配属性名称的正则表达式模式（例如，<code class="docutils literal notranslate"><span class="pre">physics:.*</span></code> 匹配所有物理命名空间属性）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">ignore_properties</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">从路由中排除的正则表达式模式</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">stage_name</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">输出 USD 文件名（默认值：<code class="docutils literal notranslate"><span class="pre">properties.usda</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">scope</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">用于限制搜索范围的根 Prim 路径（默认值：<code class="docutils literal notranslate"><span class="pre">/</span></code> 搜索整个 Stage）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">prim_names</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">用于筛选要处理的 Prim 名称的通配符模式</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">ignore_prim_names</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要排除的 Prim 名称模式</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>模式编译</strong>：编译提供的正则表达式模式以实现高效匹配。</p></li>
+<li><p class="sd-card-text"><strong>属性发现</strong>：遍历范围内所有 Prim 上的属性和关系，将名称与编译后的模式进行匹配检查。</p></li>
+<li><p class="sd-card-text"><strong>属性复制</strong>：对于每个匹配的属性，使用 <code class="docutils literal notranslate"><span class="pre">Sdf.CopySpec</span></code> 将 Prim 堆栈中最强意见的 spec 复制到目标层。</p></li>
+<li><p class="sd-card-text"><strong>源移除</strong>：从 Prim 堆栈中的所有源层（目标层除外）移除属性 spec，以防止出现重复意见。</p></li>
+<li><p class="sd-card-text"><strong>Layer Finalization</strong>：导出目标层并保存所有已修改的源层。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">PrimRoutingRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将匹配类型模式的整个 prim 路由到单独的层中。这有助于将物理 prim、渲染 prim 或其他类型的 prim 组织到模块化层中。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.core.prims.PrimRoutingRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">prim_types</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要路由的 Prim 类型模式。支持通配符（例如，<code class="docutils literal notranslate"><span class="pre">Physics*</span></code> 匹配 <code class="docutils literal notranslate"><span class="pre">PhysicsJoint</span></code>、<code class="docutils literal notranslate"><span class="pre">PhysicsScene</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">ignore_prim_types</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要从路由中排除的 Prim 类型模式</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">stage_name</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">输出 USD 文件名（默认值：<code class="docutils literal notranslate"><span class="pre">prims.usda</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">scope</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">用于限制搜索范围的根 Prim 路径（默认值：<code class="docutils literal notranslate"><span class="pre">/</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">prim_names</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">用于筛选要处理的 Prim 名称的通配符模式</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">ignore_prim_names</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要排除的 Prim 名称模式</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>类型匹配</strong>：使用 <code class="docutils literal notranslate"><span class="pre">fnmatch</span></code> 收集范围内所有类型名称与指定模式匹配的 prim。</p></li>
+<li><p class="sd-card-text"><strong>组合复制</strong>：将完整的组合 prim 定义（包括所有属性、元数据和已应用的 schema）复制到目标层。</p></li>
+<li><p class="sd-card-text"><strong>完全移除</strong>：从所有源层中移除 prim spec，包括显式删除所有属性 spec（以处理由其他规则（如 <code class="docutils literal notranslate"><span class="pre">SchemaRoutingRule</span></code>）编写的覆盖属性）、清除 <code class="docutils literal notranslate"><span class="pre">apiSchemas</span></code> 元数据，以及从父命名空间中删除 prim spec。</p></li>
+<li><p class="sd-card-text"><strong>层管理</strong>：导出目标层并保存已修改的源层。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">RemoveSchemaRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">从目标层中移除特定的已应用 API schema（以及可选的其关联属性）。在准备资产以适配不同的物理后端时，可用于剥离模拟器专用的 schema。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.core.remove_schema.RemoveSchemaRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">stage_name</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">要编辑的目标 USD 文件名（例如，<code class="docutils literal notranslate"><span class="pre">mujoco.usda</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">schema_patterns</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">匹配要移除的 API schema 名称的通配符模式（例如，<code class="docutils literal notranslate"><span class="pre">PhysicsDriveAPI.*</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">prim_path_patterns</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">限制受影响 prim 路径的正则表达式模式（默认：<code class="docutils literal notranslate"><span class="pre">[".*"]</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">clear_properties</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">同时移除属于匹配 schema 命名空间的属性（默认：<code class="docutils literal notranslate"><span class="pre">False</span></code>）</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>模式匹配</strong>：遍历目标层中的所有 prim，将已应用的 API schema 与指定的通配符模式进行匹配。</p></li>
+<li><p class="sd-card-text"><strong>Schema Removal</strong>：使用 <code class="docutils literal notranslate"><span class="pre">TokenListOp</span></code> 操作，从每个 prim 的 <code class="docutils literal notranslate"><span class="pre">apiSchemas</span></code> 元数据中移除匹配的 schema 令牌。</p></li>
+<li><p class="sd-card-text"><strong>Property Cleanup</strong>：如果启用了 <code class="docutils literal notranslate"><span class="pre">clear_properties</span></code>，则从 prim spec 中移除匹配 schema 命名空间下的所有属性。</p></li>
+<li><p class="sd-card-text"><strong>Layer Save</strong>：保存修改后的层。</p></li>
+</ol>
+</div>
+</details></div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-1">
+Performance</label><div class="sd-tab-content docutils">
+<p>这些规则通过去重和实例化来优化资产，从而提升模拟和渲染性能。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">MaterialsRoutingRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将材质 prim 路由到具有全局去重功能的共享层，在原始位置创建可实例化的引用，并将纹理/MDL 资产传输到指定文件夹。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.perf.materials.MaterialsRoutingRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">scope</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">用于限制材质搜索的根 prim 路径（默认值：<code class="docutils literal notranslate"><span class="pre">/</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">materials_layer</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">材质层的输出 USD 文件名（默认值：<code class="docutils literal notranslate"><span class="pre">materials.usda</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">textures_folder</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">相对于目标位置的纹理资产文件夹名称（默认值：<code class="docutils literal notranslate"><span class="pre">Textures</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">deduplicate</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">启用基于内容哈希的材质去重（默认值：<code class="docutils literal notranslate"><span class="pre">True</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">download_textures</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">将远程纹理（例如来自 Nucleus）下载到本地文件夹（默认值：<code class="docutils literal notranslate"><span class="pre">False</span></code>）</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>材质发现</strong>：在范围内查找所有材质 prim（<code class="docutils literal notranslate"><span class="pre">UsdShade.Material</span></code>），并追踪每个材质由哪个层定义。应用了 <code class="docutils literal notranslate"><span class="pre">PhysicsMaterialAPI</span></code> 的材质会被跳过——这些物理专用材质保留在基础层的原始路径中，以确保 <code class="docutils literal notranslate"><span class="pre">material:binding:physics</span></code> 关系能够继续解析。</p></li>
+<li><p class="sd-card-text"><strong>资产收集</strong>：解析材质引用的所有纹理和 MDL 文件路径，处理本地和远程（Nucleus）资产。解析 MDL 文件以发现嵌入的纹理引用。UDIM 模板（<code class="docutils literal notranslate"><span class="pre">&lt;UDIM&gt;</span></code>，包括 URL 编码的 <code class="docutils literal notranslate"><span class="pre">%3CUDIM%3E</span></code> 形式）作为单个系列收集，而不是作为不存在的单个文件。</p></li>
+<li><p class="sd-card-text"><strong>内容哈希</strong>：使用解析后的资产路径计算每个材质内容（类型、属性、连接、关系）的 SHA-256 哈希值，以实现一致的去重。</p></li>
+<li><p class="sd-card-text"><strong>资产传输</strong>：将所有唯一资产复制到 textures 文件夹，并进行全局去重。通过追加数字后缀来处理文件名冲突。更新 MDL 文件以指向传输后的纹理。UDIM 系列会展开为其具体的瓦片（从源文件夹枚举），每个瓦片都会被传输，并且材质引用会被重写为相对的 <code class="docutils literal notranslate"><span class="pre">&lt;UDIM&gt;</span></code> 模板，以便解析器针对传输后的瓦片重新展开它。</p></li>
+<li><p class="sd-card-text"><strong>材质层创建</strong>：在材质层中创建一个 <code class="docutils literal notranslate"><span class="pre">/Materials</span></code> 范围。对于每个唯一材质（按哈希值），复制材质定义并更新资产路径。</p></li>
+<li><p class="sd-card-text"><strong>可实例化引用</strong>：使用指向材质层中已去重材质的可实例化引用，更新每个原始材质位置。</p></li>
+<li><p class="sd-card-text"><strong>绑定更新</strong>：确保 <code class="docutils literal notranslate"><span class="pre">MaterialBindingAPI</span></code> 应用于所有具有材质绑定的 prim。</p></li>
+<li><p class="sd-card-text"><strong>清理</strong>：移除未绑定到任何表面的材质的可实例化引用。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">GeometriesRoutingRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将几何体 prim 路由到具有去重功能的共享层，并为每个实例的覆盖项创建单独的实例层。在完全展平的 stage 上运行（引用和实例已解析）。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.perf.geometries.GeometriesRoutingRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">scope</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">用于限制几何体搜索的根 prim 路径（默认值：<code class="docutils literal notranslate"><span class="pre">/</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">geometries_layer</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">用于基础几何体定义的输出 USD 文件名（默认值：<code class="docutils literal notranslate"><span class="pre">geometries.usd</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">instance_layer</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">用于实例特定覆盖项的输出 USD 文件名（默认值：<code class="docutils literal notranslate"><span class="pre">instances.usda</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">deduplicate</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">复用相同的几何体定义（默认值：<code class="docutils literal notranslate"><span class="pre">True</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">save_base_as_usda</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">将基础 stage 保存为 USD ASCII 格式（默认值：<code class="docutils literal notranslate"><span class="pre">True</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">verbose</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">记录详细的变换分解信息（默认值：<code class="docutils literal notranslate"><span class="pre">False</span></code>）</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>几何体发现</strong>：在范围内识别所有几何体 prim（Mesh、Gprim 类型）。</p></li>
+<li><p class="sd-card-text"><strong>内容哈希计算</strong>：基于网格数据（点、面数、索引）、变换以及固有属性（特定于类型的属性，如 <code class="docutils literal notranslate"><span class="pre">subdivisionScheme</span></code>、<code class="docutils literal notranslate"><span class="pre">orientation</span></code>）计算几何体哈希值。</p></li>
+<li><p class="sd-card-text"><strong>固有属性与实例属性</strong>：将固有几何属性（网格数据、UV、法线、切线）与特定于实例的属性（视觉材质绑定、应用的 schema（如 CollisionAPI）、自定义属性）分离。用于物理目的的材质绑定（<code class="docutils literal notranslate"><span class="pre">material:binding:physics</span></code>）在实例增量中保持原样，指向基础层中的原始目标路径，而不是通过 <code class="docutils literal notranslate"><span class="pre">VisualMaterials</span></code> 重新路由。</p></li>
+<li><p class="sd-card-text"><strong>几何层创建</strong>：在几何层中的 <code class="docutils literal notranslate"><span class="pre">/Geometries/{name}/{name}</span></code> 下创建几何体定义。相同的几何体共享相同的定义。</p></li>
+<li><p class="sd-card-text"><strong>实例层创建</strong>：创建实例条目以捕获每个实例的增量：材质绑定、应用的 API schema、变换覆盖以及自定义属性。</p></li>
+<li><p class="sd-card-text"><strong>基础 Stage 更新</strong>：更新基础 stage 以引用几何体定义，用可实例化的引用替换原始几何体 prim。</p></li>
+<li><p class="sd-card-text"><strong>增量合并</strong>：将具有相同增量的实例分组，以减少实例层中的冗余。</p></li>
+</ol>
+</div>
+</details></div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-2">
+Structure</label><div class="sd-tab-content docutils">
+<p>这些规则重组了 USD 组合结构，以实现模块化的资产组织。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">FlattenRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将原始输入阶段展平为单层结构，并支持可选的变体选择。这会创建一个中性的基础表示，适用于后续的转换规则。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.structure.flatten.FlattenRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">output_path</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">目标位置内的相对输出路径（默认值：<code class="docutils literal notranslate"><span class="pre">base.usda</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">clear_variants</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">在展平之前清除所有变体选择，以生成中性基础（默认值：<code class="docutils literal notranslate"><span class="pre">True</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">selected_variants</span></code></p></td>
+<td><p class="sd-card-text">字典</p></td>
+<td><p class="sd-card-text">将变体集名称映射到变体选择的字典。仅适用于默认 prim 上的变体集。示例：<code class="docutils literal notranslate"><span class="pre">{"Physics":</span> <span class="pre">"PhysX",</span> <span class="pre">"Gripper":</span> <span class="pre">"None"}</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">case_insensitive</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">应用选择时不区分大小写地匹配变体名称（默认值：<code class="docutils literal notranslate"><span class="pre">True</span></code>）</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>访问原始阶段</strong>：打开原始输入阶段（在任何处理之前），以保留在初始管理器处理后可能会失效的相对资产路径。</p></li>
+<li><p class="sd-card-text"><strong>应用变体选择</strong>：如果指定了 <code class="docutils literal notranslate"><span class="pre">selected_variants</span></code>，则将变体选择应用于默认 prim 的变体集。不区分大小写的匹配可以在请求 <code class="docutils literal notranslate"><span class="pre">PhysX</span></code> 时找到诸如 <code class="docutils literal notranslate"><span class="pre">physx</span></code> 这样的变体。</p></li>
+<li><p class="sd-card-text"><strong>清除变体</strong>：如果启用了 <code class="docutils literal notranslate"><span class="pre">clear_variants</span></code>，则遍历所有 prim 并清除其 <code class="docutils literal notranslate"><span class="pre">variantSelections</span></code> 元数据，以确保生成中性基础。</p></li>
+<li><p class="sd-card-text"><strong>Stage Flattening</strong>：使用 <code class="docutils literal notranslate"><span class="pre">Usd.Stage.Flatten()</span></code> 将所有层、引用和载荷组合成单个层。</p></li>
+<li><p class="sd-card-text"><strong>Export</strong>：将扁平化后的层导出到目标路径。在必要时通过将内容传输到缓存层来处理 USD 层缓存。</p></li>
+<li><p class="sd-card-text"><strong>Stage Switch</strong>：返回输出路径，以便管理器切换后续规则以在扁平化后的 stage 上操作。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">VariantRoutingRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将 variant set 内容路由到独立的层文件。每个 variant 被提取到按 variant set 文件夹组织的独立 USDA 文件中。通过复制源资产并重新映射依赖项来处理 variant 内的组合弧（composition arcs）。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.structure.variants.VariantRoutingRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">variant_sets</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要处理的 variant set 名称的可选列表。如果为空，则处理 default prim 上的所有 variant set。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">case_insensitive</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">将 variant option 名称转换为小写，用于输出文件名和引用（默认值：<code class="docutils literal notranslate"><span class="pre">True</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">collect_dependencies</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">将外部依赖项（引用的资产、纹理）收集到 <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> 文件夹中（默认值：<code class="docutils literal notranslate"><span class="pre">True</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">excluded_variants</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要从完整处理中排除的 variant 名称。被排除的 variant 会创建空的 USDA 文件，但其内容不会被处理。适用于如 <code class="docutils literal notranslate"><span class="pre">none</span></code>、<code class="docutils literal notranslate"><span class="pre">default</span></code> 等 variant。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Variant Set 分析</strong>：检查 default prim 的 variant sets，并构建一个从 variant 资产（每个 variant 内的 payloads/references）到 variant 名称的映射。</p></li>
+<li><p class="sd-card-text"><strong>Variant 文件映射</strong>：创建从原始 variant 资产路径到新输出文件路径的映射 (<code class="docutils literal notranslate"><span class="pre">{VariantSetName}/{variant_name}.usda</span></code>)。</p></li>
+<li><p class="sd-card-text"><strong>依赖项收集</strong>：使用 <code class="docutils literal notranslate"><span class="pre">UsdUtils.ComputeAllDependencies</span></code> 发现每个 variant 源引用的所有资产（sublayers、references、payloads、textures）。将依赖项复制到 <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> 文件夹中。</p></li>
+<li><p class="sd-card-text"><strong>带重映射的资产复制</strong>：对于包含 payloads/references 的 variants，将源资产复制到 variant 输出文件。使用 <code class="docutils literal notranslate"><span class="pre">UsdUtils.ModifyAssetPaths</span></code> 将所有内部路径重映射为指向新的 variant 文件或已收集的依赖项。</p></li>
+<li><p class="sd-card-text"><strong>Delta 应用</strong>：将 variant spec 中的任何直接覆盖（attributes、relationships、child prims、composition arcs）作为最强意见应用于复制的内容之上。</p></li>
+<li><p class="sd-card-text"><strong>Variant 间重映射</strong>：更新 variants 之间的 references，使其指向新的 variant 文件。重映射已收集依赖项中的路径以确保一致性。</p></li>
+<li><p class="sd-card-text"><strong>排除 Variant 的处理</strong>：为被排除的 variants 创建仅包含 default prim 的空 USDA 文件。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">InterfaceConnectionRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">生成最终的 interface layer，其中包含用于组织 USD 资产的 composition arcs。创建顶层资产文件，该文件引用/payloads 基础资产，并可选地从文件夹结构生成 variant sets。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.structure.interface.InterfaceConnectionRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">base_layer</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">要连接的基础 USD 层的相对路径（默认：<code class="docutils literal notranslate"><span class="pre">payloads/base.usda</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">base_connection_type</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">连接基础层的方式：<code class="docutils literal notranslate"><span class="pre">Reference</span></code>（默认）、<code class="docutils literal notranslate"><span class="pre">Payload</span></code> 或 <code class="docutils literal notranslate"><span class="pre">Sublayer</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">generate_folder_variants</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">从 payloads 文件夹结构生成变体集（默认：<code class="docutils literal notranslate"><span class="pre">False</span></code>）。每个子文件夹成为一个变体集，每个 USD 文件成为一个变体选项。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">payloads_folder</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">用于扫描变体集组织的文件夹（默认：<code class="docutils literal notranslate"><span class="pre">payloads</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">connections</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">自定义连接规范列表。每个规范是一个字典，包含 <code class="docutils literal notranslate"><span class="pre">asset_path</span></code>（要修改的层，若为空则针对接口层）、<code class="docutils literal notranslate"><span class="pre">target_path</span></code>（要连接的层）以及 <code class="docutils literal notranslate"><span class="pre">connection_type</span></code>（<code class="docutils literal notranslate"><span class="pre">Reference</span></code>、<code class="docutils literal notranslate"><span class="pre">Payload</span></code>、<code class="docutils literal notranslate"><span class="pre">Sublayer</span></code> 或 <code class="docutils literal notranslate"><span class="pre">Inherit</span></code>）。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">default_variant_selections</span></code></p></td>
+<td><p class="sd-card-text">字典</p></td>
+<td><p class="sd-card-text">将变体集名称映射到默认变体选择的字典。未指定的变体集默认为 <code class="docutils literal notranslate"><span class="pre">none</span></code>。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>接口层创建</strong>：在包根目录创建接口层，名称基于原始输入资产。</p></li>
+<li><p class="sd-card-text"><strong>默认 Prim 设置</strong>：确保默认 prim 在接口层中作为 Xform 存在。</p></li>
+<li><p class="sd-card-text"><strong>Base Connection</strong>：使用指定的连接类型将基础层连接到默认 prim（将 Reference 或 Payload 前置到 prim 的列表中，或插入 Sublayer）。</p></li>
+<li><p class="sd-card-text"><strong>Folder Variant Generation</strong>：如果启用，则扫描 payloads 文件夹中包含 USD 文件的子文件夹。每个子文件夹成为一个 variant set，包含一个 <code class="docutils literal notranslate"><span class="pre">none</span></code> variant（无 payload）以及针对每个 USD 文件的 variant（带 payload）。</p></li>
+<li><p class="sd-card-text"><strong>Custom Connections</strong>：应用自定义连接规范。对于 Sublayer 连接，将其添加到层的 sublayer 路径中。对于 Reference/Payload 连接，将其添加到默认 prim。可以修改接口层或任何指定的资产层。</p></li>
+<li><p class="sd-card-text"><strong>Extraneous Prim Recovery</strong>：扫描基础层中位于 <code class="docutils literal notranslate"><span class="pre">defaultPrim</span></code> 之外的根级 prim（例如 <code class="docutils literal notranslate"><span class="pre">/Render</span></code>、<code class="docutils literal notranslate"><span class="pre">/PhysicsScene</span></code>）。使用 <code class="docutils literal notranslate"><span class="pre">Sdf.CopySpec</span></code> 将每个 prim 复制到接口层的相同根级别，然后从基础层中移除它们并保存基础层。这使这些 prim 在合成 stage 中保持可达，并使流水线具有幂等性——那些无法在基于 reference 的往返过程中存活的 prim 会被提升到接口层，从而在重新转换时得以保留。</p></li>
+<li><p class="sd-card-text"><strong>Variant Selection Defaults</strong>：在接口层的默认 prim 上设置默认 variant 选择。</p></li>
+</ol>
+</div>
+</details></div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-3">
+Isaac Sim</label><div class="sd-tab-content docutils">
+<p>这些规则应用了 Isaac Sim 特有的机器人资产转换。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">RobotSchemaRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将 Isaac Sim 机器人 schema 应用到目标 prim。使用机器人 schema 工具检测 articulation 结构并填充机器人关系（links、joints、sites）。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.isaac_sim.robot_schema.RobotSchemaRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">prim_path</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">应用 Robot schema 的目标 prim 路径。如果未指定，则默认为 stage 的默认 prim。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">stage_name</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">用于存储 robot schema 意见的输出 USD 文件名（默认：<code class="docutils literal notranslate"><span class="pre">robot_schema.usda</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">add_sites</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">通过扫描 Link prim 下没有子级的子 Xform，向机器人添加 site（默认：<code class="docutils literal notranslate"><span class="pre">True</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">sites_last</span></code></p></td>
+<td><p class="sd-card-text">布尔值</p></td>
+<td><p class="sd-card-text">如果 <code class="docutils literal notranslate"><span class="pre">False</span></code>，则在关系顺序中，site 会添加在其父 link 之后。如果 <code class="docutils literal notranslate"><span class="pre">True</span></code>，则所有 site 都会添加在末尾。（默认：<code class="docutils literal notranslate"><span class="pre">False</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">sublayer</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">可选的子层路径，在应用 robot schema 之前包含在工作 stage 中。适用于包含定义关节的物理层。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>目标层设置</strong>：创建或打开用于存储 robot schema 意见的目标层。将其作为子层添加到源 stage。</p></li>
+<li><p class="sd-card-text"><strong>子层插入</strong>：如果指定了子层（例如物理层），则将其作为最强子层插入到源 stage 中。</p></li>
+<li><p class="sd-card-text"><strong>Schema 检测</strong>：检查 <code class="docutils literal notranslate"><span class="pre">RobotAPI</span></code> 是否已应用于目标 prim。</p></li>
+<li><p class="sd-card-text"><strong>Schema 应用</strong>：</p>
+<ul class="simple">
+<li><p class="sd-card-text"><strong>新 Schema</strong>：将 <code class="docutils literal notranslate"><span class="pre">RobotAPI</span></code> 应用于目标 prim，然后调用 <code class="docutils literal notranslate"><span class="pre">PopulateRobotSchemaFromArticulation</span></code> 以检测关节结构并填充 <code class="docutils literal notranslate"><span class="pre">isaac:links</span></code>、<code class="docutils literal notranslate"><span class="pre">isaac:joints</span></code> 以及可选的 <code class="docutils literal notranslate"><span class="pre">isaac:sites</span></code> 关系。</p></li>
+<li><p class="sd-card-text"><strong>现有 Schema</strong>：调用 <code class="docutils literal notranslate"><span class="pre">RecalculateRobotSchema</span></code> 以更新 schema，同时保留现有的关系顺序。移除无效条目，并追加新发现的链接/关节/站点。</p></li>
+</ul></li>
+<li><p class="sd-card-text"><strong>Schema 更新</strong>：如有必要，更新已弃用的 schema 版本。</p></li>
+<li><p class="sd-card-text"><strong>图层隔离</strong>：保存编辑图层并丢弃对根图层的任何更改（因为编辑操作已隔离到 robot schema 图层中）。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">MakeListsNonExplicitRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将 prim 元数据和属性上的显式列表操作转换为非显式列表操作（前置或追加）。这对 USD 组合非常重要，因为显式列表会覆盖所有较弱的意见，而前置/追加列表会与较弱的意见结合。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.isaac_sim.make_lists_non_explicit.MakeListsNonExplicitRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">metadata_names</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要转换的 prim 元数据名称。支持通配符（例如，<code class="docutils literal notranslate"><span class="pre">api*</span></code> 匹配 <code class="docutils literal notranslate"><span class="pre">apiSchemas</span></code>）。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">property_names</span></code></p></td>
+<td><p class="sd-card-text">列表</p></td>
+<td><p class="sd-card-text">要转换的 prim 属性名称。支持通配符（例如，<code class="docutils literal notranslate"><span class="pre">material:*</span></code>）。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">list_op_type</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">目标列表操作类型：<code class="docutils literal notranslate"><span class="pre">prepend</span></code>（项目位于较弱意见之前）或 <code class="docutils literal notranslate"><span class="pre">append</span></code>（项目位于之后）。默认值：<code class="docutils literal notranslate"><span class="pre">prepend</span></code>。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>模式匹配</strong>：使用 <code class="docutils literal notranslate"><span class="pre">fnmatch</span></code> 将元数据和属性名称与指定模式进行匹配。</p></li>
+<li><p class="sd-card-text"><strong>元数据转换</strong>：对于匹配的 prim 元数据（如 <code class="docutils literal notranslate"><span class="pre">apiSchemas</span></code>）：</p>
+<ul class="simple">
+<li><p class="sd-card-text">从 <code class="docutils literal notranslate"><span class="pre">TokenListOp</span></code> 中提取显式项目</p></li>
+<li><p class="sd-card-text">创建新的 <code class="docutils literal notranslate"><span class="pre">TokenListOp</span></code>，将项目作为前置或追加项（非显式）</p></li>
+<li><p class="sd-card-text">在 prim spec 上设置新的列表操作</p></li>
+</ul></li>
+<li><p class="sd-card-text"><strong>关系转换</strong>：对于匹配的关系：</p>
+<ul class="simple">
+<li><p class="sd-card-text">从 <code class="docutils literal notranslate"><span class="pre">targetPathList</span></code> 中提取显式目标路径</p></li>
+<li><p class="sd-card-text">重新创建关系 spec（保留其他元数据，如 variability、custom flag）</p></li>
+<li><p class="sd-card-text">使用 <code class="docutils literal notranslate"><span class="pre">Prepend()</span></code> 或 <code class="docutils literal notranslate"><span class="pre">Append()</span></code> 调用重新编写目标，而非使用显式列表</p></li>
+</ul></li>
+<li><p class="sd-card-text"><strong>属性连接转换</strong>：对于匹配的属性连接：</p>
+<ul class="simple">
+<li><p class="sd-card-text">提取显式连接路径</p></li>
+<li><p class="sd-card-text">清除连接列表，并使用 <code class="docutils literal notranslate"><span class="pre">Prepend()</span></code> 或 <code class="docutils literal notranslate"><span class="pre">Append()</span></code> 重新编写</p></li>
+</ul></li>
+<li><p class="sd-card-text"><strong>图层管理</strong>：保存所有已修改的图层。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">PhysicsJointPoseFixRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">在 GeometriesRoutingRule 等上游规则更改了刚体的世界变换后，修正物理关节的局部姿态。将基于原始输入资产计算出的关节世界姿态与当前工作阶段进行比较，并更新世界姿态发生偏移的关节上的 <code class="docutils literal notranslate"><span class="pre">localPos0/1</span></code> 和 <code class="docutils literal notranslate"><span class="pre">localRot0/1</span></code> 属性。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.isaac_sim.physics_joint_pose_fix.PhysicsJointPoseFixRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 65.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">参数</p></th>
+<th class="head"><p class="sd-card-text">类型</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">original_composition_path</span></code></p></td>
+<td><p class="sd-card-text">字符串</p></td>
+<td><p class="sd-card-text">可选的 <code class="docutils literal notranslate"><span class="pre">Usd.Stage</span></code> 对象或指向原始组合阶段的显式路径。默认为由 transformer 管理器传递的 <code class="docutils literal notranslate"><span class="pre">input_stage</span></code>（即未修改的源资产）。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">tolerance_position</span></code></p></td>
+<td><p class="sd-card-text">浮点数</p></td>
+<td><p class="sd-card-text">比较关节世界姿态时允许的最大位置差异（欧几里得距离）（默认值：<code class="docutils literal notranslate"><span class="pre">1e-6</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">tolerance_orientation</span></code></p></td>
+<td><p class="sd-card-text">浮点数</p></td>
+<td><p class="sd-card-text">比较关节世界姿态时，四元数点积相对于 1.0 的最小偏差（默认值：<code class="docutils literal notranslate"><span class="pre">1e-6</span></code>）</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>原始阶段</strong>：通过 <code class="docutils literal notranslate"><span class="pre">input_stage</span></code> 打开原始输入资产（在任何 transformer 规则运行之前）。</p></li>
+<li><p class="sd-card-text"><strong>关节发现</strong>：遍历工作阶段以查找所有 <code class="docutils literal notranslate"><span class="pre">UsdPhysics.Joint</span></code> prim。</p></li>
+<li><p class="sd-card-text"><strong>世界姿态比较</strong>：对于每个关节，使用 <code class="docutils literal notranslate"><span class="pre">local_pose</span> <span class="pre">*</span> <span class="pre">body_world_transform</span></code> 分别在原始阶段和工作阶段上，基于 <code class="docutils literal notranslate"><span class="pre">body0</span></code> 和 <code class="docutils literal notranslate"><span class="pre">body1</span></code> 计算关节的世界姿态。</p></li>
+<li><p class="sd-card-text"><strong>漂移检测</strong>：如果工作阶段中关节的世界姿态与原始阶段相比超出配置的容差，则标记受影响的身体侧以进行校正。</p></li>
+<li><p class="sd-card-text"><strong>局部姿态修复</strong>：计算校正后的局部姿态为 <code class="docutils literal notranslate"><span class="pre">joint_world_orig</span> <span class="pre">*</span> <span class="pre">inverse(body_world_entry)</span></code>，并将生成的平移和旋转写回关节的 <code class="docutils literal notranslate"><span class="pre">localPos</span></code> 和 <code class="docutils literal notranslate"><span class="pre">localRot</span></code> 属性。</p></li>
+<li><p class="sd-card-text"><strong>图层保存</strong>：如果应用了任何校正，则保存修改后的编辑图层。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">MergeMeshRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">使用 Scene Optimizer 合并操作合并共享同一刚体父级的视觉网格 prim。这减少了几何 prim 的数量，并可以提升渲染和仿真性能。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.isaac_sim.merge_mesh.MergeMeshRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：无</p>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>刚体发现</strong>：遍历阶段，查找所有应用了 <code class="docutils literal notranslate"><span class="pre">RigidBodyAPI</span></code> 的 prim。</p></li>
+<li><p class="sd-card-text"><strong>网格分组</strong>：对于每个刚体，收集具有 <code class="docutils literal notranslate"><span class="pre">default</span></code> 或 <code class="docutils literal notranslate"><span class="pre">render</span></code> 用途的子几何 prim（Mesh、Cube、Sphere 等），并在嵌套刚体边界处停止。</p></li>
+<li><p class="sd-card-text"><strong>Scene Optimizer 合并</strong>：对于每个非空网格组，调用 Scene Optimizer 的 <code class="docutils literal notranslate"><span class="pre">merge</span></code> 命令，将网格合并为单个几何 prim，同时保留材质属性。</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">MjcToPhysxConversionRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将 MJCF 执行器和关节属性转换为 PhysX 驱动和关节模式。这通过将 MJCF 增益/偏置参数转换为 PhysX 刚度/阻尼，实现了多物理引擎支持。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.isaac_sim.mjc_to_physx_conversion.MjcToPhysxConversionRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：无</p>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>执行器转换</strong>：对于每个 <code class="docutils literal notranslate"><span class="pre">MjcActuator</span></code> prim，读取 <code class="docutils literal notranslate"><span class="pre">gainPrm</span></code>、<code class="docutils literal notranslate"><span class="pre">biasPrm</span></code>、<code class="docutils literal notranslate"><span class="pre">gainType</span></code>、<code class="docutils literal notranslate"><span class="pre">biasType</span></code> 和 <code class="docutils literal notranslate"><span class="pre">forceRange</span></code> 属性。将位置控制 (kp/kd) 和速度控制 (kd) 模式转换为 <code class="docutils literal notranslate"><span class="pre">DriveAPI</span></code> 刚度和阻尼。</p></li>
+<li><p class="sd-card-text"><strong>关节转换</strong>：对于每个 revolute/prismatic 关节，转换 MJCF 特定属性（<code class="docutils literal notranslate"><span class="pre">frictionloss</span></code> → <code class="docutils literal notranslate"><span class="pre">PhysxJointAPI.jointFriction</span></code>，<code class="docutils literal notranslate"><span class="pre">armature</span></code> → <code class="docutils literal notranslate"><span class="pre">PhysxJointAPI.armature</span></code>，<code class="docutils literal notranslate"><span class="pre">ref</span></code> → <code class="docutils literal notranslate"><span class="pre">DriveAPI.targetPosition</span></code>）。</p></li>
+</ol>
+<p class="sd-card-text">Mimic 关节在关节 prim 上保留为 <code class="docutils literal notranslate"><span class="pre">NewtonMimicAPI</span></code>，并由运行时直接消费；不会编写等效的 <code class="docutils literal notranslate"><span class="pre">PhysxMimicJointAPI</span></code>。</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">UrdfToMjcPhysxConversionRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将 URDF 关节属性转换为 MJCF 执行器和 PhysX 关节架构。这是针对 URDF 导入资产的多物理场转换步骤，用于创建双后端表示。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.isaac_sim.urdf_to_mjc_physx_conversion.UrdfToMjcPhysxConversionRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：无</p>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>创建物理范围</strong>：确保在默认 prim 下存在一个 <code class="docutils literal notranslate"><span class="pre">Physics</span></code> 范围，用于执行器 prim。</p></li>
+<li><p class="sd-card-text"><strong>URDF 到 PhysX 转换</strong>：对于每个 revolute/prismatic 关节，转换 URDF 属性（<code class="docutils literal notranslate"><span class="pre">effort</span></code> → <code class="docutils literal notranslate"><span class="pre">DriveAPI.maxForce</span></code>，旧版 <code class="docutils literal notranslate"><span class="pre">urdf:limit:velocity</span></code> → <code class="docutils literal notranslate"><span class="pre">PhysxJointAPI.maxJointVelocity</span></code>，<code class="docutils literal notranslate"><span class="pre">damping</span></code> → <code class="docutils literal notranslate"><span class="pre">DriveAPI.damping</span></code>，<code class="docutils literal notranslate"><span class="pre">friction</span></code> → <code class="docutils literal notranslate"><span class="pre">PhysxJointAPI.jointFriction</span></code>，<code class="docutils literal notranslate"><span class="pre">calibration</span></code> → <code class="docutils literal notranslate"><span class="pre">DriveAPI.targetPosition</span></code>）。</p></li>
+<li><p class="sd-card-text"><strong>MjcActuator 创建</strong>：创建 <code class="docutils literal notranslate"><span class="pre">MjcActuator</span></code> prim，其中包含从位置或速度控制模式的驱动刚度和阻尼派生的 <code class="docutils literal notranslate"><span class="pre">gainPrm</span></code>/<code class="docutils literal notranslate"><span class="pre">biasPrm</span></code> 数组。</p></li>
+<li><p class="sd-card-text"><strong>PhysX 到 MJC 转换</strong>：将 PhysX 关节属性转换回 MJCF 属性（<code class="docutils literal notranslate"><span class="pre">targetPosition</span></code> → <code class="docutils literal notranslate"><span class="pre">mjc:ref</span></code>，<code class="docutils literal notranslate"><span class="pre">jointFriction</span></code> → <code class="docutils literal notranslate"><span class="pre">mjc:frictionloss</span></code>，<code class="docutils literal notranslate"><span class="pre">armature</span></code> → <code class="docutils literal notranslate"><span class="pre">mjc:armature</span></code>）。</p></li>
+</ol>
+<p class="sd-card-text">Mimic 关节在关节 prim 上保留为 <code class="docutils literal notranslate"><span class="pre">NewtonMimicAPI</span></code>，并由运行时直接消费；不会编写等效的 <code class="docutils literal notranslate"><span class="pre">PhysxMimicJointAPI</span></code>。</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">PhysxToMjcConversionRule</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">将现有的 PhysX 资产转换为 MuJoCo/Newton 架构。与 <code class="docutils literal notranslate"><span class="pre">UrdfToMjcPhysxConversionRule</span></code> 不同，此规则假定 PhysX 驱动和关节属性已经编写完成，仅在其之上添加 MuJoCo/Newton 表示形式，因此对于已在 PhysX 中模拟的资产而言，这是正确的选择。</p>
+<p class="sd-card-text"><strong>完全限定类型</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.asset.transformer.rules.isaac_sim.physx_to_mjc_conversion.PhysxToMjcConversionRule</span></code></p>
+<p class="sd-card-text"><strong>参数</strong>：无。该规则使用由 transformer 框架提供的标准输入阶段、输出目录和 <code class="docutils literal notranslate"><span class="pre">destination</span></code>。</p>
+<p class="sd-card-text"><strong>执行逻辑</strong>：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>创建物理范围</strong>：确保在默认 prim 下存在一个 <code class="docutils literal notranslate"><span class="pre">Physics</span></code> 范围，用于执行器 prim。</p></li>
+<li><p class="sd-card-text"><strong>多自由度警告</strong>：遍历阶段，针对通用 D6 和球形关节发出警告，并保持其不变。转换它们会改变关节结构。</p></li>
+<li><p class="sd-card-text"><strong>关节转换</strong>：对于每个旋转/棱柱关节，应用 <code class="docutils literal notranslate"><span class="pre">MjcJointAPI</span></code>（如果缺失），编写 <code class="docutils literal notranslate"><span class="pre">mjc:*</span></code> 关节属性（<code class="docutils literal notranslate"><span class="pre">targetPosition</span></code> → <code class="docutils literal notranslate"><span class="pre">mjc:ref</span></code>，<code class="docutils literal notranslate"><span class="pre">jointFriction</span></code> → <code class="docutils literal notranslate"><span class="pre">mjc:frictionloss</span></code>，<code class="docutils literal notranslate"><span class="pre">armature</span></code> → <code class="docutils literal notranslate"><span class="pre">mjc:armature</span></code>），并创建一个 <code class="docutils literal notranslate"><span class="pre">MjcActuator</span></code>（如果不存在），其 <code class="docutils literal notranslate"><span class="pre">gainPrm</span></code>/<code class="docutils literal notranslate"><span class="pre">biasPrm</span></code> 源自 PhysX 驱动的刚度和阻尼。</p></li>
+<li><p class="sd-card-text"><strong>模仿转换</strong>：将 <code class="docutils literal notranslate"><span class="pre">PhysxMimicJointAPI</span></code> 移植到 <code class="docutils literal notranslate"><span class="pre">NewtonMimicAPI</span></code>，映射参考关节以及齿轮/偏移系数。</p></li>
+<li><p class="sd-card-text"><strong>关节根转换</strong>：为携带 <code class="docutils literal notranslate"><span class="pre">PhysxArticulationAPI</span></code> 的 prim 添加 <code class="docutils literal notranslate"><span class="pre">NewtonArticulationRootAPI</span></code>，映射 <code class="docutils literal notranslate"><span class="pre">enabledSelfCollisions</span></code> → <code class="docutils literal notranslate"><span class="pre">newton:selfCollisionEnabled</span></code>。</p></li>
+<li><p class="sd-card-text"><strong>输出</strong>：就地编辑工作阶段（管理器会持久化保存），或者当规则的 <code class="docutils literal notranslate"><span class="pre">destination</span></code> 是 USD 文件时，将转换结果写入单独的覆盖层。</p></li>
+</ol>
+</div>
+</details></div>
+</div>
+</section>
+<section id="idempotency-requirement">
+<h2>幂等性要求<a class="headerlink" href="#idempotency-requirement" title="Link to this heading">#</a></h2>
+<p>所有转换规则<strong>必须</strong>是幂等的：对同一资产运行两次完整的配置文件（第一次在原始资产上运行，第二次在第一次运行的输出上运行）必须产生完全相同的 USD 层，唯一的例外是 <code class="docutils literal notranslate"><span class="pre">doc</span></code> 元数据字段，该字段嵌入了绝对路径。该扩展包含一个幂等性测试（<code class="docutils literal notranslate"><span class="pre">test_profile_idempotency.py</span></code>），用于强制执行此要求。</p>
+<p>开发新规则时需要注意的常见非幂等性来源：</p>
+<ul class="simple">
+<li><p><strong>浮点漂移</strong> – 矩阵组合/分解的往返操作会引入噪声。将数值量化为固定的有效数字位数，或在可能的情况下直接读取规范的 xformOp 值。</p></li>
+<li><p><strong>过时的组合弧</strong> – 从变体规范中提取内容可能会在目标 prim 上留下自引用的负载或引用。剥离源中不存在的所有弧。</p></li>
+<li><p><strong>defaultPrim 不一致</strong> – 使用 <code class="docutils literal notranslate"><span class="pre">self.source_stage.GetDefaultPrim()</span></code>（组合阶段）而不是 <code class="docutils literal notranslate"><span class="pre">self.source_stage.GetRootLayer().defaultPrim</span></code>（仅根层），以便在重新转换时可靠地解析默认 prim。</p></li>
+<li><p><strong>非确定性的合并决策</strong> – 在决定是将子级合并到其父级时，需考虑由先前运行遗留的脚手架 prim（例如 <code class="docutils literal notranslate"><span class="pre">VisualMaterials</span></code> 范围、空的覆盖）。</p></li>
+<li><p><strong>多余的根级 prim</strong> – 在扁平化之后，位于 <code class="docutils literal notranslate"><span class="pre">defaultPrim</span></code> 层级之外的根级 prim（例如视口/渲染伪影）无法在基于引用的往返过程中保留。<code class="docutils literal notranslate"><span class="pre">InterfaceConnectionRule</span></code> 会自动处理此问题，将这些 prim 从基础层移动到接口层，但引入根级 prim 的自定义规则应注意此组合约束。</p></li>
+</ul>
+</section>
+<section id="rule-type-quick-reference">
+<h2>规则类型快速参考<a class="headerlink" href="#rule-type-quick-reference" title="Link to this heading">#</a></h2>
+<p>在规则配置文件中请使用这些完全限定的类型名称：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Core Routing
+isaacsim.asset.transformer.rules.core.schemas.SchemaRoutingRule
+isaacsim.asset.transformer.rules.core.properties.PropertyRoutingRule
+isaacsim.asset.transformer.rules.core.prims.PrimRoutingRule
+isaacsim.asset.transformer.rules.core.remove_schema.RemoveSchemaRule
+
+# Performance
+isaacsim.asset.transformer.rules.perf.materials.MaterialsRoutingRule
+isaacsim.asset.transformer.rules.perf.geometries.GeometriesRoutingRule
+
+# Structure
+isaacsim.asset.transformer.rules.structure.flatten.FlattenRule
+isaacsim.asset.transformer.rules.structure.variants.VariantRoutingRule
+isaacsim.asset.transformer.rules.structure.interface.InterfaceConnectionRule
+
+# Isaac Sim
+isaacsim.asset.transformer.rules.isaac_sim.robot_schema.RobotSchemaRule
+isaacsim.asset.transformer.rules.isaac_sim.make_lists_non_explicit.MakeListsNonExplicitRule
+isaacsim.asset.transformer.rules.isaac_sim.physics_joint_pose_fix.PhysicsJointPoseFixRule
+isaacsim.asset.transformer.rules.isaac_sim.merge_mesh.MergeMeshRule
+isaacsim.asset.transformer.rules.isaac_sim.mjc_to_physx_conversion.MjcToPhysxConversionRule
+isaacsim.asset.transformer.rules.isaac_sim.urdf_to_mjc_physx_conversion.UrdfToMjcPhysxConversionRule
+isaacsim.asset.transformer.rules.isaac_sim.physx_to_mjc_conversion.PhysxToMjcConversionRule
+</pre></div>
+</div>
+</section>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="asset_transformer_api.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Asset Transformer API</p>
+</div>
+</a>
+<a class="right-next" href="asset_structure.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Asset Structure</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="page-toc" id="pst-page-toc-nav">
+<ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rules-overview">Rules Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-rules">Available Rules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#idempotency-requirement">Idempotency Requirement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rule-type-quick-reference">Rule Type Quick Reference</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer="" src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="../_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Your Privacy Choices</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2023-2026, NVIDIA Corporation.
+      <br/>
+</p>
+</div>
+<div class="footer-item"><p class="last-updated">
+  Last updated on Sep 18, 2026.
+  <br/>
+</p></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="455" viewBox="95 85 545 365"
+     font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="v-arr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#d1403f"/>
+    </marker>
+    <marker id="b-arr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#3d7dd8"/>
+    </marker>
+    <marker id="t-arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#7a7a7a"/>
+    </marker>
+    <marker id="d-arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#555555"/>
+    </marker>
+    <marker id="d-arr-s" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto">
+      <path d="M8,0 L0,4 L8,8 z" fill="#555555"/>
+    </marker>
+  </defs>
+  <rect x="95" y="85" width="545" height="365" fill="#ffffff"/>
+
+  <!-- non-steering axle line = mirror line -->
+  <line x1="310" y1="95" x2="310" y2="412" stroke="#9673a6" stroke-width="1.4" stroke-dasharray="7 4"/>
+
+  <!-- radii from the ICR -->
+  <line x1="310" y1="109" x2="150" y2="300" stroke="#cccccc" stroke-width="1.2" stroke-dasharray="5 4"/>
+  <line x1="310" y1="109" x2="470" y2="300" stroke="#cccccc" stroke-width="1.2" stroke-dasharray="5 4"/>
+
+  <!-- ICR -->
+  <line x1="302" y1="109" x2="318" y2="109" stroke="#7a7a7a" stroke-width="1.8"/>
+  <line x1="310" y1="101" x2="310" y2="117" stroke="#7a7a7a" stroke-width="1.8"/>
+  <circle cx="310" cy="109" r="5" fill="none" stroke="#7a7a7a" stroke-width="1.8"/>
+  <text x="324" y="104" font-size="12.5" font-weight="bold" fill="#666666">ICR</text>
+  <text x="324" y="119" font-size="11.5" fill="#8a8a8a">lies on the non-steering (front) axle</text>
+
+  <!-- body -->
+  <rect x="110" y="262" width="240" height="76" rx="12" fill="#dae8fc" stroke="#6c8ebf" stroke-width="2"/>
+
+  <!-- axle lines -->
+  <line x1="150" y1="253" x2="150" y2="347" stroke="#6c8ebf" stroke-width="1.2" stroke-dasharray="4 3"/>
+
+  <!-- front wheels (fixed, non-steering) -->
+  <rect x="293" y="247" width="34" height="16" rx="3" fill="#4d4d4d"/>
+  <rect x="293" y="337" width="34" height="16" rx="3" fill="#4d4d4d"/>
+
+  <!-- rear wheels (steered; angles negated relative to front-steer) -->
+  <rect x="133" y="247" width="34" height="16" rx="3" fill="#4d4d4d" transform="rotate(47.7 150 255)"/>
+  <rect x="133" y="337" width="34" height="16" rx="3" fill="#4d4d4d" transform="rotate(34.2 150 345)"/>
+
+  <!-- rear axle midpoint: swings right -->
+  <circle cx="150" cy="300" r="5" fill="#888888"/>
+  <line x1="150" y1="300" x2="227" y2="364" stroke="#3d7dd8" stroke-width="2.2" marker-end="url(#b-arr)"/>
+  <text x="233" y="377" font-size="11.5" font-weight="bold" fill="#3d7dd8">rear axle swings right</text>
+
+  <!-- front axle midpoint: straight ahead -->
+  <circle cx="310" cy="300" r="5" fill="#888888"/>
+  <line x1="310" y1="300" x2="387" y2="300" stroke="#3d7dd8" stroke-width="2.2" marker-end="url(#b-arr)"/>
+  <text x="322" y="322" font-size="11.5" font-weight="bold" fill="#3d7dd8">front axle goes straight ahead</text>
+
+  <!-- +X reference and theta at the control point -->
+  <line x1="470" y1="300" x2="560" y2="300" stroke="#aaaaaa" stroke-width="1.2" stroke-dasharray="5 4"/>
+  <text x="566" y="304" font-size="11.5" fill="#999999">+X</text>
+  <path d="M 525 300 A 55 55 0 0 0 512 265" fill="none" stroke="#7a7a7a" stroke-width="1.4" marker-end="url(#t-arr)"/>
+  <text x="531" y="281" font-size="13" font-style="italic" fill="#666666">θ</text>
+
+  <!-- commanded velocity at the reflected control point -->
+  <line x1="470" y1="300" x2="547" y2="236" stroke="#d1403f" stroke-width="2.4" marker-end="url(#v-arr)"/>
+  <text x="476" y="218" font-size="12.5" font-weight="bold" fill="#d1403f">v = [v·cos θ, v·sin θ, 0]</text>
+  <text x="476" y="233" font-size="11.5" fill="#999999">the commanded setpoint</text>
+
+  <!-- reflected control point -->
+  <circle cx="470" cy="300" r="10" fill="#ffffff" stroke="#d79b00" stroke-width="2.6"/>
+  <circle cx="470" cy="300" r="3.4" fill="#d79b00"/>
+  <text x="484" y="332" font-size="13" font-weight="bold" fill="#d79b00">control_point</text>
+  <text x="484" y="347" font-size="11.5" fill="#999999">(reflected — off the vehicle)</text>
+
+  <!-- reflection dimensions -->
+  <line x1="150" y1="356" x2="150" y2="412" stroke="#cccccc" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="470" y1="312" x2="470" y2="412" stroke="#cccccc" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="150" y1="405" x2="310" y2="405" stroke="#555555" stroke-width="1.3"
+        marker-start="url(#d-arr-s)" marker-end="url(#d-arr)"/>
+  <line x1="310" y1="405" x2="470" y2="405" stroke="#555555" stroke-width="1.3"
+        marker-start="url(#d-arr-s)" marker-end="url(#d-arr)"/>
+  <text x="230" y="398" text-anchor="middle" font-size="12" font-weight="bold" fill="#555555">wheel_base (L)</text>
+  <text x="390" y="398" text-anchor="middle" font-size="12" font-weight="bold" fill="#555555">L</text>
+  <text x="310" y="432" text-anchor="middle" font-size="11.5" fill="#8a6ba0">equal offsets — the steering-axle midpoint mirrored across the non-steering axle</text>
+</svg>

@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html data-content_root="../" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>编写相机传感器 USD 资产 — Isaac Sim 中文文档</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/nvidia-sphinx-theme.css?v=933278ad" rel="stylesheet" type="text/css"/>
+<link href="../_static/custom.css?v=767de534" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/image_lightbox.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="../_static/isaacsim-design.css?v=6415189c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script defer="" src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<link as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<script rel="preload" src="../_static/modal-table.js"></script>
+<script src="../_static/documentation_options.js?v=d9c7ea69"></script>
+<script src="../_static/doctools.js?v=9bcbadda"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/external-links.js"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=65e89d2a"></script>
+<script src="../_static/isaacsim-config-selector.js?v=58930015"></script>
+<script src="../_static/image_lightbox.js"></script>
+<script src="../_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'sensors/isaacsim_sensors_camera_usd_tutorial';</script>
+<script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '../versions1.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '6.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+<script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+<script src="../_static/version-patch.js?v=3e13fdd2"></script>
+<link href="../_static/favicon.png" rel="icon"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="isaacsim_sensors_rtx.html" rel="next" title="RTX Sensors"/>
+<link href="isaacsim_sensors_camera_structured_light.html" rel="prev" title="Structured Light Cameras"/>
+<link as="image" href="https://www.nvidia.com/content/dam/1x1-00000000.png" rel="preload"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<meta content="Sep 18, 2026" name="docbuild:last-update"/>
+<script src="../_static/searchtools.js"></script>
+<script src="../_static/language_data.js"></script>
+<script src="../searchindex.js"></script>
+<!-- Google tag (gtag.js) -->
+<meta content="本教程演示如何在 USD 中为 Isaac Sim 编写可复用的相机传感器资产。该资产可在下游工作流中添加至机器人、环境和其他场景，并与 Isaac Sim 中的传感器编写 API 兼容。 — Isaac Sim 中文文档" name="description"/></head>
+<body data-default-mode="">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none" id="pst-header">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="me-auto navbar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-2" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-2" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-2" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-2" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-3" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-3" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-3" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-3" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Isaac Sim</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">What Is Isaac Sim?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/reference_architecture.html">Reference Architecture and Task Groupings</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/release_notes.html">Release Notes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/known_issues.html">Known Issues</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../migration_guides/index.html">Migration Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/index.html">Isaac Sim 6.1</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/robot_policy_examples.html">Robot Policy Examples Extension 7.0.0</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/index.html">Isaac Sim 6.0</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/migration_strategy.html">Isaac Sim 6.0 Migration Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/project_migration_audit.html">Project Migration Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/core_api_to_core_experimental.html">Core API to Core Experimental API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensor_timing_and_rtx_lidar_asset_migration.html">Sensor Timing and RTX Lidar Asset Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_camera_to_experimental_rtx.html">Camera Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_rtx_to_experimental_rtx.html">RTX Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physics_to_experimental_physics.html">Physics Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lidar_to_physics_raycast.html">PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_generic_to_physics_raycast.html">PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lightbeam_to_physics_raycast.html">PhysX Lightbeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/replicator_domain_randomization_to_experimental.html">Replicator Domain Randomization Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/mobility_gen_recordings_migration.html">MobilityGen Package and Recordings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_control_extensions_to_experimental.html">Manipulator and Wheeled Robot Extension Split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_motion_to_experimental_motion_generation.html">Robot Motion Generation APIs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/cortex_to_open_source_workflows.html">Cortex behavior workflow migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_setup_wizard_and_mesh_merge.html">Robot Wizard and Mesh Merge Tool Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_asset_path_migration.html">Robot Asset Path Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/urdf_mjcf_importer_exporter_pipeline.html">URDF, MJCF, and Robot Asset Pipeline Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_omnigraph_migration.html">ROS 2 OmniGraph Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_sensor_graph_migration.html">ROS 2 Sensor Graph Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_workspace_package_migration.html">ROS 2 Workspace Package Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/benchmark_services_migration.html">Benchmark Services Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/removed_tools_and_replacements.html">Removed Tools and Replacements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/extension_template_generator_to_cli_templates.html">Extension Template Generator to CLI Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ext_isaacsim_replicator_agent_migration_guide.html">Replicator Agent (IRA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/surface_gripper_bindings_import.html">Surface Gripper Bindings</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/index.html">Isaac Sim 4.5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/extensions_renaming.html">Renaming Extensions in Isaac Sim 4.5</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../installation/index.html">Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/requirements.html">Isaac Sim Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/download.html">Download Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/accessing_assets.html">Accessing assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_workstation.html">Workstation Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_container.html">Container Installation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../installation/install_cloud.html">Cloud Deployment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_launchable.html">Isaac Launchable Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_brev.html">NVIDIA Brev Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_aws.html">AWS Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_azure.html">Azure Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_gcp.html">Google Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_tencent.html">Tencent Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_alibaba.html">Alibaba Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_volcano.html">Volcano Engine Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_baidu.html">Baidu Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_remote_setup.html">Remote Workstation Deployment</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/manual_livestream_clients.html">Livestream Clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_python.html">Python Environment Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_faq.html">Setup Tips</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/help.html">Help &amp; FAQ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/isaac_sim_forums.html">Isaac Sim Developer Resources</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview/faq_index.html">FAQ</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../overview/troubleshooting.html">Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../assets/usd_assets_overview.html">Isaac Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_robots.html">Robot Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_wheeled.html">Wheeled Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_manipulator.html">Manipulator Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_humanoid.html">Humanoid Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_quadruped.html">Quadruped Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_holonomic.html">Holonomic Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_aerial.html">Aerial Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_isaac_sim_simple.html">Isaac Sim Simple Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_mobile_manipulator.html">Mobile Manipulator Robot Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_sensors.html">Sensor Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_camera_depth_sensors.html">Camera Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_depth_sensors.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nonvisual_sensors.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_radar_sensors.html">RTX Radar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_tactile_sensors.html">Tactile Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_imu_sensors.html">IMU Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_props.html">Prop Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_environments.html">Environment Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_third_party.html">Third-Party USD Assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_real_to_sim_index.html">Real to Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nurec.html">Neural Volume Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/nurec_utils.html">NuRec Rendering Utilities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/asset_utilities/index.html">Asset Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/open_usd.html">OpenUSD Fundamentals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/usd_tools.html">USD Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_omni_warehouse_creator.html">Warehouse Creator Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_isaacsim_asset_gen_conveyor.html">Conveyor Belt Utility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/tutorial_static_assets.html">Static Warehouse Assets</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/quickstart_index.html">Isaac Sim Basics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim.html">Isaac Sim Basic Usage Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim_robot.html">Basic Robot Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/python_scripting_concepts.html">Standalone vs Interactive Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/core_api_overview.html">Core API Overview</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../core_api_tutorials/index.html">Core API Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_world.html">Hello World</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_robot.html">Hello Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_manipulator.html">Adding a Manipulator Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_multiple_robots.html">Adding Multiple Robots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_multiple_tasks.html">Multiple Robot Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_props.html">Adding Props</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/tutorial_list.html">Tutorial Table</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/menu_examples.html">Interactive Examples Reference Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/standalone_examples_list.html">Standalone Examples Reference List</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../learn/gallery_view.html">Gallery View</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../gui/index.html">GUI</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_user_interface.html">User Interface Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_keyboard_shortcuts.html">Keyboard Shortcuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_create.html">Create Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_replicator.html">Replicator Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/preferences.html">Preferences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/selection-modes.html">Selection Modes</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/browsers.html">Browsers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/content_browser.html">Content Browser</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/material-browser.html" title="(in Omniverse Extensions)"><span>Material Browser</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/asset-browser.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">NVIDIA Asset Browser</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/layouts.html">Layout Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/intro_to_usd.html">Working with USD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/tutorial_search_extension.html">SimReady Content Browser Search Extension Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/build_and_simulate_robots.html">Setup and Simulate Robots</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../importer_exporter/importers_exporters.html">Importers and Exporters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_mjcf.html">MJCF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_onshape.html" title="(in Omniverse Extensions)"><span>Onshape importer</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_cad-converter.html" title="(in Omniverse Extensions)"><span>CAD Converter</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_isaac_shapenet.html">ShapeNet Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/formats.html">Formats</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../importer_exporter/importer_exporter_tutorials.html">Importer and Exporter Tutorials Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_urdf.html">Tutorial: Import URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/export_urdf.html">Tutorial: Export URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_mjcf.html">Tutorial: Import MJCF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/shapenet_importer.html">Tutorial: ShapeNet Importer</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_setup/index.html">Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/basic_stage_and_robot_setup.html">Basic Stage and Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_environment_setup.html">Stage Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_assemble_robot.html">Assemble a Simple Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_simple_robot.html">Articulate a Basic Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_camera_sensors.html">Add Camera and Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/rig_mobile_robot.html">Rig a Mobile Robot</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/setup_a_manipulator.html">Setup a Manipulator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_import_assemble_manipulator.html">Setup a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_configure_manipulator.html">Configure a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_generate_robot_config.html">Generate Robot Configuration File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_pickplace_example.html">Pick and Place Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/rig_closed_loop_structures.html">Setup a Closed-Loop Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_rig_legged_robot.html">Setup a Legged Robot</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../openusd_tuning_tutorials/index.html">Setup a Dexterous Hand in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/setup.html">Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_01_asset_structure.html">Import Robot and USD Asset Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_02_inspect_asset.html">Inspect Asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_03_collider_pairs.html">Collider Pairs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_04_joint_drive_tuning.html">Joint Drive Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_05_joint_gains_tuning.html">Joint Gains Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/practice.html">Using the Dexterous Hand in Practice</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/tuning_and_optimization.html">Tuning and Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/joint_tuning.html">Tuning Joint Drive Gains</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/optimizing_asset.html">Asset Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_franka_system_identification.html">Identify Franka System Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_system_identification_simsim.html">Validate Identification with Sim-to-Sim Recovery</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_tutorials.html">Asset Transformer Tutorial Series</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/editing_tools.html">Editor Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_poser.html">Robot Poser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_util_merge_mesh.html">Mesh merge tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_gain_tuner.html">Gain Tuner Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_sysid.html">System Identification Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_collision_detector.html">Robot Self-Collision Detector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/assemble_robots.html">Robot Assembler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_surface_gripper.html">Surface Gripper Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/grasp_editor.html">Grasp Editor</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/inspector_tools.html">Inspector Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_inspector.html">Robot Inspector Window</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/joint_inspector.html">Joint Inspector</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/newton_robot_setup_tips.html">Robot Setup Tips for Newton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/troubleshooting.html">Robot Setup Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_validation.html">Asset Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer.html">Asset Transformer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_api.html">Asset Transformer API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_rules.html">Asset Transformer Rules Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_structure.html">Asset Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/robot_schema.html">Robot Schema</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_simulation/index.html">Robot Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/articulation_controller.html">Articulation Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/mobile_robot_controllers.html">Mobile Robot Controllers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_setup_virtual_gantry.html">Virtual Gantry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_tips.html">Robot Simulation Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_core_concepts.html">Useful Links</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_motion_experimental/index.html">Robot Motion</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_motion_experimental/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../motion_generation/index.html">Motion Generation (Experimental)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/scene_interaction.html">Scene Interaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/mobile_robot_control_example.html">Controllers and the RobotState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/trajectory_planning.html">Trajectory Planning and Execution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../controllers/index.html">Controllers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_differential_drive.html">Differential Drive Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_ackermann.html">Ackermann Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_holonomic.html">Holonomic Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cumotion/index.html">cuMotion Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_xrdf_editor.html">Generating an XRDF file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_world_interface.html">cuMotion World Interface Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_rmpflow.html">RMPflow Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_graph_planner.html">Graph-Based Motion Planner Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_generator.html">Trajectory Generator Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_optimizer.html">Trajectory Optimizer Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../pink/index.html">PINK Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_ik_controller.html">IK Controller Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_multi_task.html">Multi-Task Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples/manipulation_franka_pick_place.html">Franka Pick and Place Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../state_machine_tutorials/tutorial_state_machines.html">State Machines for Robot Behavior</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../manipulators/motion_generation_overview.html">(Deprecated) Robot Motion Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/concepts/index.html">Motion Generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_robot_description_editor.html">Lula Robot Description and XRDF Editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_rmpflow.html">Lula RMPflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_rrt.html">Lula RRT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_kinematics.html">Lula Kinematics Solver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_trajectory_generator.html">Lula Trajectory Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_configure_rmpflow_denso.html">Configuring RMPflow for a New Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_curobo.html">cuRobo and cuMotion</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../newton_actuators_tutorials/index.html">Newton Actuators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_python.html">Set Up Actuators from Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_usd.html">Author and Parse Actuators from USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_ui.html">Author Actuators from UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_omnigraph.html">Drive an Actuated Robot from OmniGraph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_tips.html">Tips</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../physics/index.html">Physics Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../physics/simulation_fundamentals.html">Physics Simulation Fundamentals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/new_physics_engine.html">Physics Data Flow and Engine Integration</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../physics/newton_physics.html">Newton Physics Backend</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact.html">Hydroelastic Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact_walkthrough.html">Configure Hydroelastic Contact for a Nut-and-Bolt Assembly</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_resources.html">Omniverse Physics and PhysX Limitations</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/sim_management.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Simulation Management</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/joint_inspector.html">Physics Inspector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_static_collision.html">Physics Static Collision Extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/ext_isaacsim_inspect_physics.html">Simulation Data Visualizer</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/physics_debug_wnd.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Debug Window</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../learn/sensors_and_physics.html">Sensor Simulation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="isaacsim_sensors_camera.html">Camera Sensors</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_camera_depth.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_camera_structured_light.html">Structured Light Cameras</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Authoring a Camera Sensor USD Asset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="isaacsim_sensors_rtx.html">RTX Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_rtx_lidar.html">RTX Lidar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_rtx_radar.html">RTX Radar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_rtx_acoustic.html">RTX Acoustic Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_rtx_annotators.html">RTX Sensor Annotators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_rtx_materials.html">RTX Sensor Non-Visual Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_multitick_rendering.html">Multi-Tick Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_rtx_custom.html">Creating Custom RTX Sensor Profiles</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="isaacsim_sensors_physics.html">Physics-based Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_physics_articulation_force.html">Articulation Joint Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_physics_contact.html">Contact Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_physics_effort.html">Effort Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_physics_imu.html">IMU Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_physics_joint_state.html">Joint State Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isaacsim_sensors_physics_raycast.html">Physics Raycast Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/sensor_schema.html">Sensor Schema</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="isaacsim_sensors_physx.html">(Deprecated) PhysX SDK Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="isaacsim_sensors_physx_generic.html">(Deprecated) PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="isaacsim_sensors_physx_lidar.html">(Deprecated) PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="isaacsim_sensors_physx_lightbeam.html">(Deprecated) PhysX Lightbeam Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="isaacsim_sensors_physx_proximity.html">(Deprecated) Proximity Sensor</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/develop_and_integrate.html">Develop and Integrate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../development_tools/index.html">Development Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/workflows.html">Development Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/vscode.html">Visual Studio Code (VS Code)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/python_server.html">Python Server (Remote Code Execution)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/jupyter_notebook.html">Jupyter Notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/omniverse_script_editor.html">Omniverse Script Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/isaac_sim_mcp.html">Isaac Sim MCP Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/agent_skills.html">Agent Skills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/carb_settings.html">Modify Carb Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/updating_extensions.html">Adding and Updating Extensions Guide</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../python_scripting/index.html">Python Scripting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/manual_standalone_python.html">Python Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/environment_setup.html">Scene Setup Snippets and Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/util_snippets.html">Util Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/robots_simulation.html">Robot Simulation Snippets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../omnigraph/index.html">OmniGraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/interface.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Interface</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/getting-started/core_concepts.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Core Concepts</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_shortcuts.html">Commonly Used OmniGraph Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_python_nodes.html">Custom Python Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_cpp_nodes.html">Custom C++ Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_ipc_nodes.html">Building Custom IPC OmniGraph Nodes</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Additional Resources</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/tutorials/gentle_intro.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Basic OmniGraph Tutorial</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_tutorial.html">Isaac Sim OmniGraph Tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_scripting.html">OmniGraph via Python Scripting Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../external_interfaces/index.html">External Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../external_interfaces/tutorial_zmq_carter_warehouse.html">ZeroMQ Bridge</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/templates_index.html">Templates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/cli_extension_templates.html">CLI Extension Templates</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../utilities/extension_template_generator.html">(Deprecated) Extension Template Generator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../utilities/extension_templates_tutorial.html">Extension Template Generator Explained</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/vscode_extension_template_generator.html">Advanced Extension Template Generator from VS Code</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/debugging/index.html">Debugging and Profiling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_isaacsim_util_debug_draw.html">Debug Drawing Extension API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_omni_kit_commands.html">Omniverse Commands Tool Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/omniverse_tools.html">Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/tutorial_advanced_python_debugging.html">Debugging With Visual Studio Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/profiling_performance.html">Profiling Performance Using Tracy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../digital_twin/index.html">Other Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/warehouse_logistics/logistics_tutorial_cuopt.html">NVIDIA cuOpt</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_1_overview.html">(Deprecated) Isaac Cortex: Overview</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_2_decider_networks.html">Decider networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_3_example_peck_games.html">Behavior Examples: Peck Games</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_4_franka_block_stacking.html">Walkthrough: Franka Block Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_5_ur10_bin_stacking.html">Walkthrough: UR10 Bin Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_7_cortex_extension.html">Building Cortex Based Extensions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/ext_isaacsim_asset_generator_occupancy_map.html">Occupancy Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/rtsp_camera_streaming.html">Live Camera Streaming over RTSP</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../workflows/top_5/index.html">Top 5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_putting_it_all_together.html">Bring a new mobile base and navigate with ROS2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_setup_tutorials/tutorial_manipulator_workflow.html">Manipulator workflow: URDF to pick and place</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_mobility_gen.html">Data Generation with MobilityGen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_cosmos.html">Cosmos Synthetic Data Generation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow.html">Humanoid workflow: Train locomotion in AGILE and deploy in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_prepare_usd.html">Stage 1: Prepare the humanoid USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_create_task.html">Stage 2: Create a custom humanoid task in AGILE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_configure_mdp.html">Stage 3: Configure and validate the locomotion MDP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_train.html">Stage 4: Train, evaluate, and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_deploy.html">Stage 5: Deploy the policy</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../isaac_lab_tutorials/index.html">Deploying Policies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_policy_deployment.html">Deploying policies in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_policy_example.html">Reinforcement Learning Policies Examples in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_instanceable_assets.html">Instanceable Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ros2_tutorials/index.html">ROS 2</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/overview/index.html">Overview and Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/overview/ros2_reference_architecture.html">ROS 2 Reference Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/tutorial_series/index.html">ROS 2 Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_turtlebot.html">URDF Import: Turtlebot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_drive_turtlebot.html">Driving TurtleBot using ROS 2 Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_clock.html">ROS 2 Clock</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtf.html">ROS 2 Publish Real Time Factor (RTF)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_camera.html">ROS 2 Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtx_lidar.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_tf.html">ROS 2 Transform Trees and Odometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_publish_rate.html">ROS 2 Setting Publish Rates</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/index.html">Advanced Sensor Topics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_noise.html">Add Noise to Camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_publishing.html">Publishing Camera’s Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_compressed_image.html">ROS 2 Compressed Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_rtx_radar.html">RTX Radar Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/robot_control/index.html">Robot Control</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_manipulation.html">ROS 2 Joint Control: Extension Python Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_ackermann_controller.html">ROS 2 Ackermann Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_rl_controller.html">Running a Reinforcement Learning Policy through ROS 2 and Isaac Sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation.html">ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_multi_navigation.html">Multiple Robot ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation_heightmap.html">ROS 2 Navigation with Heightmap Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_moveit.html">MoveIt 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_control.html">ROS 2 Control</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/index.html">Bridge Configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_python.html">ROS 2 Bridge in Standalone Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_launch.html">ROS 2 Launch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_simulation_control.html">ROS 2 Simulation Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_qos.html">ROS 2 Quality of Service (QoS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_auto_namespace.html">Automatic ROS 2 Namespace Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_name_override.html">NameOverride Attribute</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/index.html">Custom Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_publisher_subscriber.html">ROS 2 Generic Publisher and Subscriber</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_server_client.html">ROS 2 Generic Server and Client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_prim_service.html">ROS 2 Service for Manipulating Prims Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_message_python.html">ROS 2 Python Custom Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_omnigraph_node_python.html">ROS 2 Python Custom OmniGraph Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_omnigraph_cpp_node.html">ROS 2 Custom C++ OmniGraph Node</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/urdf_import_export/index.html">URDF Import and Export</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/help/index.html">Help and Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/ros2_faq.html">ROS 2 Frequently Asked Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../nvidia_isaac_ros/isaac_ros_tutorials.html">NVIDIA Isaac ROS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../synthetic_data_generation/index.html">Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../replicator_tutorials/index.html">Perception Data Generation (Replicator)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_recorder.html">Synthetic Data Recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_getting_started.html">Getting Started Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_sdg_workflows.html">SDG Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_scene_based_sdg.html">Scene Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_object_based_sdg.html">Object Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_infinigen_sdg.html">Environment Based Synthetic Dataset Generation with Infinigen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_amr_navigation.html">Randomization in Simulation – AMR Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_ur10_palletizing.html">Randomization in Simulation – UR10 Palletizing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_augmentation.html">Data Augmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_custom_og_randomizer.html">Custom Replicator Randomization Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_modular_scripting.html">Modular Behavior Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_randomizers.html">Randomization Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_snippets.html">Useful Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../action_and_event_data_generation/index.html">Action and Event Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_agent.html">Actor Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration.html">Configuration File Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_sample_configs.html">Sample Configs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_anim_robot.html">Animated Robot Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration_editor.html">Configuration Editor API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_custom_writer_example.html">Example: RTSP Streaming with CustomWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_visual_noise_example.html">Visual Noise and Image Degradation Effects Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_behavior_tree_gen.html">Behavior Tree Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/context_files_and_schemas.html">Context Files and Metadata Schemas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/required_inputs.html">Required inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/example_walkthrough.html">Example Walkthrough</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/three_api_functions.html">Using the API Functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_object.html">Object Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/ext_chat_iro.html">Chat IRO: Natural Language Interface for Isaac Sim Replicator Object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/setting.html">Setting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable.html">Mutable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/camera.html">Camera</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/geometry.html">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/force.html">Force</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/light.html">Light</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable_attribute.html">Mutable Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/transformation.html">Transformation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/harmonizer.html">Harmonizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/empty_space_detection.html">Empty Space Detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/macro.html">Macro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/distribution_visualizer.html">Distribution Visualizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/randomization_dependency.html">Randomization Dependency: Incremental Examples</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_caption.html">VLM Scene Captioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_incident.html">Physical Space Event Generation</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_sensors_rtx_placement.html">RTX Sensors Placement and Calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_placement.html">Camera Placement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_calibration.html">Camera Calibration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/example_event_reactive_actors.html">Reacting to Events with Actor Triggers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_omni_metropolis_pipeline.html">Omni Metropolis Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_telemetry.html">Telemetry and Performance Tracking</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_grasping_sdg.html">Grasping Synthetic Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_teleop_sdg.html">Teleoperation Synthetic Data Generation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_python_api.html">API Documentation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference Information</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/community_highlights.html">Community Project Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_conventions.html">Isaac Sim Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/rendering_modes.html">Rendering modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/sim_performance_optimization_handbook.html">Isaac Sim Performance Optimization Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/benchmarks.html">Isaac Sim Benchmarks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../omniverse_usd/index.html">Omniverse and USD</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/building_cpp_usd_plugins.html">Building C++ USD Plugins Against the Standalone Installer</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/data-collection.html">Data Collection &amp; Usage</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/legal.html">Licenses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses-isaac-sim.html">Isaac Sim License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-additional.html">Isaac Sim Additional Software and Materials License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-webrtc-streaming-client.html">Isaac Sim WebRTC Streaming Client License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/NVIDIA_Omniverse_License_Agreement.html">Omniverse License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licensing-notices-disclaimers.html">Licensing Disclaimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses.html">Other Licenses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/redistributable-ov-software.html">Redistributable Omniverse Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-faq.html">License FAQ</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="../index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li class="breadcrumb-item"><a class="nav-link" href="../learn/sensors_and_physics.html">Sensor Simulation</a></li>
+<li class="breadcrumb-item"><a class="nav-link" href="isaacsim_sensors_camera.html">Camera Sensors</a></li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Authoring a Camera Sensor USD Asset</span></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="header-article-items__end">
+<div class="header-article-item">
+<div class="header-article-item">
+<div class="d-flex justify-content-end w-100">
+<a href="https://surveys.hotjar.com/4904bf71-6484-47a7-83ff-4715cceabdb5" id="openPopupButton">Is this page helpful?</a>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="authoring-a-camera-sensor-usd-asset">
+<span id="isaacsim-sensors-camera-usd-tutorial"></span><h1>编写相机传感器 USD 资产<a class="headerlink" href="#authoring-a-camera-sensor-usd-asset" title="Link to this heading">#</a></h1>
+<div class="isaacsim-page-type-tag sd-mb-3 docutils">
+<span class="isaacsim-card-tag isaacsim-card-tag--neutral isaacsim-card-tag--kind-category">Tutorial</span></div>
+<p>本教程演示如何在 USD 中为 Isaac Sim 编写可复用的相机传感器资产。该资产可在下游工作流中添加至机器人、环境和其他场景，并与 Isaac Sim 中的传感器编写 API 兼容。</p>
+<p>生成的 USD 资产将包含 Camera prim、RenderProduct prim 和 RenderVar prim。它将定义 OpenCV 鱼眼镜头畸变、传感器采样率、支持的分辨率和输出，以及用于根据所选分辨率切换采样率的 USD 变体集。</p>
+<section id="learning-objectives">
+<h2>学习目标<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<p>本教程详细介绍如何：</p>
+<ul class="simple">
+<li><p>创建相机、渲染产品和渲染变量 prim。</p></li>
+<li><p>编写相机、渲染产品和渲染变量之间的关系。</p></li>
+<li><p>应用并配置 OpenCV 鱼眼镜头畸变 API 模式。</p></li>
+<li><p>编写传感器采样率。</p></li>
+<li><p>在变体集中存储多个传感器配置。</p></li>
+<li><p>保存资产，验证其结构，并确认其得到保留。</p></li>
+</ul>
+</section>
+<section id="prerequisites">
+<h2>先决条件<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>请阅读<a class="reference internal" href="isaacsim_sensors_camera.html#isaacsim-sensors-camera"><span class="std std-ref">相机传感器简介</span></a>。</p></li>
+<li><p>熟悉<a class="reference internal" href="../development_tools/omniverse_script_editor.html#isaac-sim-app-omniverse-script-editor"><span class="std std-ref">Script Editor</span></a>，以便在 GUI 中运行 Python API。</p></li>
+</ul>
+</section>
+<section id="overview">
+<h2>概述<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>本教程以单一工作流的形式组织，包含三个连续阶段：</p>
+<ol class="arabic simple">
+<li><p><strong>设置相机和测试环境：</strong>创建传感器根 <code class="docutils literal notranslate"><span class="pre">Xform</span></code>，添加相机，加载测试环境，配置相机属性，并在 GUI 中应用镜头畸变。</p></li>
+<li><p><strong>在 USD 中编写传感器：</strong>使用 Script Editor 创建渲染产品、渲染变量、关系、传感器 Tick 速率和变体。</p></li>
+<li><p><strong>验证并保存资产：</strong>保存资产，运行 RGB 传感器验证器，并在新场景中验证结果。</p></li>
+</ol>
+</section>
+<section id="set-up-the-camera-and-test-environment">
+<h2>设置相机和测试环境<a class="headerlink" href="#set-up-the-camera-and-test-environment" title="Link to this heading">#</a></h2>
+<section id="create-the-sensor-root-xform">
+<h3>创建传感器根 <code class="docutils literal notranslate"><span class="pre">Xform</span></code><a class="headerlink" href="#create-the-sensor-root-xform" title="Link to this heading">#</a></h3>
+<p>从新的空舞台开始（<strong>File &gt; New</strong>），然后创建一个单独的根 <code class="docutils literal notranslate"><span class="pre">Xform</span></code>（一个变换 <a class="reference internal" href="../reference_material/reference_glossary.html#isaac-sim-glossary-prim"><span class="std std-ref">prim</span></a>）以包含整个传感器。将传感器分组到一个 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 下并将其设为舞台的默认 prim，可使完成的资产在被引用到其他舞台时拥有清晰的入口点。</p>
+<ol class="arabic simple">
+<li><p>在 <strong>Stage</strong> 面板内右键单击（如果未打开，请通过 <strong>Window &gt; Stage</strong> 打开），然后选择 <strong>Create &gt; Xform</strong>，或者从顶部菜单栏点击 <strong>Create &gt; Xform</strong>。一个新的 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 会被添加到舞台中，默认位于 <code class="docutils literal notranslate"><span class="pre">/World</span></code> prim 下。</p></li>
+<li><p>将新的 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 重命名为 <code class="docutils literal notranslate"><span class="pre">CameraSensor</span></code>：在 <strong>Stage</strong> 面板中双击其名称（或右键单击并选择 <strong>Rename</strong>），然后输入 <code class="docutils literal notranslate"><span class="pre">CameraSensor</span></code>。</p></li>
+<li><p>将 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 设为顶层 prim，使其成为该资产（asset）的根节点。如果它是在 <code class="docutils literal notranslate"><span class="pre">/World</span></code> 下创建的，请选中它，打开 <strong>Edit</strong> 菜单，然后单击 <strong>Unparent</strong>。确认其在 <strong>Property</strong> 面板中的路径现在为 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> 而不是 <code class="docutils literal notranslate"><span class="pre">/World/CameraSensor</span></code>。</p></li>
+<li><p>右键单击 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> prim，然后选择 <strong>Set as Default Prim</strong>。</p></li>
+</ol>
+<p>在后续步骤中创建的所有传感器 prim 都将放置在此 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 下。</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/isim_6.1_full_tut_gui_camera_sensor_root_default_prim.png"><img alt="../_images/isim_6.1_full_tut_gui_camera_sensor_root_default_prim.png" src="../_images/isim_6.1_full_tut_gui_camera_sensor_root_default_prim.png" style="width: 700px;"/>
+</a>
+<figcaption><p><span class="caption-text">Stage 树显示顶层 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 已设置为 Stage 的默认 prim。</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p></figcaption>
+</figure>
+</section>
+<section id="create-a-camera">
+<h3>创建相机<a class="headerlink" href="#create-a-camera" title="Link to this heading">#</a></h3>
+<p>将相机作为传感器根节点 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 的子节点添加。此操作遵循与 <a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_camera_sensors.html#isaac-sim-app-tutorial-gui-camera-sensors"><span class="std std-ref">教程 4：向机器人添加相机和传感器</span></a> 相同的工作流程。</p>
+<ol class="arabic simple">
+<li><p>在 <strong>Stage</strong> 面板中，选中 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> <code class="docutils literal notranslate"><span class="pre">Xform</span></code>，以便在其下方创建新相机。</p></li>
+<li><p>从菜单栏中，选择 <strong>Create &gt; Camera</strong>。相机将出现在 <strong>Stage</strong> 面板中，视口中将显示一个表示相机视图的灰色线框。</p></li>
+<li><p>将相机重命名为 <code class="docutils literal notranslate"><span class="pre">CameraRGB</span></code>。这将有助于我们区分您正在创建的相机和从仓库场景加载的相机。</p></li>
+</ol>
+<p>您将在下一步加载仓库场景后对准相机。</p>
+</section>
+<section id="load-the-test-environment">
+<h3>加载测试环境<a class="headerlink" href="#load-the-test-environment" title="Link to this heading">#</a></h3>
+<p>本教程使用 warehouse USD 作为临时测试环境，提供可见几何体用于瞄准和验证相机。它不属于最终的传感器资产，并在保存前移除。</p>
+<ol class="arabic simple">
+<li><p>如果内容浏览器尚未打开，请打开它（<strong>Window &gt; Browsers &gt; Content</strong>）。</p></li>
+<li><p>在 <strong>Stage</strong> 面板中，选择 <code class="docutils literal notranslate"><span class="pre">/World</span></code> 或您希望加载 warehouse 的顶层环境 prim。</p></li>
+<li><p>在内容浏览器中，打开 <strong>Isaac Sim</strong> &gt; <strong>Environments</strong> &gt; <strong>Simple_Warehouse</strong>，然后将 <code class="docutils literal notranslate"><span class="pre">warehouse.usd</span></code> 拖入视口以将其添加到当前 stage。加载后，请确认视口中可见 warehouse。</p></li>
+<li><p>选择 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> 根 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 并设置其变换，使相机朝向 warehouse。在根节点（而非相机）上编辑姿态可使相机保持在资产原点，因此下游场景只需变换根节点即可放置整个传感器。作为参考，本教程中的示例图像在 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 上使用了以下值：</p>
+<ul class="simple">
+<li><p><strong>Translate:</strong> X = <code class="docutils literal notranslate"><span class="pre">0.0</span></code>, Y = <code class="docutils literal notranslate"><span class="pre">-2.72255</span></code>, Z = <code class="docutils literal notranslate"><span class="pre">1.98124</span></code></p></li>
+<li><p><strong>Orient:</strong> X = <code class="docutils literal notranslate"><span class="pre">90.0</span></code>, Y = <code class="docutils literal notranslate"><span class="pre">60.127</span></code>, Z = <code class="docutils literal notranslate"><span class="pre">0.0</span></code></p></li>
+<li><p><strong>Scale:</strong> X = <code class="docutils literal notranslate"><span class="pre">1.0</span></code>, Y = <code class="docutils literal notranslate"><span class="pre">1.0</span></code>, Z = <code class="docutils literal notranslate"><span class="pre">1.0</span></code></p></li>
+</ul></li>
+<li><p>点击视口左上角的 <strong>Perspective</strong> 并选择 <strong>Cameras &gt; CameraRGB</strong>，将视口切换为通过相机查看。确认相机可以看到场景。</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>相机图标默认在视口中隐藏。要查看相机图标，请前往视口顶部的 <strong>eye</strong> 菜单，并选择 <strong>Show By Type &gt; Cameras</strong>。</p>
+</div>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/isim_6.1_full_tut_viewport_camera_sensor_warehouse_view.png"><img alt="../_images/isim_6.1_full_tut_viewport_camera_sensor_warehouse_view.png" src="../_images/isim_6.1_full_tut_viewport_camera_sensor_warehouse_view.png" style="width: 600px;"/>
+</a>
+<figcaption><p><span class="caption-text">使用示例变换值，通过 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/CameraRGB</span></code> 查看仓库测试环境。</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p></figcaption>
+</figure>
+</section>
+<section id="configure-camera-properties">
+<h3>配置相机属性<a class="headerlink" href="#configure-camera-properties" title="Link to this heading">#</a></h3>
+<p>在 Stage 树中选择相机 prim。在 <strong>Property</strong> 面板中，配置传感器所需的相机属性。对于本教程，您可以使用如下值：</p>
+<ul class="simple">
+<li><p><strong>Focal Length（焦距）：</strong> <code class="docutils literal notranslate"><span class="pre">24</span></code>。这控制视场角；较小的值提供更宽的视野。</p></li>
+<li><p><strong>Horizontal Aperture（水平光圈）：</strong> <code class="docutils literal notranslate"><span class="pre">20.955</span></code> 和 <strong>Vertical Aperture（垂直光圈）：</strong> <code class="docutils literal notranslate"><span class="pre">15.2908</span></code>。传感器尺寸和焦距共同决定视场角。</p></li>
+<li><p><strong>Clipping Range（裁剪范围）：</strong> <code class="docutils literal notranslate"><span class="pre">(0.1,</span> <span class="pre">100000)</span></code>。这些是相机渲染的近距和远距。</p></li>
+<li><p><strong>Projection（投影）：</strong> <code class="docutils literal notranslate"><span class="pre">perspective</span></code>。</p></li>
+</ul>
+<p>对于这个简单的演示，这些值并不匹配经过校准的物理相机，而是为了产生清晰的相机输出而选择的。</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/isim_6.1_full_tut_gui_camera_sensor_camera_properties.png"><img alt="../_images/isim_6.1_full_tut_gui_camera_sensor_camera_properties.png" src="../_images/isim_6.1_full_tut_gui_camera_sensor_camera_properties.png" style="width: 320px;"/>
+</a>
+<figcaption><p><span class="caption-text"><strong>Property</strong> 面板显示已配置的相机镜头、光圈、投影和裁剪值。</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p></figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>在 <code class="docutils literal notranslate"><span class="pre">Camera</span></code> prims 上，焦距和光圈以十分之一舞台单位（tenths of stage units）而非舞台单位定义。有关这些光学参数的完整详细信息，请参阅 <a class="reference internal" href="isaacsim_sensors_camera.html#isaacsim-sensors-camera"><span class="std std-ref">Camera Sensors</span></a>。</p>
+</div>
+</section>
+<section id="add-lens-distortion">
+<h3>添加镜头畸变<a class="headerlink" href="#add-lens-distortion" title="Link to this heading">#</a></h3>
+<p>Omniverse 相机支持对多种物理镜头畸变进行建模。有关支持的镜头畸变模型的详细信息，请参阅 <a class="reference internal" href="isaacsim_sensors_camera.html#isaacsim-sensors-camera-calibration-and-camera-lens-distortion-models"><span class="std std-ref">Calibration and Camera Lens Distortion Models</span></a>。在本示例中，您将应用 OpenCV 鱼眼镜头畸变模型。</p>
+<p>在 <strong>Stage</strong> 窗口中，选择 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/CameraRGB</span></code> prim，然后在 <strong>Property</strong> 面板中点击 <strong>Add &gt; Edit API Schema</strong> 并选择 <code class="docutils literal notranslate"><span class="pre">OmniLensDistortionOpenCvFisheyeAPI</span></code>。有关详细的 UI 工作流程，请参阅 <a class="reference external" href="https://docs.omniverse.nvidia.com/materials-and-rendering/latest/cameras.html#omnilensdistortion-schemata">How To Add Schemata to Cameras</a>。如果 <strong>Edit API Schema</strong> 未作为选项出现，请打开 <strong>Extensions</strong> 窗口（<strong>Window &gt; Extensions</strong>），搜索 <code class="docutils literal notranslate"><span class="pre">omni.kit.widget.schema_api</span></code>（<strong>Property Window Edit API Schema</strong>）并启用它。</p>
+<p>应用该 schema 后，其属性将显示在 <strong>Property</strong> 面板的 <strong>Extra Properties</strong> 部分下。向下滚动到该部分以找到畸变属性（<code class="docutils literal notranslate"><span class="pre">fx</span></code>、<code class="docutils literal notranslate"><span class="pre">fy</span></code>、<code class="docutils literal notranslate"><span class="pre">cx</span></code>、<code class="docutils literal notranslate"><span class="pre">cy</span></code> 以及 <code class="docutils literal notranslate"><span class="pre">k1</span></code>–<code class="docutils literal notranslate"><span class="pre">k4</span></code>）并在那里进行编辑。</p>
+<p>为了演示目的，请将畸变属性设置为略偏离默认值的数值，以便应用鱼眼畸变，例如：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fx</span></code>: <code class="docutils literal notranslate"><span class="pre">905</span></code> 和 <code class="docutils literal notranslate"><span class="pre">fy</span></code>: <code class="docutils literal notranslate"><span class="pre">805</span></code>。这些是以像素为单位的焦距。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cx</span></code>: <code class="docutils literal notranslate"><span class="pre">1030</span></code> 和 <code class="docutils literal notranslate"><span class="pre">cy</span></code>: <code class="docutils literal notranslate"><span class="pre">515</span></code>。这是以像素为单位的主点。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">k1</span></code>：<code class="docutils literal notranslate"><span class="pre">0.00247</span></code>（将 <code class="docutils literal notranslate"><span class="pre">k2</span></code>–<code class="docutils literal notranslate"><span class="pre">k4</span></code> 保持为其默认 <code class="docutils literal notranslate"><span class="pre">0</span></code>）。这些是径向畸变系数。</p></li>
+</ul>
+<p>对于已校准的传感器，请使用相机校准过程中获得的值。确认畸变效果出现在视口或渲染的相机输出中。</p>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/isim_6.1_full_tut_viewport_camera_sensor_fisheye_view.png"><img alt="../_images/isim_6.1_full_tut_viewport_camera_sensor_fisheye_view.png" src="../_images/isim_6.1_full_tut_viewport_camera_sensor_fisheye_view.png" style="width: 600px;"/>
+</a>
+<figcaption><p><span class="caption-text">应用 OpenCV 鱼眼镜头畸变后的相机输出。</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p></figcaption>
+</figure>
+</section>
+</section>
+<section id="complete-the-sensor-authoring">
+<h2>完成传感器创建<a class="headerlink" href="#complete-the-sensor-authoring" title="Link to this heading">#</a></h2>
+<p>三种 prim 类型协同工作以定义传感器及其输出，每种类型具有不同的作用：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Camera</span></code> prim：配置所建模的物理相机，包括其内参（焦距、光圈和镜头畸变）、外参（场景中的姿态）以及 tick 速率。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RenderProduct</span></code> prim：控制 RTX 渲染器如何渲染该相机，包括输出分辨率，并引用其从中绘制的 <code class="docutils literal notranslate"><span class="pre">Camera</span></code>。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RenderVar</span></code> prim：指定 RTX 渲染器为传感器生成哪些输出，例如颜色、深度或表面法线。</p></li>
+</ul>
+<p>您已在 GUI 中创建了 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> 根 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 和 <code class="docutils literal notranslate"><span class="pre">CameraRGB</span></code> <code class="docutils literal notranslate"><span class="pre">Camera</span></code> prim，因此以下代码片段基于当前 stage 构建，而不是重新创建它们。</p>
+<p>所有代码示例均来自完整且可运行的文件 <code class="docutils literal notranslate"><span class="pre">camera_sensor_usd_tutorial.py</span></code>。此处提供完整脚本作为参考：它包含本教程中描述的完整创建工作流程，可以粘贴到 Script Editor 中并一次性运行。</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">camera_sensor_usd_tutorial.py</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># &lt;start-apply-sensor-api-snippet&gt;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">isaacsim.core.experimental.utils.prim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">prim_utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">isaacsim.core.experimental.utils.stage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stage_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaacsim.core.experimental.objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">Camera</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pxr</span><span class="w"> </span><span class="kn">import</span> <span class="n">Gf</span><span class="p">,</span> <span class="n">UsdRender</span>
+
+<span class="c1"># Reuse the GUI-authored root, or create it when running the complete script on an empty stage.</span>
+<span class="n">sensor_root_path</span> <span class="o">=</span> <span class="s2">"/CameraSensor"</span>
+<span class="n">root_prim</span> <span class="o">=</span> <span class="n">stage_utils</span><span class="o">.</span><span class="n">define_prim</span><span class="p">(</span><span class="n">sensor_root_path</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"Xform"</span><span class="p">)</span>
+<span class="n">stage_utils</span><span class="o">.</span><span class="n">get_current_stage</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">"usd"</span><span class="p">)</span><span class="o">.</span><span class="n">SetDefaultPrim</span><span class="p">(</span><span class="n">root_prim</span><span class="p">)</span>
+<span class="n">camera_path</span> <span class="o">=</span> <span class="n">sensor_root_path</span> <span class="o">+</span> <span class="s2">"/CameraRGB"</span>
+<span class="c1"># Preserve the GUI-authored transform when wrapping the camera.</span>
+<span class="n">camera</span> <span class="o">=</span> <span class="n">Camera</span><span class="p">(</span><span class="n">camera_path</span><span class="p">,</span> <span class="n">reset_xform_op_properties</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">camera_prim</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">prims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># Variants set the tick rate later; the default is 0 Hz (every frame).</span>
+<span class="c1"># `OmniSensorAPI` has no typed schema for `prim_utils.ensure_api`.</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">prim_utils</span><span class="o">.</span><span class="n">has_api</span><span class="p">(</span><span class="n">camera_prim</span><span class="p">,</span> <span class="s2">"OmniSensorAPI"</span><span class="p">):</span>
+    <span class="n">camera_prim</span><span class="o">.</span><span class="n">ApplyAPI</span><span class="p">(</span><span class="s2">"OmniSensorAPI"</span><span class="p">)</span>
+<span class="c1"># &lt;end-apply-sensor-api-snippet&gt;</span>
+
+<span class="c1"># &lt;start-create-render-product-snippet&gt;</span>
+<span class="c1"># Variants set the resolution later.</span>
+<span class="n">render_product_path</span> <span class="o">=</span> <span class="n">sensor_root_path</span> <span class="o">+</span> <span class="s2">"/RenderProduct"</span>
+<span class="n">render_product_prim</span> <span class="o">=</span> <span class="n">stage_utils</span><span class="o">.</span><span class="n">define_prim</span><span class="p">(</span><span class="n">render_product_path</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"RenderProduct"</span><span class="p">)</span>
+<span class="c1"># Render product relationships have no experimental wrapper.</span>
+<span class="n">render_product</span> <span class="o">=</span> <span class="n">UsdRender</span><span class="o">.</span><span class="n">Product</span><span class="p">(</span><span class="n">render_product_prim</span><span class="p">)</span>
+<span class="n">render_product</span><span class="o">.</span><span class="n">CreateCameraRel</span><span class="p">()</span><span class="o">.</span><span class="n">SetTargets</span><span class="p">([</span><span class="n">camera_path</span><span class="p">])</span>
+<span class="c1"># &lt;end-create-render-product-snippet&gt;</span>
+
+<span class="c1"># &lt;start-add-render-var-snippet&gt;</span>
+<span class="c1"># `sourceName` selects the output type.</span>
+<span class="n">render_var_path</span> <span class="o">=</span> <span class="n">render_product_path</span> <span class="o">+</span> <span class="s2">"/RenderVar"</span>
+<span class="n">render_var_prim</span> <span class="o">=</span> <span class="n">stage_utils</span><span class="o">.</span><span class="n">define_prim</span><span class="p">(</span><span class="n">render_var_path</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"RenderVar"</span><span class="p">)</span>
+<span class="n">source_name_attr</span> <span class="o">=</span> <span class="n">prim_utils</span><span class="o">.</span><span class="n">create_prim_attribute</span><span class="p">(</span><span class="n">render_var_prim</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"sourceName"</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"string"</span><span class="p">)</span>
+<span class="n">source_name_attr</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="s2">"LdrColor"</span><span class="p">)</span>
+<span class="c1"># Render product relationships have no experimental wrapper.</span>
+<span class="n">render_product</span><span class="o">.</span><span class="n">CreateOrderedVarsRel</span><span class="p">()</span><span class="o">.</span><span class="n">AddTarget</span><span class="p">(</span><span class="n">render_var_path</span><span class="p">)</span>
+<span class="c1"># &lt;end-add-render-var-snippet&gt;</span>
+
+<span class="c1"># &lt;start-author-variants-snippet&gt;</span>
+<span class="n">resolution_attr</span> <span class="o">=</span> <span class="n">prim_utils</span><span class="o">.</span><span class="n">create_prim_attribute</span><span class="p">(</span><span class="n">render_product_prim</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"resolution"</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"int2"</span><span class="p">)</span>
+<span class="n">tick_rate_attr</span> <span class="o">=</span> <span class="n">prim_utils</span><span class="o">.</span><span class="n">create_prim_attribute</span><span class="p">(</span><span class="n">camera_prim</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"omni:sensor:tickRate"</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"float"</span><span class="p">)</span>
+<span class="c1"># Put variants on the root so they can configure both descendants.</span>
+<span class="c1"># Experimental APIs cannot create variants or enter edit contexts.</span>
+<span class="n">variant_set</span> <span class="o">=</span> <span class="n">root_prim</span><span class="o">.</span><span class="n">GetVariantSets</span><span class="p">()</span><span class="o">.</span><span class="n">AddVariantSet</span><span class="p">(</span><span class="s2">"SensorConfig"</span><span class="p">)</span>
+<span class="n">configs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"HighResolution_60Hz"</span><span class="p">:</span> <span class="p">(</span><span class="n">Gf</span><span class="o">.</span><span class="n">Vec2i</span><span class="p">(</span><span class="mi">1920</span><span class="p">,</span> <span class="mi">1080</span><span class="p">),</span> <span class="mf">60.0</span><span class="p">),</span>
+    <span class="s2">"HighSpeed_120Hz"</span><span class="p">:</span> <span class="p">(</span><span class="n">Gf</span><span class="o">.</span><span class="n">Vec2i</span><span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">),</span> <span class="mf">120.0</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">variant_name</span><span class="p">,</span> <span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">tick_rate</span><span class="p">)</span> <span class="ow">in</span> <span class="n">configs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">variant_set</span><span class="o">.</span><span class="n">AddVariant</span><span class="p">(</span><span class="n">variant_name</span><span class="p">)</span>
+    <span class="n">prim_utils</span><span class="o">.</span><span class="n">set_prim_variants</span><span class="p">(</span><span class="n">root_prim</span><span class="p">,</span> <span class="n">variants</span><span class="o">=</span><span class="p">[(</span><span class="s2">"SensorConfig"</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">)])</span>
+    <span class="c1"># Author values in the selected variant.</span>
+    <span class="k">with</span> <span class="n">variant_set</span><span class="o">.</span><span class="n">GetVariantEditContext</span><span class="p">():</span>
+        <span class="n">resolution_attr</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span>
+        <span class="n">tick_rate_attr</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">tick_rate</span><span class="p">)</span>
+<span class="c1"># Select the default variant.</span>
+<span class="n">prim_utils</span><span class="o">.</span><span class="n">set_prim_variants</span><span class="p">(</span><span class="n">root_prim</span><span class="p">,</span> <span class="n">variants</span><span class="o">=</span><span class="p">[(</span><span class="s2">"SensorConfig"</span><span class="p">,</span> <span class="s2">"HighResolution_60Hz"</span><span class="p">)])</span>
+<span class="c1"># &lt;end-author-variants-snippet&gt;</span>
+
+<span class="c1"># &lt;start-visualize-snippet&gt;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">omni.kit.viewport.utility</span>
+
+<span class="n">viewport</span> <span class="o">=</span> <span class="n">omni</span><span class="o">.</span><span class="n">kit</span><span class="o">.</span><span class="n">viewport</span><span class="o">.</span><span class="n">utility</span><span class="o">.</span><span class="n">get_active_viewport</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">viewport</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"No active viewport is available"</span><span class="p">)</span>
+
+<span class="n">viewport_render_product_path</span> <span class="o">=</span> <span class="n">viewport</span><span class="o">.</span><span class="n">render_product_path</span>
+<span class="n">viewport</span><span class="o">.</span><span class="n">render_product_path</span> <span class="o">=</span> <span class="n">render_product_path</span>
+<span class="c1"># &lt;end-visualize-snippet&gt;</span>
+
+<span class="c1"># &lt;start-restore-viewport-snippet&gt;</span>
+<span class="n">viewport</span><span class="o">.</span><span class="n">render_product_path</span> <span class="o">=</span> <span class="n">viewport_render_product_path</span>
+<span class="c1"># &lt;end-restore-viewport-snippet&gt;</span>
+</pre></div>
+</div>
+</div>
+</details><p>通过点击顶部菜单栏中的 <strong>Window &gt; Script Editor</strong> 打开 Script Editor，然后粘贴每个代码片段并点击 <strong>Run</strong>。</p>
+<section id="apply-the-sensor-api">
+<h3>应用 Sensor API<a class="headerlink" href="#apply-the-sensor-api" title="Link to this heading">#</a></h3>
+<p>将 <code class="docutils literal notranslate"><span class="pre">OmniSensorAPI</span></code> schema 应用于相机，使其作为具有 <strong>tick rate</strong>（渲染器渲染该相机的频率，单位为 Hz）的传感器运行。此代码片段仅应用该 schema；下一步中设置的 variant set 将定义 tick rate 的值。单独应用 schema 时，tick rate 保持为 schema 默认值 0，即自动触发模式，每帧都进行渲染。有关详细信息，请参阅 <a class="reference internal" href="isaacsim_sensors_multitick_rendering.html#isaac-sim-sensors-multitick-rendering"><span class="std std-ref">Multi-Tick Rendering</span></a>。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">isaacsim.core.experimental.utils.prim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">prim_utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">isaacsim.core.experimental.utils.stage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stage_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaacsim.core.experimental.objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">Camera</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pxr</span><span class="w"> </span><span class="kn">import</span> <span class="n">Gf</span><span class="p">,</span> <span class="n">UsdRender</span>
+
+<span class="c1"># Reuse the GUI-authored root, or create it when running the complete script on an empty stage.</span>
+<span class="n">sensor_root_path</span> <span class="o">=</span> <span class="s2">"/CameraSensor"</span>
+<span class="n">root_prim</span> <span class="o">=</span> <span class="n">stage_utils</span><span class="o">.</span><span class="n">define_prim</span><span class="p">(</span><span class="n">sensor_root_path</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"Xform"</span><span class="p">)</span>
+<span class="n">stage_utils</span><span class="o">.</span><span class="n">get_current_stage</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">"usd"</span><span class="p">)</span><span class="o">.</span><span class="n">SetDefaultPrim</span><span class="p">(</span><span class="n">root_prim</span><span class="p">)</span>
+<span class="n">camera_path</span> <span class="o">=</span> <span class="n">sensor_root_path</span> <span class="o">+</span> <span class="s2">"/CameraRGB"</span>
+<span class="c1"># Preserve the GUI-authored transform when wrapping the camera.</span>
+<span class="n">camera</span> <span class="o">=</span> <span class="n">Camera</span><span class="p">(</span><span class="n">camera_path</span><span class="p">,</span> <span class="n">reset_xform_op_properties</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">camera_prim</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">prims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># Variants set the tick rate later; the default is 0 Hz (every frame).</span>
+<span class="c1"># `OmniSensorAPI` has no typed schema for `prim_utils.ensure_api`.</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">prim_utils</span><span class="o">.</span><span class="n">has_api</span><span class="p">(</span><span class="n">camera_prim</span><span class="p">,</span> <span class="s2">"OmniSensorAPI"</span><span class="p">):</span>
+    <span class="n">camera_prim</span><span class="o">.</span><span class="n">ApplyAPI</span><span class="p">(</span><span class="s2">"OmniSensorAPI"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>确认 <code class="docutils literal notranslate"><span class="pre">OmniSensorAPI</span></code> schema 已应用于相机 prim。</p>
+<figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="../_images/isim_6.1_full_tut_gui_camera_sensor_omnisensorapi_tickrate.png"><img alt="../_images/isim_6.1_full_tut_gui_camera_sensor_omnisensorapi_tickrate.png" src="../_images/isim_6.1_full_tut_gui_camera_sensor_omnisensorapi_tickrate.png" style="width: 320px;"/>
+</a>
+<figcaption><p><span class="caption-text"><strong>Property</strong> 面板显示已应用 <code class="docutils literal notranslate"><span class="pre">OmniSensorAPI</span></code>，且 <code class="docutils literal notranslate"><span class="pre">omni:sensor:tickRate</span></code> 属性可用。</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p></figcaption>
+</figure>
+</section>
+<section id="create-a-render-product-prim">
+<h3>创建 Render Product Prim<a class="headerlink" href="#create-a-render-product-prim" title="Link to this heading">#</a></h3>
+<p>创建一个 render product prim，并通过 <code class="docutils literal notranslate"><span class="pre">camera</span></code> relationship 将其连接到现有的相机。render product 定义了与相机关联的渲染输出。其分辨率稍后由 variant set 定义，因此此处不设置。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Variants set the resolution later.</span>
+<span class="n">render_product_path</span> <span class="o">=</span> <span class="n">sensor_root_path</span> <span class="o">+</span> <span class="s2">"/RenderProduct"</span>
+<span class="n">render_product_prim</span> <span class="o">=</span> <span class="n">stage_utils</span><span class="o">.</span><span class="n">define_prim</span><span class="p">(</span><span class="n">render_product_path</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"RenderProduct"</span><span class="p">)</span>
+<span class="c1"># Render product relationships have no experimental wrapper.</span>
+<span class="n">render_product</span> <span class="o">=</span> <span class="n">UsdRender</span><span class="o">.</span><span class="n">Product</span><span class="p">(</span><span class="n">render_product_prim</span><span class="p">)</span>
+<span class="n">render_product</span><span class="o">.</span><span class="n">CreateCameraRel</span><span class="p">()</span><span class="o">.</span><span class="n">SetTargets</span><span class="p">([</span><span class="n">camera_path</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>运行脚本后，确认 render product prim 出现在 Stage 树的 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/RenderProduct</span></code> 处，并且其 <code class="docutils literal notranslate"><span class="pre">camera</span></code> relationship 指向 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/CameraRGB</span></code>。</p>
+</section>
+<section id="create-a-render-var-prim-and-connect-it">
+<h3>创建 Render Var Prim 并连接它<a class="headerlink" href="#create-a-render-var-prim-and-connect-it" title="Link to this heading">#</a></h3>
+<p>创建一个 render var prim 并将其连接到 render product。render var 定义了 render product 产生的输出类型，例如颜色、深度或法线。</p>
+<p>在此示例中，render var 作为 render product 的子级创建，并通过 render product 的 <code class="docutils literal notranslate"><span class="pre">orderedVars</span></code> 关系进行连接。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># `sourceName` selects the output type.</span>
+<span class="n">render_var_path</span> <span class="o">=</span> <span class="n">render_product_path</span> <span class="o">+</span> <span class="s2">"/RenderVar"</span>
+<span class="n">render_var_prim</span> <span class="o">=</span> <span class="n">stage_utils</span><span class="o">.</span><span class="n">define_prim</span><span class="p">(</span><span class="n">render_var_path</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"RenderVar"</span><span class="p">)</span>
+<span class="n">source_name_attr</span> <span class="o">=</span> <span class="n">prim_utils</span><span class="o">.</span><span class="n">create_prim_attribute</span><span class="p">(</span><span class="n">render_var_prim</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"sourceName"</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"string"</span><span class="p">)</span>
+<span class="n">source_name_attr</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="s2">"LdrColor"</span><span class="p">)</span>
+<span class="c1"># Render product relationships have no experimental wrapper.</span>
+<span class="n">render_product</span><span class="o">.</span><span class="n">CreateOrderedVarsRel</span><span class="p">()</span><span class="o">.</span><span class="n">AddTarget</span><span class="p">(</span><span class="n">render_var_path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>运行脚本后，选择 render product prim 并验证其是否引用了相机和 render var。</p>
+<figure class="align-center" id="id6">
+<a class="reference internal image-reference" href="../_images/isim_6.1_full_tut_gui_camera_sensor_render_var.png"><img alt="../_images/isim_6.1_full_tut_gui_camera_sensor_render_var.png" src="../_images/isim_6.1_full_tut_gui_camera_sensor_render_var.png" style="width: 400px;"/>
+</a>
+<figcaption><p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">/CameraSensor/RenderProduct</span></code> 的 <strong>Property</strong> 面板，显示指向 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/CameraRGB</span></code> 的 <code class="docutils literal notranslate"><span class="pre">camera</span></code> 关系以及指向 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/RenderProduct/RenderVar</span></code> 的 <code class="docutils literal notranslate"><span class="pre">orderedVars</span></code> 关系。</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p></figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>分辨率存储在 render product 的 <code class="docutils literal notranslate"><span class="pre">resolution</span></code> 属性中，以宽度和高度的整数对形式表示。该属性由下方的 variant set 写入（1920 x 1080 或 1280 x 720）；在此之前，render product 使用 USD 的默认分辨率。</p>
+</div>
+</section>
+<section id="point-the-viewport-to-the-authored-render-product">
+<h3>将 Viewport 指向已写入的 Render Product<a class="headerlink" href="#point-the-viewport-to-the-authored-render-product" title="Link to this heading">#</a></h3>
+<p>在添加可选的 variant set 之前，请将 viewport 重定向到 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/RenderProduct</span></code>，以便在配置时查看传感器输出。</p>
+<p>首先，启用 viewport 的分辨率叠加层：</p>
+<ol class="arabic simple">
+<li><p>点击 viewport 工具栏中的 <strong>Eye</strong> 图标（Show Settings）。</p></li>
+<li><p>选择 <strong>Heads Up Display &gt; Resolution</strong>。</p></li>
+</ol>
+<p>叠加层显示当前的 viewport 分辨率（通常为 1280×720）。这反映了 Isaac Sim 用于交互性能的原生分辨率，而不是 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/RenderProduct</span></code> 上写入的分辨率。</p>
+<p>要理解它们为何不同，请打开 <strong>Layer</strong> 窗口（<strong>Window &gt; Layers</strong>）。在 <strong>Root Layer</strong> 下，展开 <code class="docutils literal notranslate"><span class="pre">/Render/OmniverseKit/HydraTextures</span></code> 范围并找到 <code class="docutils literal notranslate"><span class="pre">omni_kit_widget_viewport</span></code> prim。这是一个隐藏的、自动生成的 <code class="docutils literal notranslate"><span class="pre">RenderProduct</span></code>，视口在内部使用它。当您从视口的 <strong>Cameras</strong> 菜单中选择相机时，Isaac Sim 会将此隐藏的渲染产品重定向到该相机，并以 1280×720 的分辨率进行渲染以保证性能。您可以修改此 prim，但由于它是自动生成的，因此不能作为传感器 USD 资产的一部分进行发布。</p>
+<p>要可视化 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/RenderProduct</span></code> 的实际输出，请在 <strong>Script Editor</strong> 中运行以下代码片段，以重定向活动视口使用您刚刚创建的渲染产品：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">omni.kit.viewport.utility</span>
+
+<span class="n">viewport</span> <span class="o">=</span> <span class="n">omni</span><span class="o">.</span><span class="n">kit</span><span class="o">.</span><span class="n">viewport</span><span class="o">.</span><span class="n">utility</span><span class="o">.</span><span class="n">get_active_viewport</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">viewport</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"No active viewport is available"</span><span class="p">)</span>
+
+<span class="n">viewport_render_product_path</span> <span class="o">=</span> <span class="n">viewport</span><span class="o">.</span><span class="n">render_product_path</span>
+<span class="n">viewport</span><span class="o">.</span><span class="n">render_product_path</span> <span class="o">=</span> <span class="n">render_product_path</span>
+</pre></div>
+</div>
+<p>运行代码片段后，视口中的 <strong>Resolution</strong> 叠加层将从原生的 1280×720 更改为与 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/RenderProduct</span></code> 上设置的分辨率匹配。此时，视口通过设置的渲染产品进行渲染，而不是通过隐藏的自动生成渲染产品。</p>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>当您使用上述代码片段将视口重定向到 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/RenderProduct</span></code> 时，<strong>Resolution</strong> 叠加层可能会显示意外的值。这是在运行时切换活动渲染产品时 Kit 的已知行为，将在未来的更新中解决。设置的渲染产品及其关系是正确的；这仅影响使用本教程可视化代码片段时的视口显示。</p>
+</div>
+<p>该代码片段将视口的原始渲染产品路径保存在 <code class="docutils literal notranslate"><span class="pre">viewport_render_product_path</span></code> 中。在删除仓库或切换阶段之前，请运行以下代码片段以将视口恢复到其原始渲染产品：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">viewport</span><span class="o">.</span><span class="n">render_product_path</span> <span class="o">=</span> <span class="n">viewport_render_product_path</span>
+</pre></div>
+</div>
+</section>
+<section id="add-a-sensor-configuration-variant-set-optional">
+<h3>添加传感器配置 Variant Set（可选）<a class="headerlink" href="#add-a-sensor-configuration-variant-set-optional" title="Link to this heading">#</a></h3>
+<p>变体可用于在单个 USD 资产中存储多个传感器配置。以下代码片段在传感器根节点 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 上创建了一个 <code class="docutils literal notranslate"><span class="pre">SensorConfig</span></code> 变体集，其中包含两个变体，分别用于在高分辨率模式（<code class="docutils literal notranslate"><span class="pre">HighResolution_60Hz</span></code>，1920 x 1080 @ 60 Hz）和高速模式（<code class="docutils literal notranslate"><span class="pre">HighSpeed_120Hz</span></code>，1280 x 720 @ 120 Hz）之间切换。每个变体都会同时写入渲染产品分辨率和相机 tick rate，因此切换变体可一次性重新配置整个传感器。</p>
+<p>有关变体集的背景信息，请参阅 <a class="reference external" href="https://docs.omniverse.nvidia.com/usd/latest/learn-openusd/terms/variant-set.html">OpenUSD Variant Set 文档</a>。此 <code class="docutils literal notranslate"><span class="pre">SensorConfig</span></code> 设置是一个实用变体集的示例。开发人员可以根据其产品规格，更改 <code class="docutils literal notranslate"><span class="pre">Camera</span></code> prim 和 <code class="docutils literal notranslate"><span class="pre">RenderProduct</span></code> prim 上的任意属性。</p>
+<p>变体集是在根 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 上写入的，而不是在相机上，因为变体只能对其所在的 prim 及其后代 prim 写入意见。相机和渲染产品都是根节点的后代。前面的步骤未设置分辨率和 tick rate，因此这些特定于变体的意见是唯一的意见，会直接生效。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">resolution_attr</span> <span class="o">=</span> <span class="n">prim_utils</span><span class="o">.</span><span class="n">create_prim_attribute</span><span class="p">(</span><span class="n">render_product_prim</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"resolution"</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"int2"</span><span class="p">)</span>
+<span class="n">tick_rate_attr</span> <span class="o">=</span> <span class="n">prim_utils</span><span class="o">.</span><span class="n">create_prim_attribute</span><span class="p">(</span><span class="n">camera_prim</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"omni:sensor:tickRate"</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">"float"</span><span class="p">)</span>
+<span class="c1"># Put variants on the root so they can configure both descendants.</span>
+<span class="c1"># Experimental APIs cannot create variants or enter edit contexts.</span>
+<span class="n">variant_set</span> <span class="o">=</span> <span class="n">root_prim</span><span class="o">.</span><span class="n">GetVariantSets</span><span class="p">()</span><span class="o">.</span><span class="n">AddVariantSet</span><span class="p">(</span><span class="s2">"SensorConfig"</span><span class="p">)</span>
+<span class="n">configs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"HighResolution_60Hz"</span><span class="p">:</span> <span class="p">(</span><span class="n">Gf</span><span class="o">.</span><span class="n">Vec2i</span><span class="p">(</span><span class="mi">1920</span><span class="p">,</span> <span class="mi">1080</span><span class="p">),</span> <span class="mf">60.0</span><span class="p">),</span>
+    <span class="s2">"HighSpeed_120Hz"</span><span class="p">:</span> <span class="p">(</span><span class="n">Gf</span><span class="o">.</span><span class="n">Vec2i</span><span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">),</span> <span class="mf">120.0</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">variant_name</span><span class="p">,</span> <span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">tick_rate</span><span class="p">)</span> <span class="ow">in</span> <span class="n">configs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">variant_set</span><span class="o">.</span><span class="n">AddVariant</span><span class="p">(</span><span class="n">variant_name</span><span class="p">)</span>
+    <span class="n">prim_utils</span><span class="o">.</span><span class="n">set_prim_variants</span><span class="p">(</span><span class="n">root_prim</span><span class="p">,</span> <span class="n">variants</span><span class="o">=</span><span class="p">[(</span><span class="s2">"SensorConfig"</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">)])</span>
+    <span class="c1"># Author values in the selected variant.</span>
+    <span class="k">with</span> <span class="n">variant_set</span><span class="o">.</span><span class="n">GetVariantEditContext</span><span class="p">():</span>
+        <span class="n">resolution_attr</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span>
+        <span class="n">tick_rate_attr</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">tick_rate</span><span class="p">)</span>
+<span class="c1"># Select the default variant.</span>
+<span class="n">prim_utils</span><span class="o">.</span><span class="n">set_prim_variants</span><span class="p">(</span><span class="n">root_prim</span><span class="p">,</span> <span class="n">variants</span><span class="o">=</span><span class="p">[(</span><span class="s2">"SensorConfig"</span><span class="p">,</span> <span class="s2">"HighResolution_60Hz"</span><span class="p">)])</span>
+</pre></div>
+</div>
+<p>运行脚本后，若要切换变体：</p>
+<ol class="arabic simple">
+<li><p>在 Stage 树中选择 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code>。</p></li>
+<li><p>在 <strong>Property</strong> 面板中，滚动到面板顶部。变体集显示为 prim 属性上方的下拉菜单，位于标记为 <strong>Variants</strong> 的部分中。</p></li>
+<li><p>使用 <strong>SensorConfig</strong> 下拉菜单在 <code class="docutils literal notranslate"><span class="pre">HighResolution_60Hz</span></code> 和 <code class="docutils literal notranslate"><span class="pre">HighSpeed_120Hz</span></code> 之间切换。</p></li>
+<li><p>验证选择 <code class="docutils literal notranslate"><span class="pre">HighResolution_60Hz</span></code> 时，分辨率设置为 1920 x 1080 且 tick rate 设置为 60，以及选择 <code class="docutils literal notranslate"><span class="pre">HighSpeed_120Hz</span></code> 时，分辨率设置为 1280 x 720 且 tick rate 设置为 120。</p></li>
+</ol>
+<figure class="align-center" id="id7">
+<a class="reference internal image-reference" href="../_images/isim_6.1_full_tut_gui_camera_sensor_variant_set.png"><img alt="../_images/isim_6.1_full_tut_gui_camera_sensor_variant_set.png" src="../_images/isim_6.1_full_tut_gui_camera_sensor_variant_set.png" style="width: 320px;"/>
+</a>
+<figcaption><p><span class="caption-text">显示 <strong>SensorConfig</strong> 变体已设置为 <code class="docutils literal notranslate"><span class="pre">HighResolution_60Hz</span></code> 的 <strong>Property</strong> 面板。</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p></figcaption>
+</figure>
+</section>
+</section>
+<section id="validate-and-save-the-asset">
+<h2>验证并保存资产<a class="headerlink" href="#validate-and-save-the-asset" title="Link to this heading">#</a></h2>
+<section id="save-the-usd">
+<h3>保存 USD<a class="headerlink" href="#save-the-usd" title="Link to this heading">#</a></h3>
+<p>在保存之前，请移除 warehouse，以确保资产中仅包含传感器。在 Stage 树中，选择 warehouse 根 prim（即加载 <code class="docutils literal notranslate"><span class="pre">warehouse.usd</span></code> 时添加的 prim）并将其删除。由于 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> 是 stage 的默认 prim，剩余的传感器层级结构将保持完整，并成为该资产的入口点。</p>
+<p>此外，请将 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> 根 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 及其下方的 <code class="docutils literal notranslate"><span class="pre">CameraRGB</span></code> prim 上的所有变换归零。您在根节点上设置的用于将传感器对准测试环境的姿态仅用于验证目的；在 <strong>Property</strong> 面板中将平移和旋转重置为 <code class="docutils literal notranslate"><span class="pre">0</span></code>，并将缩放重置为 <code class="docutils literal notranslate"><span class="pre">1</span></code>，可为保存的资产提供一个干净的原始位置，以便下游场景自行定位。</p>
+<p>然后将 stage 保存为 USD 文件。从顶部 Menu Bar 中，点击 <strong>File &gt; Save As</strong>，然后选择文件名和位置，例如 <code class="docutils literal notranslate"><span class="pre">/path/to/camera_sensor.usd</span></code>。</p>
+</section>
+<section id="validate-the-saved-usd">
+<h3>验证已保存的 USD<a class="headerlink" href="#validate-the-saved-usd" title="Link to this heading">#</a></h3>
+<p>使用 Asset Validator 窗口通过 <code class="docutils literal notranslate"><span class="pre">RGBSensorUsdRule</span></code> 验证已保存的文件：</p>
+<ol class="arabic simple">
+<li><p>从 Menu Bar 中，选择 <strong>Window &gt; Asset Validator</strong>。</p></li>
+<li><p>在 Asset Validator 窗口中，选择 <strong>Prims</strong>，然后使用其右侧的下拉菜单选择 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code>。</p></li>
+<li><p>点击 <strong>Disable All</strong>，搜索 <code class="docutils literal notranslate"><span class="pre">RGBSensorUsdRule</span></code>，并启用该规则。</p></li>
+<li><p>点击 <strong>Analyze</strong> 并确认 Results 面板报告没有问题。</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>如果 <strong>Window</strong> 菜单中不可用 <strong>Asset Validator</strong>，请打开 <strong>Window &gt; Extensions</strong>，搜索 <code class="docutils literal notranslate"><span class="pre">omni.asset_validator.ui</span></code> 并启用它。</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RGBSensorUsdRule</span></code> 检查默认 <code class="docutils literal notranslate"><span class="pre">Xform</span></code>、Camera 和 RenderProduct 数量、<code class="docutils literal notranslate"><span class="pre">OmniSensorAPI</span></code> 和 tick rate、正分辨率、相机目标以及 <code class="docutils literal notranslate"><span class="pre">LdrColor</span></code> RenderVar 连接。它不会验证相机光学参数或镜头畸变校准；请在 Property 面板和渲染输出中验证这些设置。</p>
+</section>
+<section id="reference-the-asset-into-a-new-scene">
+<h3>将资产引用到新场景中<a class="headerlink" href="#reference-the-asset-into-a-new-scene" title="Link to this heading">#</a></h3>
+<p>为了确认保存的资产可重复使用，请按照下游工作流的方式将其引入新场景，然后检查它是否能复现您之前验证过的相机输出。</p>
+<ol class="arabic simple">
+<li><p>创建一个新 stage（<strong>File &gt; New</strong>）。再次添加仓库测试环境：在 Content Browser 中，打开 <strong>Isaac Sim</strong> &gt; <strong>Environments</strong> &gt; <strong>Simple_Warehouse</strong>，并将 <code class="docutils literal notranslate"><span class="pre">warehouse.usd</span></code> 拖入视口。</p></li>
+<li><p>将保存的 <code class="docutils literal notranslate"><span class="pre">camera_sensor.usd</span></code> 拖入视口（或右键单击它并选择 <strong>Add as Reference</strong>），以将传感器资产引用到 stage 中。</p></li>
+<li><p>在 Stage 树中，展开被引用的传感器 prim，并确认它仅包含 <code class="docutils literal notranslate"><span class="pre">CameraRGB</span></code>、<code class="docutils literal notranslate"><span class="pre">RenderProduct</span></code> 和 <code class="docutils literal notranslate"><span class="pre">RenderVar</span></code> prims，且没有仓库几何体。</p></li>
+<li><p>选择被引用的传感器根节点 <code class="docutils literal notranslate"><span class="pre">Xform</span></code>，并将其变换设置为之前使用的相同示例值。这会重新应用保存前已归零的位姿，使相机再次指向仓库。</p></li>
+<li><p>将视口切换为通过相机查看（<strong>Perspective &gt; Cameras &gt; CameraRGB</strong>），并确认视图与保存前看到的一致，包括您配置的鱼眼畸变（如果已配置）。</p></li>
+</ol>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>故障排除<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
+<p><strong>渲染产品未使用相机。</strong> 验证渲染产品的 <code class="docutils literal notranslate"><span class="pre">camera</span></code> 关系是否指向 <code class="docutils literal notranslate"><span class="pre">/CameraSensor/CameraRGB</span></code>，以及相机 prim 是否存在。</p>
+<p><strong>渲染变量输出缺失。</strong> 验证渲染产品的 <code class="docutils literal notranslate"><span class="pre">orderedVars</span></code> 关系是否指向渲染变量 prim，以及所选的渲染变量 <code class="docutils literal notranslate"><span class="pre">sourceName</span></code> 是否受当前渲染器和 Isaac Sim 版本支持。</p>
+<p><strong>镜头畸变不可见。</strong> 验证 <code class="docutils literal notranslate"><span class="pre">OmniLensDistortionOpenCvFisheyeAPI</span></code> schema 是否已应用于相机，畸变属性是否已编写，<code class="docutils literal notranslate"><span class="pre">omni:lensdistortion:model</span></code> 属性是否设置为 <code class="docutils literal notranslate"><span class="pre">opencvFisheye</span></code>，以及畸变值是否足够大以产生可见效果。</p>
+<p><strong>变体未更新值。</strong> 验证变体集是否在 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> 根节点 <code class="docutils literal notranslate"><span class="pre">Xform</span></code> 上编写，因为变体只能影响其定义所在的 prim 及其后代。确认分辨率和 tick-rate 值是否在变体编辑上下文中编写，是否选择了预期的变体，以及在创建变体后是否保存了 stage。此外，验证这些属性上是否存在直接意见（direct opinions）覆盖了变体值，因为直接意见的优先级高于变体意见。</p>
+<p><strong>保存的资产仍包含仓库。</strong>在保存之前删除仓库根 prim，并确认 <code class="docutils literal notranslate"><span class="pre">/CameraSensor</span></code> 已设置为 stage 的默认 prim，以便引用的资产仅包含传感器。</p>
+</section>
+<section id="summary">
+<h2>总结<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>在本教程中，你创建了一个可复用的相机传感器 USD 资产，其中包含相机、渲染产品、渲染变量、渲染关系以及 OpenCV 鱼眼镜头畸变设置。如果你完成了可选步骤，该资产还包含传感器 tick-rate 以及用于在传感器配置之间切换的变体集。现在，你可以在其他 Isaac Sim 工作流中使用此 USD 资产，或将其作为构建更高级相机传感器资产的起点。</p>
+<section id="next-steps">
+<h3>后续步骤<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>在 <a class="reference internal" href="isaacsim_sensors_camera.html#isaacsim-sensors-camera"><span class="std std-ref">Camera Sensors</span></a> 中了解有关相机建模的更多信息。</p></li>
+<li><p>浏览 Isaac Sim 随附的现成 <a class="reference internal" href="../assets/usd_assets_camera_depth_sensors.html#isaac-assets-camera-depth-sensors"><span class="std std-ref">camera and depth sensor assets</span></a>。</p></li>
+</ul>
+</section>
+</section>
+<p class="isaacsim-action-row sd-mt-5 sd-mb-3"><a class="sd-btn sd-btn-outline-primary isaacsim-action reference internal" href="../learn/gallery_view.html">返回画廊视图</a></p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="isaacsim_sensors_camera_structured_light.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Structured Light Cameras</p>
+</div>
+</a>
+<a class="right-next" href="isaacsim_sensors_rtx.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">RTX Sensors</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="page-toc" id="pst-page-toc-nav">
+<ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning Objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-camera-and-test-environment">Set Up the Camera and Test Environment</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-sensor-root-xform">Create the Sensor Root <code class="docutils literal notranslate"><span class="pre">Xform</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-camera">Create a Camera</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-the-test-environment">Load the Test Environment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-camera-properties">Configure Camera Properties</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#add-lens-distortion">Add Lens Distortion</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-the-sensor-authoring">Complete the Sensor Authoring</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apply-the-sensor-api">Apply the Sensor API</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-render-product-prim">Create a Render Product Prim</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-render-var-prim-and-connect-it">Create a Render Var Prim and Connect It</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#point-the-viewport-to-the-authored-render-product">Point the Viewport to the Authored Render Product</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-sensor-configuration-variant-set-optional">Add a Sensor Configuration Variant Set (Optional)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validate-and-save-the-asset">Validate and Save the Asset</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#save-the-usd">Save the USD</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validate-the-saved-usd">Validate the Saved USD</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-the-asset-into-a-new-scene">Reference the Asset into a New Scene</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer="" src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="../_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Your Privacy Choices</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2023-2026, NVIDIA Corporation.
+      <br/>
+</p>
+</div>
+<div class="footer-item"><p class="last-updated">
+  Last updated on Sep 18, 2026.
+  <br/>
+</p></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

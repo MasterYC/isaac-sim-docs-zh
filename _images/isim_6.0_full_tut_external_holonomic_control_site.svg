@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="356" viewBox="10 118 630 320"
+     font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="h-x" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#d1403f"/>
+    </marker>
+    <marker id="h-y" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4caf50"/>
+    </marker>
+    <marker id="h-w" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#3d7dd8"/>
+    </marker>
+    <marker id="h-r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#9673a6"/>
+    </marker>
+  </defs>
+  <rect x="10" y="118" width="630" height="320" fill="#ffffff"/>
+
+  <!-- chassis -->
+  <circle cx="300" cy="260" r="120" fill="#dae8fc" stroke="#6c8ebf" stroke-width="2"/>
+
+  <!-- r_i vectors: wheel positions measured from the control site -->
+  <line x1="300" y1="260" x2="196" y2="200" stroke="#9673a6" stroke-width="1.8"
+        stroke-dasharray="6 4" marker-end="url(#h-r)"/>
+  <line x1="300" y1="260" x2="300" y2="380" stroke="#9673a6" stroke-width="1.8"
+        stroke-dasharray="6 4" marker-end="url(#h-r)"/>
+  <line x1="300" y1="260" x2="404" y2="200" stroke="#9673a6" stroke-width="1.8"
+        stroke-dasharray="6 4" marker-end="url(#h-r)"/>
+  <text x="238" y="218" font-size="12.5" font-style="italic" fill="#7d5a91">r₀</text>
+  <text x="309" y="332" font-size="12.5" font-style="italic" fill="#7d5a91">r₁</text>
+  <text x="352" y="218" font-size="12.5" font-style="italic" fill="#7d5a91">r₂</text>
+
+  <!-- wheels, tangent to the chassis -->
+  <rect x="174" y="192" width="44" height="16" rx="3" fill="#4d4d4d" transform="rotate(120 196 200)"/>
+  <rect x="278" y="372" width="44" height="16" rx="3" fill="#4d4d4d"/>
+  <rect x="382" y="192" width="44" height="16" rx="3" fill="#4d4d4d" transform="rotate(60 404 200)"/>
+
+  <text x="150" y="180" text-anchor="end" font-size="12" font-weight="bold" fill="#333333">axle_0_joint</text>
+  <text x="450" y="180" font-size="12" font-weight="bold" fill="#333333">axle_2_joint</text>
+  <text x="300" y="410" text-anchor="middle" font-size="12" font-weight="bold" fill="#333333">axle_1_joint</text>
+
+  <!-- prim root: somewhere else entirely -->
+  <circle cx="366" cy="312" r="5" fill="#888888" stroke="#5a5a5a" stroke-width="1.4"/>
+  <line x1="373" y1="312" x2="452" y2="312" stroke="#aaaaaa" stroke-width="1"/>
+  <text x="458" y="309" font-size="12" font-weight="bold" fill="#555555">prim root</text>
+  <text x="458" y="323" font-size="11" fill="#8a8a8a">(not where the command applies)</text>
+
+  <!-- an alternative, equally valid site choice -->
+
+  <!-- body axes at the control site -->
+  <line x1="300" y1="248" x2="300" y2="170" stroke="#d1403f" stroke-width="2.4" marker-end="url(#h-x)"/>
+  <text x="300" y="158" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#d1403f">site +X</text>
+  <line x1="288" y1="260" x2="222" y2="260" stroke="#4caf50" stroke-width="2.4" marker-end="url(#h-y)"/>
+  <text x="252" y="250" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#4caf50">+Y</text>
+
+  <!-- yaw about the site -->
+  <path d="M 330 288 A 40 40 0 0 0 337 245" fill="none" stroke="#3d7dd8"
+        stroke-width="2.2" marker-end="url(#h-w)"/>
+  <text x="352" y="284" font-size="12.5" font-weight="bold" fill="#3d7dd8">ω about</text>
+  <text x="352" y="297" font-size="11.5" fill="#3d7dd8">rotation_direction</text>
+
+  <!-- the control site itself -->
+  <circle cx="300" cy="260" r="11" fill="#ffffff" stroke="#d79b00" stroke-width="2.6"/>
+  <circle cx="300" cy="260" r="3.6" fill="#d79b00"/>
+  <line x1="289" y1="256" x2="180" y2="234" stroke="#e0b060" stroke-width="1"/>
+  <text x="174" y="231" text-anchor="end" font-size="13.5" font-weight="bold" fill="#d79b00">control site</text>
+  <text x="174" y="245" text-anchor="end" font-size="11" fill="#b08a4a">you choose where it goes</text>
+</svg>

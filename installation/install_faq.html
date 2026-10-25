@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html data-content_root="../" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>设置技巧 — Isaac Sim 中文文档</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/nvidia-sphinx-theme.css?v=933278ad" rel="stylesheet" type="text/css"/>
+<link href="../_static/custom.css?v=767de534" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/image_lightbox.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="../_static/isaacsim-design.css?v=6415189c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script defer="" src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<link as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<script rel="preload" src="../_static/modal-table.js"></script>
+<script src="../_static/documentation_options.js?v=d9c7ea69"></script>
+<script src="../_static/doctools.js?v=9bcbadda"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/external-links.js"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=65e89d2a"></script>
+<script src="../_static/isaacsim-config-selector.js?v=58930015"></script>
+<script src="../_static/image_lightbox.js"></script>
+<script src="../_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'installation/install_faq';</script>
+<script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '../versions1.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '6.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+<script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+<script src="../_static/version-patch.js?v=3e13fdd2"></script>
+<link href="../_static/favicon.png" rel="icon"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="../overview/help.html" rel="next" title="Help &amp; FAQ"/>
+<link href="install_ros.html" rel="prev" title="ROS 2 Installation"/>
+<link as="image" href="https://www.nvidia.com/content/dam/1x1-00000000.png" rel="preload"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<meta content="Sep 18, 2026" name="docbuild:last-update"/>
+<script src="../_static/searchtools.js"></script>
+<script src="../_static/language_data.js"></script>
+<script src="../searchindex.js"></script>
+<!-- Google tag (gtag.js) -->
+<meta content="Isaac Sim 完整流式传输应用（使用 Isaac Sim WebRTC 流式传输客户端） — Isaac Sim 中文文档" name="description"/></head>
+<body data-default-mode="">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none" id="pst-header">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="me-auto navbar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-2" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-2" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-2" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-2" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-3" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-3" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-3" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-3" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Isaac Sim</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">What Is Isaac Sim?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/reference_architecture.html">Reference Architecture and Task Groupings</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/release_notes.html">Release Notes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/known_issues.html">Known Issues</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../migration_guides/index.html">Migration Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/index.html">Isaac Sim 6.1</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/robot_policy_examples.html">Robot Policy Examples Extension 7.0.0</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/index.html">Isaac Sim 6.0</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/migration_strategy.html">Isaac Sim 6.0 Migration Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/project_migration_audit.html">Project Migration Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/core_api_to_core_experimental.html">Core API to Core Experimental API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensor_timing_and_rtx_lidar_asset_migration.html">Sensor Timing and RTX Lidar Asset Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_camera_to_experimental_rtx.html">Camera Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_rtx_to_experimental_rtx.html">RTX Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physics_to_experimental_physics.html">Physics Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lidar_to_physics_raycast.html">PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_generic_to_physics_raycast.html">PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lightbeam_to_physics_raycast.html">PhysX Lightbeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/replicator_domain_randomization_to_experimental.html">Replicator Domain Randomization Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/mobility_gen_recordings_migration.html">MobilityGen Package and Recordings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_control_extensions_to_experimental.html">Manipulator and Wheeled Robot Extension Split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_motion_to_experimental_motion_generation.html">Robot Motion Generation APIs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/cortex_to_open_source_workflows.html">Cortex behavior workflow migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_setup_wizard_and_mesh_merge.html">Robot Wizard and Mesh Merge Tool Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_asset_path_migration.html">Robot Asset Path Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/urdf_mjcf_importer_exporter_pipeline.html">URDF, MJCF, and Robot Asset Pipeline Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_omnigraph_migration.html">ROS 2 OmniGraph Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_sensor_graph_migration.html">ROS 2 Sensor Graph Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_workspace_package_migration.html">ROS 2 Workspace Package Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/benchmark_services_migration.html">Benchmark Services Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/removed_tools_and_replacements.html">Removed Tools and Replacements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/extension_template_generator_to_cli_templates.html">Extension Template Generator to CLI Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ext_isaacsim_replicator_agent_migration_guide.html">Replicator Agent (IRA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/surface_gripper_bindings_import.html">Surface Gripper Bindings</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/index.html">Isaac Sim 4.5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/extensions_renaming.html">Renaming Extensions in Isaac Sim 4.5</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Installation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="quick-install.html">Quick Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html">Isaac Sim Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="download.html">Download Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accessing_assets.html">Accessing assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_workstation.html">Workstation Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_container.html">Container Installation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="install_cloud.html">Cloud Deployment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_cloud_setup_launchable.html">Isaac Launchable Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_cloud_setup_brev.html">NVIDIA Brev Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_cloud_setup_aws.html">AWS Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_cloud_setup_azure.html">Azure Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_cloud_setup_gcp.html">Google Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_cloud_setup_tencent.html">Tencent Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_cloud_setup_alibaba.html">Alibaba Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_cloud_setup_volcano.html">Volcano Engine Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_cloud_setup_baidu.html">Baidu Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_advanced_remote_setup.html">Remote Workstation Deployment</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="manual_livestream_clients.html">Livestream Clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_python.html">Python Environment Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Setup Tips</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/help.html">Help &amp; FAQ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/isaac_sim_forums.html">Isaac Sim Developer Resources</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview/faq_index.html">FAQ</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../overview/troubleshooting.html">Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../assets/usd_assets_overview.html">Isaac Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_robots.html">Robot Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_wheeled.html">Wheeled Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_manipulator.html">Manipulator Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_humanoid.html">Humanoid Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_quadruped.html">Quadruped Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_holonomic.html">Holonomic Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_aerial.html">Aerial Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_isaac_sim_simple.html">Isaac Sim Simple Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_mobile_manipulator.html">Mobile Manipulator Robot Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_sensors.html">Sensor Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_camera_depth_sensors.html">Camera Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_depth_sensors.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nonvisual_sensors.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_radar_sensors.html">RTX Radar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_tactile_sensors.html">Tactile Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_imu_sensors.html">IMU Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_props.html">Prop Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_environments.html">Environment Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_third_party.html">Third-Party USD Assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_real_to_sim_index.html">Real to Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nurec.html">Neural Volume Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/nurec_utils.html">NuRec Rendering Utilities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/asset_utilities/index.html">Asset Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/open_usd.html">OpenUSD Fundamentals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/usd_tools.html">USD Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_omni_warehouse_creator.html">Warehouse Creator Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_isaacsim_asset_gen_conveyor.html">Conveyor Belt Utility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/tutorial_static_assets.html">Static Warehouse Assets</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick-install.html">Quick Install</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/quickstart_index.html">Isaac Sim Basics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim.html">Isaac Sim Basic Usage Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim_robot.html">Basic Robot Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/python_scripting_concepts.html">Standalone vs Interactive Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/core_api_overview.html">Core API Overview</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../core_api_tutorials/index.html">Core API Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_world.html">Hello World</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_robot.html">Hello Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_manipulator.html">Adding a Manipulator Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_multiple_robots.html">Adding Multiple Robots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_multiple_tasks.html">Multiple Robot Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_props.html">Adding Props</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/tutorial_list.html">Tutorial Table</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/menu_examples.html">Interactive Examples Reference Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/standalone_examples_list.html">Standalone Examples Reference List</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../learn/gallery_view.html">Gallery View</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../gui/index.html">GUI</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_user_interface.html">User Interface Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_keyboard_shortcuts.html">Keyboard Shortcuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_create.html">Create Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_replicator.html">Replicator Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/preferences.html">Preferences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/selection-modes.html">Selection Modes</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/browsers.html">Browsers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/content_browser.html">Content Browser</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/material-browser.html" title="(in Omniverse Extensions)"><span>Material Browser</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/asset-browser.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">NVIDIA Asset Browser</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/layouts.html">Layout Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/intro_to_usd.html">Working with USD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/tutorial_search_extension.html">SimReady Content Browser Search Extension Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/build_and_simulate_robots.html">Setup and Simulate Robots</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../importer_exporter/importers_exporters.html">Importers and Exporters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_mjcf.html">MJCF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_onshape.html" title="(in Omniverse Extensions)"><span>Onshape importer</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_cad-converter.html" title="(in Omniverse Extensions)"><span>CAD Converter</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_isaac_shapenet.html">ShapeNet Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/formats.html">Formats</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../importer_exporter/importer_exporter_tutorials.html">Importer and Exporter Tutorials Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_urdf.html">Tutorial: Import URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/export_urdf.html">Tutorial: Export URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_mjcf.html">Tutorial: Import MJCF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/shapenet_importer.html">Tutorial: ShapeNet Importer</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_setup/index.html">Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/basic_stage_and_robot_setup.html">Basic Stage and Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_environment_setup.html">Stage Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_assemble_robot.html">Assemble a Simple Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_simple_robot.html">Articulate a Basic Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_camera_sensors.html">Add Camera and Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/rig_mobile_robot.html">Rig a Mobile Robot</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/setup_a_manipulator.html">Setup a Manipulator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_import_assemble_manipulator.html">Setup a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_configure_manipulator.html">Configure a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_generate_robot_config.html">Generate Robot Configuration File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_pickplace_example.html">Pick and Place Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/rig_closed_loop_structures.html">Setup a Closed-Loop Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_rig_legged_robot.html">Setup a Legged Robot</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../openusd_tuning_tutorials/index.html">Setup a Dexterous Hand in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/setup.html">Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_01_asset_structure.html">Import Robot and USD Asset Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_02_inspect_asset.html">Inspect Asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_03_collider_pairs.html">Collider Pairs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_04_joint_drive_tuning.html">Joint Drive Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_05_joint_gains_tuning.html">Joint Gains Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/practice.html">Using the Dexterous Hand in Practice</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/tuning_and_optimization.html">Tuning and Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/joint_tuning.html">Tuning Joint Drive Gains</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/optimizing_asset.html">Asset Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_franka_system_identification.html">Identify Franka System Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_system_identification_simsim.html">Validate Identification with Sim-to-Sim Recovery</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_tutorials.html">Asset Transformer Tutorial Series</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/editing_tools.html">Editor Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_poser.html">Robot Poser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_util_merge_mesh.html">Mesh merge tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_gain_tuner.html">Gain Tuner Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_sysid.html">System Identification Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_collision_detector.html">Robot Self-Collision Detector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/assemble_robots.html">Robot Assembler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_surface_gripper.html">Surface Gripper Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/grasp_editor.html">Grasp Editor</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/inspector_tools.html">Inspector Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_inspector.html">Robot Inspector Window</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/joint_inspector.html">Joint Inspector</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/newton_robot_setup_tips.html">Robot Setup Tips for Newton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/troubleshooting.html">Robot Setup Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_validation.html">Asset Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer.html">Asset Transformer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_api.html">Asset Transformer API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_rules.html">Asset Transformer Rules Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_structure.html">Asset Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/robot_schema.html">Robot Schema</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_simulation/index.html">Robot Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/articulation_controller.html">Articulation Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/mobile_robot_controllers.html">Mobile Robot Controllers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_setup_virtual_gantry.html">Virtual Gantry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_tips.html">Robot Simulation Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_core_concepts.html">Useful Links</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_motion_experimental/index.html">Robot Motion</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_motion_experimental/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../motion_generation/index.html">Motion Generation (Experimental)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/scene_interaction.html">Scene Interaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/mobile_robot_control_example.html">Controllers and the RobotState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/trajectory_planning.html">Trajectory Planning and Execution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../controllers/index.html">Controllers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_differential_drive.html">Differential Drive Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_ackermann.html">Ackermann Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_holonomic.html">Holonomic Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cumotion/index.html">cuMotion Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_xrdf_editor.html">Generating an XRDF file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_world_interface.html">cuMotion World Interface Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_rmpflow.html">RMPflow Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_graph_planner.html">Graph-Based Motion Planner Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_generator.html">Trajectory Generator Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_optimizer.html">Trajectory Optimizer Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../pink/index.html">PINK Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_ik_controller.html">IK Controller Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_multi_task.html">Multi-Task Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples/manipulation_franka_pick_place.html">Franka Pick and Place Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../state_machine_tutorials/tutorial_state_machines.html">State Machines for Robot Behavior</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../manipulators/motion_generation_overview.html">(Deprecated) Robot Motion Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/concepts/index.html">Motion Generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_robot_description_editor.html">Lula Robot Description and XRDF Editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_rmpflow.html">Lula RMPflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_rrt.html">Lula RRT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_kinematics.html">Lula Kinematics Solver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_trajectory_generator.html">Lula Trajectory Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_configure_rmpflow_denso.html">Configuring RMPflow for a New Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_curobo.html">cuRobo and cuMotion</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../newton_actuators_tutorials/index.html">Newton Actuators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_python.html">Set Up Actuators from Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_usd.html">Author and Parse Actuators from USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_ui.html">Author Actuators from UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_omnigraph.html">Drive an Actuated Robot from OmniGraph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_tips.html">Tips</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../physics/index.html">Physics Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../physics/simulation_fundamentals.html">Physics Simulation Fundamentals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/new_physics_engine.html">Physics Data Flow and Engine Integration</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../physics/newton_physics.html">Newton Physics Backend</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact.html">Hydroelastic Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact_walkthrough.html">Configure Hydroelastic Contact for a Nut-and-Bolt Assembly</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_resources.html">Omniverse Physics and PhysX Limitations</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/sim_management.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Simulation Management</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/joint_inspector.html">Physics Inspector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_static_collision.html">Physics Static Collision Extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/ext_isaacsim_inspect_physics.html">Simulation Data Visualizer</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/physics_debug_wnd.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Debug Window</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/sensors_and_physics.html">Sensor Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_camera.html">Camera Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_depth.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_structured_light.html">Structured Light Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_usd_tutorial.html">Authoring a Camera Sensor USD Asset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx.html">RTX Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_lidar.html">RTX Lidar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_radar.html">RTX Radar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_acoustic.html">RTX Acoustic Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_annotators.html">RTX Sensor Annotators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_materials.html">RTX Sensor Non-Visual Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_multitick_rendering.html">Multi-Tick Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_custom.html">Creating Custom RTX Sensor Profiles</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physics.html">Physics-based Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_articulation_force.html">Articulation Joint Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_contact.html">Contact Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_effort.html">Effort Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_imu.html">IMU Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_joint_state.html">Joint State Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_raycast.html">Physics Raycast Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/sensor_schema.html">Sensor Schema</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physx.html">(Deprecated) PhysX SDK Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_generic.html">(Deprecated) PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lidar.html">(Deprecated) PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lightbeam.html">(Deprecated) PhysX Lightbeam Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_proximity.html">(Deprecated) Proximity Sensor</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/develop_and_integrate.html">Develop and Integrate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../development_tools/index.html">Development Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/workflows.html">Development Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/vscode.html">Visual Studio Code (VS Code)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/python_server.html">Python Server (Remote Code Execution)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/jupyter_notebook.html">Jupyter Notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/omniverse_script_editor.html">Omniverse Script Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/isaac_sim_mcp.html">Isaac Sim MCP Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/agent_skills.html">Agent Skills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/carb_settings.html">Modify Carb Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/updating_extensions.html">Adding and Updating Extensions Guide</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../python_scripting/index.html">Python Scripting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/manual_standalone_python.html">Python Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/environment_setup.html">Scene Setup Snippets and Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/util_snippets.html">Util Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/robots_simulation.html">Robot Simulation Snippets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../omnigraph/index.html">OmniGraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/interface.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Interface</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/getting-started/core_concepts.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Core Concepts</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_shortcuts.html">Commonly Used OmniGraph Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_python_nodes.html">Custom Python Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_cpp_nodes.html">Custom C++ Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_ipc_nodes.html">Building Custom IPC OmniGraph Nodes</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Additional Resources</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/tutorials/gentle_intro.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Basic OmniGraph Tutorial</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_tutorial.html">Isaac Sim OmniGraph Tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_scripting.html">OmniGraph via Python Scripting Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../external_interfaces/index.html">External Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../external_interfaces/tutorial_zmq_carter_warehouse.html">ZeroMQ Bridge</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/templates_index.html">Templates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/cli_extension_templates.html">CLI Extension Templates</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../utilities/extension_template_generator.html">(Deprecated) Extension Template Generator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../utilities/extension_templates_tutorial.html">Extension Template Generator Explained</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/vscode_extension_template_generator.html">Advanced Extension Template Generator from VS Code</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/debugging/index.html">Debugging and Profiling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_isaacsim_util_debug_draw.html">Debug Drawing Extension API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_omni_kit_commands.html">Omniverse Commands Tool Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/omniverse_tools.html">Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/tutorial_advanced_python_debugging.html">Debugging With Visual Studio Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/profiling_performance.html">Profiling Performance Using Tracy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../digital_twin/index.html">Other Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/warehouse_logistics/logistics_tutorial_cuopt.html">NVIDIA cuOpt</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_1_overview.html">(Deprecated) Isaac Cortex: Overview</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_2_decider_networks.html">Decider networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_3_example_peck_games.html">Behavior Examples: Peck Games</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_4_franka_block_stacking.html">Walkthrough: Franka Block Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_5_ur10_bin_stacking.html">Walkthrough: UR10 Bin Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_7_cortex_extension.html">Building Cortex Based Extensions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/ext_isaacsim_asset_generator_occupancy_map.html">Occupancy Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/rtsp_camera_streaming.html">Live Camera Streaming over RTSP</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../workflows/top_5/index.html">Top 5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_putting_it_all_together.html">Bring a new mobile base and navigate with ROS2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_setup_tutorials/tutorial_manipulator_workflow.html">Manipulator workflow: URDF to pick and place</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_mobility_gen.html">Data Generation with MobilityGen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_cosmos.html">Cosmos Synthetic Data Generation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow.html">Humanoid workflow: Train locomotion in AGILE and deploy in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_prepare_usd.html">Stage 1: Prepare the humanoid USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_create_task.html">Stage 2: Create a custom humanoid task in AGILE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_configure_mdp.html">Stage 3: Configure and validate the locomotion MDP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_train.html">Stage 4: Train, evaluate, and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_deploy.html">Stage 5: Deploy the policy</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../isaac_lab_tutorials/index.html">Deploying Policies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_policy_deployment.html">Deploying policies in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_policy_example.html">Reinforcement Learning Policies Examples in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_instanceable_assets.html">Instanceable Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ros2_tutorials/index.html">ROS 2</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/overview/index.html">Overview and Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/overview/ros2_reference_architecture.html">ROS 2 Reference Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/tutorial_series/index.html">ROS 2 Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_turtlebot.html">URDF Import: Turtlebot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_drive_turtlebot.html">Driving TurtleBot using ROS 2 Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_clock.html">ROS 2 Clock</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtf.html">ROS 2 Publish Real Time Factor (RTF)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_camera.html">ROS 2 Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtx_lidar.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_tf.html">ROS 2 Transform Trees and Odometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_publish_rate.html">ROS 2 Setting Publish Rates</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/index.html">Advanced Sensor Topics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_noise.html">Add Noise to Camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_publishing.html">Publishing Camera’s Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_compressed_image.html">ROS 2 Compressed Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_rtx_radar.html">RTX Radar Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/robot_control/index.html">Robot Control</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_manipulation.html">ROS 2 Joint Control: Extension Python Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_ackermann_controller.html">ROS 2 Ackermann Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_rl_controller.html">Running a Reinforcement Learning Policy through ROS 2 and Isaac Sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation.html">ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_multi_navigation.html">Multiple Robot ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation_heightmap.html">ROS 2 Navigation with Heightmap Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_moveit.html">MoveIt 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_control.html">ROS 2 Control</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/index.html">Bridge Configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_python.html">ROS 2 Bridge in Standalone Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_launch.html">ROS 2 Launch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_simulation_control.html">ROS 2 Simulation Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_qos.html">ROS 2 Quality of Service (QoS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_auto_namespace.html">Automatic ROS 2 Namespace Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_name_override.html">NameOverride Attribute</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/index.html">Custom Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_publisher_subscriber.html">ROS 2 Generic Publisher and Subscriber</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_server_client.html">ROS 2 Generic Server and Client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_prim_service.html">ROS 2 Service for Manipulating Prims Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_message_python.html">ROS 2 Python Custom Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_omnigraph_node_python.html">ROS 2 Python Custom OmniGraph Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_omnigraph_cpp_node.html">ROS 2 Custom C++ OmniGraph Node</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/urdf_import_export/index.html">URDF Import and Export</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/help/index.html">Help and Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/ros2_faq.html">ROS 2 Frequently Asked Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../nvidia_isaac_ros/isaac_ros_tutorials.html">NVIDIA Isaac ROS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../synthetic_data_generation/index.html">Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../replicator_tutorials/index.html">Perception Data Generation (Replicator)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_recorder.html">Synthetic Data Recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_getting_started.html">Getting Started Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_sdg_workflows.html">SDG Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_scene_based_sdg.html">Scene Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_object_based_sdg.html">Object Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_infinigen_sdg.html">Environment Based Synthetic Dataset Generation with Infinigen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_amr_navigation.html">Randomization in Simulation – AMR Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_ur10_palletizing.html">Randomization in Simulation – UR10 Palletizing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_augmentation.html">Data Augmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_custom_og_randomizer.html">Custom Replicator Randomization Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_modular_scripting.html">Modular Behavior Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_randomizers.html">Randomization Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_snippets.html">Useful Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../action_and_event_data_generation/index.html">Action and Event Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_agent.html">Actor Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration.html">Configuration File Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_sample_configs.html">Sample Configs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_anim_robot.html">Animated Robot Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration_editor.html">Configuration Editor API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_custom_writer_example.html">Example: RTSP Streaming with CustomWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_visual_noise_example.html">Visual Noise and Image Degradation Effects Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_behavior_tree_gen.html">Behavior Tree Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/context_files_and_schemas.html">Context Files and Metadata Schemas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/required_inputs.html">Required inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/example_walkthrough.html">Example Walkthrough</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/three_api_functions.html">Using the API Functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_object.html">Object Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/ext_chat_iro.html">Chat IRO: Natural Language Interface for Isaac Sim Replicator Object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/setting.html">Setting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable.html">Mutable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/camera.html">Camera</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/geometry.html">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/force.html">Force</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/light.html">Light</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable_attribute.html">Mutable Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/transformation.html">Transformation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/harmonizer.html">Harmonizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/empty_space_detection.html">Empty Space Detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/macro.html">Macro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/distribution_visualizer.html">Distribution Visualizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/randomization_dependency.html">Randomization Dependency: Incremental Examples</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_caption.html">VLM Scene Captioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_incident.html">Physical Space Event Generation</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_sensors_rtx_placement.html">RTX Sensors Placement and Calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_placement.html">Camera Placement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_calibration.html">Camera Calibration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/example_event_reactive_actors.html">Reacting to Events with Actor Triggers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_omni_metropolis_pipeline.html">Omni Metropolis Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_telemetry.html">Telemetry and Performance Tracking</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_grasping_sdg.html">Grasping Synthetic Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_teleop_sdg.html">Teleoperation Synthetic Data Generation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_python_api.html">API Documentation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference Information</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/community_highlights.html">Community Project Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_conventions.html">Isaac Sim Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/rendering_modes.html">Rendering modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/sim_performance_optimization_handbook.html">Isaac Sim Performance Optimization Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/benchmarks.html">Isaac Sim Benchmarks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../omniverse_usd/index.html">Omniverse and USD</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/building_cpp_usd_plugins.html">Building C++ USD Plugins Against the Standalone Installer</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/data-collection.html">Data Collection &amp; Usage</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/legal.html">Licenses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses-isaac-sim.html">Isaac Sim License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-additional.html">Isaac Sim Additional Software and Materials License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-webrtc-streaming-client.html">Isaac Sim WebRTC Streaming Client License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/NVIDIA_Omniverse_License_Agreement.html">Omniverse License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licensing-notices-disclaimers.html">Licensing Disclaimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses.html">Other Licenses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/redistributable-ov-software.html">Redistributable Omniverse Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-faq.html">License FAQ</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="../index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li class="breadcrumb-item"><a class="nav-link" href="index.html">Installation</a></li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Setup Tips</span></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="header-article-items__end">
+<div class="header-article-item">
+<div class="header-article-item">
+<div class="d-flex justify-content-end w-100">
+<a href="https://surveys.hotjar.com/4904bf71-6484-47a7-83ff-4715cceabdb5" id="openPopupButton">Is this page helpful?</a>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="setup-tips">
+<span id="isaac-sim-setup-faq"></span><h1>设置技巧<a class="headerlink" href="#setup-tips" title="Link to this heading">#</a></h1>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="isaac-sim-setup-native-modes">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Isaac Sim Modes</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="rubric">Isaac Sim 完整应用</p>
+<p class="sd-card-text">这是主要的窗口化 Isaac Sim 应用程序。</p>
+<p class="sd-card-text">此模式包含所有 Isaac Sim 扩展，且其中大多数默认已启用。</p>
+<p class="rubric" id="isaac-sim-setup-native-webrtc">Isaac Sim 完整流式传输应用（使用 Isaac Sim WebRTC 流式传输客户端）</p>
+<p class="sd-card-text">这是 Isaac Sim 的无头版本。它可以在配备 RTX GPU 的工作站上远程运行，并通过适用于 Linux、Windows 和 macOS 的 <a class="reference internal" href="manual_livestream_clients.html#isaac-sim-setup-livestream-webrtc"><span class="std std-ref">Isaac Sim WebRTC 流式传输客户端</span></a> 应用进行访问，或者通过通过 Docker Compose 部署的 <a class="reference internal" href="manual_livestream_clients.html#isaac-sim-web-streaming-client"><span class="std std-ref">基于 Web 的查看器</span></a> 进行访问。</p>
+<p class="sd-card-text">此模式包含所有 Isaac Sim 扩展，且其中大多数默认已启用。</p>
+<p class="rubric">Isaac Sim Python</p>
+<p class="sd-card-text">这是一个用于运行 Python 示例的小型应用。</p>
+<ul class="simple">
+<li><p class="sd-card-text">请参阅 <a class="reference internal" href="../python_scripting/manual_standalone_python.html#isaac-sim-python-environment"><span class="std std-ref">Python 环境</span></a>。</p></li>
+</ul>
+<p class="rubric" id="isaac-sim-launch-scripts">Isaac Sim 启动脚本</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-0">
+Linux</label><div class="sd-tab-content docutils">
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-text"><a class="reference internal" href="#isaac-sim-launch-scripts"><span class="std std-ref">Isaac Sim 启动脚本</span></a>，可在 Linux 上从 Isaac Sim 包中运行</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">脚本</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">isaac-sim.sh</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim 完整应用</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">isaac-sim.streaming.sh</span></code></p></td>
+<td><p class="sd-card-text">带有 Isaac Sim WebRTC 流式传输客户端服务的 Isaac Sim 无头完整应用</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">isaac-sim.fabric.sh</span></code></p></td>
+<td><p class="sd-card-text">启用 <em>Fabric</em> 的 Isaac Sim 完整应用</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">isaac-sim.xr.vr.sh</span></code></p></td>
+<td><p class="sd-card-text">启用 XR 和 VR 的 Isaac Sim 基础应用</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">jupyter_notebook.sh</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Jupyter Notebook 可执行文件</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">python.sh</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Python 可执行文件</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">setup_python_env.sh</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Python 环境设置</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">clear_caches.sh</span></code></p></td>
+<td><p class="sd-card-text">用于清除本地缓存的脚本</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">post_install.sh</span></code></p></td>
+<td><p class="sd-card-text">安装后需运行一次的脚本</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">warmup.sh</span></code></p></td>
+<td><p class="sd-card-text">用于预热着色器缓存的脚本</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-1">
+Windows</label><div class="sd-tab-content docutils">
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-text"><a class="reference internal" href="#isaac-sim-launch-scripts"><span class="std std-ref">Isaac Sim 启动脚本</span></a>，可在 Windows 上从 Isaac Sim 包中运行</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">脚本</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">isaac-sim.bat</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim 完整应用</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">isaac-sim.streaming.bat</span></code></p></td>
+<td><p class="sd-card-text">带有 Isaac Sim WebRTC 流式传输客户端服务的 Isaac Sim 无头完整应用</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">isaac-sim.fabric.bat</span></code></p></td>
+<td><p class="sd-card-text">启用 <em>Fabric</em> 的 Isaac Sim 完整应用</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">isaac-sim.xr.vr.bat</span></code></p></td>
+<td><p class="sd-card-text">启用 XR 和 VR 的 Isaac Sim 基础应用</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">python.bat</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Python 可执行文件</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">setup_python_env.bat</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Python 环境设置</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">clear_caches.bat</span></code></p></td>
+<td><p class="sd-card-text">用于清除本地缓存的脚本</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">post_install.bat</span></code></p></td>
+<td><p class="sd-card-text">安装后需运行一次的脚本</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">warmup.bat</span></code></p></td>
+<td><p class="sd-card-text">用于预热着色器缓存的脚本</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-2">
+Docker (x86_64)</label><div class="sd-tab-content docutils">
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-text"><a class="reference internal" href="#isaac-sim-launch-scripts"><span class="std std-ref">Isaac Sim 启动脚本</span></a>，可从 Isaac Sim 容器中运行</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">脚本</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">runapp.sh</span></code></p></td>
+<td><p class="sd-card-text">用于以窗口化应用模式运行 Isaac Sim 的脚本</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">runheadless.sh</span></code></p></td>
+<td><p class="sd-card-text">以无头模式运行 Isaac Sim 并启用 Isaac Sim WebRTC Streaming Client 服务的脚本</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">jupyter_notebook.sh</span> <span class="pre">--allow-root</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Jupyter Notebook 可执行文件</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">python.sh</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Python 可执行文件</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">setup_python_env.sh</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Python 环境设置</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">clear_caches.sh</span></code></p></td>
+<td><p class="sd-card-text">用于清除本地缓存的脚本</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">warmup.sh</span></code></p></td>
+<td><p class="sd-card-text">用于预热着色器缓存的脚本</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-3">
+Docker (aarch64)</label><div class="sd-tab-content docutils">
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-text"><a class="reference internal" href="#isaac-sim-launch-scripts"><span class="std std-ref">Isaac Sim 启动脚本</span></a>，可从 Isaac Sim 容器中运行</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">脚本</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">runapp.sh</span></code></p></td>
+<td><p class="sd-card-text">用于以窗口化应用模式运行 Isaac Sim 的脚本</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">python.sh</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Python 可执行文件</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">setup_python_env.sh</span></code></p></td>
+<td><p class="sd-card-text">Isaac Sim Python 环境设置</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">clear_caches.sh</span></code></p></td>
+<td><p class="sd-card-text">用于清除本地缓存的脚本</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">warmup.sh</span></code></p></td>
+<td><p class="sd-card-text">用于预热着色器缓存的脚本</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Isaac Sim CLI Launch flags</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="pst-scrollable-table-container"><table class="table" id="id5">
+<caption><span class="caption-text">可用于启动 Isaac Sim 的标志</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">标志</p></th>
+<th class="head"><p class="sd-card-text">描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--/path/to/key=value</span></code></p></td>
+<td><p class="sd-card-text">指示使用给定值覆盖配置键。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--clear-cache</span></code></p></td>
+<td><p class="sd-card-text">在启动前清除 $cache 文件夹。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--clear-data</span></code></p></td>
+<td><p class="sd-card-text">在启动前清除 $data 文件夹。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--disable-ext-startup</span></code></p></td>
+<td><p class="sd-card-text">不启动任何扩展，仅加载它们。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--enable</span> <span class="pre">EXT_ID</span></code></p></td>
+<td><p class="sd-card-text">启用扩展（将扩展添加到启用列表的简写方式）。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--exec</span> <span class="pre">SCRIPT</span> <span class="pre">ARGS...,</span> <span class="pre">-e</span> <span class="pre">SCRIPT</span> <span class="pre">ARGS...</span></code></p></td>
+<td><p class="sd-card-text">在启动时执行控制台命令</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--ext-folder</span> <span class="pre">PATH</span></code></p></td>
+<td><p class="sd-card-text">添加用于查找扩展的扩展文件夹。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--ext-path</span> <span class="pre">PATH</span></code></p></td>
+<td><p class="sd-card-text">添加直接扩展路径（允许添加单个扩展）。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--ext-precache-mode</span></code></p></td>
+<td><p class="sd-card-text">仅解析并下载所有扩展，随后立即退出。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--help</span></code>，<code class="docutils literal notranslate"><span class="pre">-h</span></code></p></td>
+<td><p class="sd-card-text">此帮助消息</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--info</span></code>，<code class="docutils literal notranslate"><span class="pre">-v</span></code></p></td>
+<td><p class="sd-card-text">在控制台中显示信息日志输出</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--list-exts</span></code></p></td>
+<td><p class="sd-card-text">列出所有本地扩展并退出。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--list-registry-exts</span></code></p></td>
+<td><p class="sd-card-text">列出所有注册表扩展并退出。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--merge-config,</span> <span class="pre">-m=&lt;file&gt;</span></code></p></td>
+<td><p class="sd-card-text">合并配置文件。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--portable</span></code></p></td>
+<td><p class="sd-card-text">启用便携模式。便携根目录默认为 ${kit} 路径。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--portable-root</span> <span class="pre">PATH</span></code></p></td>
+<td><p class="sd-card-text">启用便携模式，并将 data/cache/logs 文件夹放置在该位置。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--publish</span> <span class="pre">EXT_ID</span></code></p></td>
+<td><p class="sd-card-text">将扩展发布到注册表并退出。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--publish-overwrite</span></code></p></td>
+<td><p class="sd-card-text">允许在发布时覆盖注册表中的扩展。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--reset-user</span></code></p></td>
+<td><p class="sd-card-text">不从 user.config 文件加载持久化设置。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--unpublish</span> <span class="pre">EXT_ID</span></code></p></td>
+<td><p class="sd-card-text">从注册表中取消发布扩展并退出。</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--update-exts</span></code></p></td>
+<td><p class="sd-card-text">在扩展注册表中查找最新版本，并更新所有已启用的扩展。</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--verbose</span></code>，<code class="docutils literal notranslate"><span class="pre">-vv</span></code></p></td>
+<td><p class="sd-card-text">在控制台中显示详细日志输出</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--wait-debugger</span></code>，<code class="docutils literal notranslate"><span class="pre">-d</span></code></p></td>
+<td><p class="sd-card-text">暂停执行并等待调试器附加。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Kit Extension Registry</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="rubric" id="isaac-sim-setup-kit-registry">Kit 扩展注册表</p>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p class="sd-card-text">从 Isaac Sim 6.0 开始，Kit 扩展注册表现由 Kit SDK 自动管理。如果您有指定 Kit 注册表设置的自定义 <code class="docutils literal notranslate"><span class="pre">.kit</span></code> 文件或配置覆盖，请将其移除。</p>
+</div>
+<p class="sd-card-text"><strong>针对 Isaac Sim 6.0 及更高版本的迁移：</strong>如果您有包含 <code class="docutils literal notranslate"><span class="pre">[settings.exts."omni.kit.registry.nucleus"]</span></code> 下 Kit 注册表设置的自定义 <code class="docutils literal notranslate"><span class="pre">.kit</span></code> 配置文件或用户配置覆盖，建议将其删除以确保兼容性。</p>
+<p class="sd-card-text">Kit SDK 现在会自动处理注册表配置，不再需要自定义注册表覆盖。删除这些设置可确保与 Isaac Sim 6.0 及更高版本的兼容性。</p>
+<p class="sd-card-text">要添加自定义注册表，请转到 <strong>Window</strong> &gt; <strong>Extensions</strong>，并在 <strong>Extension Registries</strong> 部分添加新的自定义注册表。</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Differences Between Workstation And Docker</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="rubric" id="isaac-sim-setup-differences">工作站与 Docker 之间的差异</p>
+<p class="sd-card-text">安装 Isaac Sim 有两种方法：</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">建议 <strong>工作站</strong> 用户使用 <a class="reference internal" href="install_workstation.html#isaac-sim-app-install-workstation"><span class="std std-ref">工作站安装</span></a>。</p></li>
+<li><p class="sd-card-text">对于使用 <strong>Docker</strong> 容器的远程无头服务器或云环境，建议使用<a class="reference internal" href="install_container.html#isaac-sim-app-install-container"><span class="std std-ref">容器安装</span></a>。</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p class="sd-card-text">以下是工作站安装与 Docker 安装之间的主要区别：</p>
+<ul class="simple">
+<li><p class="sd-card-text">Isaac Sim Docker 容器不包含 Nucleus，默认情况下将直接从云端访问资产。</p></li>
+<li><p class="sd-card-text">工作站软件包的推荐根目录为 <strong>~/isaacsim</strong> 或 <strong>C:\isaacsim</strong>，而 Docker 容器中的根目录为 <strong>/isaac-sim</strong>。</p></li>
+<li><p class="sd-card-text">有关常见路径的差异，请参阅 <a class="reference internal" href="#isaac-sim-misc-paths"><span class="std std-ref">Isaac Sim 应用位置</span></a>。</p></li>
+</ul>
+</div>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Common Path Locations</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="rubric" id="isaac-sim-paths-app"><span id="isaac-sim-misc-paths"></span>Isaac Sim 应用位置</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-1" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-4">
+Linux</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>~/isaacsim
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-5">
+Windows</label><div class="sd-tab-content docutils">
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span>C<span class="p">:</span><span class="nl">\isaacsim</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-6" name="sd-tab-set-1" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-6">
+Docker</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/isaac-sim
+</pre></div>
+</div>
+</div>
+</div>
+<p class="rubric" id="isaac-sim-paths-logs">Isaac Sim 日志位置</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-2" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-7">
+Linux</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>~/.nvidia-omniverse/logs/Kit/Isaac-Sim
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-8" name="sd-tab-set-2" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-8">
+Windows</label><div class="sd-tab-content docutils">
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span><span class="nv">%userprofile%</span>\.nvidia-omniverse\logs\Kit\Isaac-Sim
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-9" name="sd-tab-set-2" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-9">
+Docker</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/root/.nvidia-omniverse/logs/Kit/Isaac-Sim
+</pre></div>
+</div>
+</div>
+</div>
+<p class="rubric" id="isaac-sim-paths-shadercache">Isaac Sim 着色器缓存位置</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-10" name="sd-tab-set-3" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-10">
+Linux</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>~/.cache/ov/Kit
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-11" name="sd-tab-set-3" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-11">
+Windows</label><div class="sd-tab-content docutils">
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span><span class="nv">%userprofile%</span>\AppData\Local\ov\cache\Kit
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-12" name="sd-tab-set-3" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-12">
+Docker</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/root/.cache/ov/Kit
+</pre></div>
+</div>
+</div>
+</div>
+<p class="rubric" id="isaac-sim-paths-configs">Isaac Sim 配置位置</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-13" name="sd-tab-set-4" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-13">
+Linux</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>~/.local/share/ov/data/Kit/Isaac-Sim
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-14" name="sd-tab-set-4" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-14">
+Windows</label><div class="sd-tab-content docutils">
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span><span class="nv">%userprofile%</span>\AppData\Local\ov\data\Kit\Isaac-Sim
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-15" name="sd-tab-set-4" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-15">
+Docker</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/root/.local/share/ov/data/Kit/Isaac-Sim
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Multi-GPU</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="rubric" id="multi-gpu-ref">多 GPU</p>
+<p class="sd-card-text">从命令行配置多 GPU 渲染：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./isaac-sim.sh --/renderer/multiGpu/enabled=true</span>
+</pre></div>
+</div>
+<p class="sd-card-text">您也可以在运行中的应用中通过 Carbonite 设置来配置渲染器：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">carb.settings</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">carb</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get_settings</span><span class="p">()</span>
+
+<span class="c1"># set different types into different keys</span>
+<span class="c1"># guideline: each extension puts settings in /ext/[ext name]/ and lists them extension.toml for discoverability</span>
+<span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"/renderer/multiGPU/enabled"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sd-card-text">以下设置控制渲染器的 GPU 选择：</p>
+<ul class="simple">
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">/renderer/multiGpu/enabled=true</span></code> 启用多个 GPU 进行渲染。</p></li>
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">/renderer/multiGpu/autoEnable=true</span></code> 在存在多个 GPU 时启用多 GPU 渲染。</p></li>
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">/renderer/multiGpu/maxGpuCount=2</span></code> 设置分配用于渲染的最大 GPU 数量。</p></li>
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">/renderer/activeGpu=0</span></code> 使用 <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code> 报告的顺序选择一个物理 GPU。</p></li>
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">/renderer/multiGpu/activeCudaGpus=0,</span></code> 使用 CUDA 设备顺序选择渲染器 GPU。此顺序遵循
+<code class="docutils literal notranslate"><span class="pre">CUDA_VISIBLE_DEVICES</span></code>。对于单个 GPU，请保留末尾的逗号，以便 Kit 将该值解析为列表。</p></li>
+</ul>
+<p class="sd-card-text">对于独立 Python 工作流，请使用 <code class="docutils literal notranslate"><span class="pre">active_cuda_gpus</span></code> 启动选项配合
+<code class="xref py py-class docutils literal notranslate"><span class="pre">isaacsim.simulation_app.SimulationApp</span></code>：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.</span>
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaacsim</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationApp</span>
+
+<span class="c1"># CUDA index 0 follows CUDA_VISIBLE_DEVICES ordering rather than physical GPU ordering.</span>
+<span class="n">simulation_app</span> <span class="o">=</span> <span class="n">SimulationApp</span><span class="p">({</span><span class="s2">"active_cuda_gpus"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"multi_gpu"</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">simulation_app</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">simulation_app</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sd-card-text">请勿将 <code class="docutils literal notranslate"><span class="pre">active_cuda_gpus</span></code> 与 <code class="docutils literal notranslate"><span class="pre">active_gpu</span></code> 结合使用。当需要物理 GPU 顺序时，请使用 <code class="docutils literal notranslate"><span class="pre">active_gpu</span></code>；
+当 GPU 选择必须遵循 CUDA 顺序时，请使用 <code class="docutils literal notranslate"><span class="pre">active_cuda_gpus</span></code>。即使启用了多 GPU 渲染，
+包含一个元素的 <code class="docutils literal notranslate"><span class="pre">active_cuda_gpus</span></code> 列表也会将渲染限制为单个 GPU。</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Assets</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text" id="isaac-sim-setup-assets-check"><span id="isaac-sim-asset-root-resolution"></span><span id="isaac-sim-setup-assets-content-pack"></span>资产服务选择、本地资产包、根目录优先级及验证方法
+已在 <a class="reference internal" href="accessing_assets.html#isaac-sim-accessing-assets"><span class="std std-ref">访问资产</span></a> 中记录。</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Docker</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="rubric" id="isaac-sim-setup-keep-configs">将 Isaac Sim 配置保存到本地磁盘</p>
+<p class="sd-card-text">要在容器内运行时保持 Isaac Sim 配置和数据的持久性，请在运行 Docker 容器时使用以下标志。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">-v ~/docker/isaac-sim/cache/main:/isaac-sim/.cache:rw                    #For cache</span>
+<span class="go">-v ~/docker/isaac-sim/cache/computecache:/isaac-sim/.nv/ComputeCache:rw  #For cache</span>
+<span class="go">-v ~/docker/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw                  #For cache</span>
+<span class="go">-v ~/docker/isaac-sim/logs:/isaac-sim/.nvidia-omniverse/logs:rw          #For log files</span>
+<span class="go">-v ~/docker/isaac-sim/config:/isaac-sim/.nvidia-omniverse/config:rw      #For config files</span>
+<span class="go">-v ~/docker/isaac-sim/data:/isaac-sim/.local/share/ov/data:rw            #For data</span>
+<span class="go">-v ~/docker/isaac-sim/pkg:/isaac-sim/.local/share/ov/pkg:rw              #For apps</span>
+<span class="go">-u 1234:1234                                                             #To set user permissions</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>isaac-sim<span class="w"> </span>--entrypoint<span class="w"> </span>bash<span class="w"> </span>-it<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-e<span class="w"> </span><span class="s2">"ACCEPT_EULA=Y"</span><span class="w"> </span>--rm<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>~/docker/isaac-sim/cache/main:/isaac-sim/.cache:rw<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>~/docker/isaac-sim/cache/computecache:/isaac-sim/.nv/ComputeCache:rw<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>~/docker/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>~/docker/isaac-sim/logs:/isaac-sim/.nvidia-omniverse/logs:rw<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>~/docker/isaac-sim/config:/isaac-sim/.nvidia-omniverse/config:rw<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>~/docker/isaac-sim/data:/isaac-sim/.local/share/ov/data:rw<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>~/docker/isaac-sim/pkg:/isaac-sim/.local/share/ov/pkg:rw<span class="w"> </span><span class="se">\</span>
+-u<span class="w"> </span><span class="m">1234</span>:1234<span class="w"> </span><span class="se">\</span>
+nvcr.io/nvidia/isaac-sim:6.1.0
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p class="sd-card-text">这些标志将使用主目录来保存 Isaac Sim 缓存、日志、配置和数据。</p>
+</div>
+<p class="rubric" id="isaac-sim-setup-net-host">连接 Docker 容器时出现问题</p>
+<p class="sd-card-text">要解决连接 Docker 容器时的某些问题，请在运行 Docker 容器时尝试使用 <strong>–network=host</strong> 标志。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-e<span class="w"> </span><span class="s2">"ACCEPT_EULA=Y"</span><span class="w"> </span>--rm<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>nvcr.io/nvidia/isaac-sim:6.1.0
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p class="sd-card-text">连接到 Nucleus 服务器时需要此标志。</p>
+</div>
+<p class="rubric" id="isaac-sim-setup-read-logs">在容器中读取日志</p>
+<p class="sd-card-text">要确认 NVIDIA Isaac Sim 正在容器中运行，您可以读取日志：</p>
+<p class="sd-card-text">1. 如果 NVIDIA Isaac Sim 容器位于远程机器上，请使用终端通过 SSH 登录到 Docker 主机。在包含 pem 密钥文件夹的位置运行此命令；将 <code class="docutils literal notranslate"><span class="pre">&lt;public_ip_address&gt;</span></code> 替换为您的实例或远程主机 IP 地址：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ssh<span class="w"> </span>-i<span class="w"> </span><span class="s2">"yourkey.pem"</span><span class="w"> </span>ubuntu@&lt;public_ip_address&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p class="sd-card-text">按如下方式访问正在运行的容器：</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>&lt;container_id_or_name&gt;<span class="w"> </span>bash
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>/root/.nvidia-omniverse/logs/Kit/Isaac-Sim/&lt;version_number&gt;
+</pre></div>
+</div>
+<p class="rubric" id="isaac-sim-setup-restart-container">重启容器</p>
+<p class="sd-card-text">以下步骤用于重启无头容器。</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">通过 SSH 登录到运行 NVIDIA Isaac Sim 容器的主机或 AWS 实例。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ssh<span class="w"> </span>-i<span class="w"> </span><span class="s2">"&lt;ssh_key_name&gt;.pem"</span><span class="w"> </span>ubuntu@&lt;public_ip_address&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p class="sd-card-text">列出所有正在运行的容器，并找到运行 NVIDIA Isaac Sim 的容器 ID。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>ps
+<span class="go">CONTAINER ID        IMAGE</span>
+<span class="go">823686a7036d      nvcr.io/nvidia/isaac-sim...2021.2.1</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text">重启容器。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>restart<span class="w"> </span><span class="o">[</span>CONTAINER<span class="w"> </span>ID<span class="o">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text">查看 Docker 日志。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>logs<span class="w"> </span><span class="o">[</span>CONTAINER<span class="w"> </span>ID<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric" id="isaac-sim-restart-sim-inside-docker">在 Docker 内重启 NVIDIA Isaac Sim</p>
+<p class="sd-card-text">如果您想在保持 Docker 运行的同时重启 NVIDIA Isaac Sim，必须以 Bash 作为入口点启动 Docker，以便您可以手动启动或停止 NVIDIA Isaac Sim。</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">以 Bash 启动 Docker，并手动启动 NVIDIA Isaac Sim。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--entrypoint<span class="w"> </span>bash<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-e<span class="w"> </span><span class="s2">"ACCEPT_EULA=Y"</span><span class="w"> </span>--rm<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>nvcr.io/nvidia/isaac-sim:6.1.0
+<span class="gp">$ </span>./runheadless.sh
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p class="sd-card-text">前往 <a class="reference internal" href="manual_livestream_clients.html#isaac-sim-setup-livestream-webrtc"><span class="std std-ref">Isaac Sim WebRTC Streaming Client</span></a> 以连接原生流式客户端并远程查看 NVIDIA Isaac Sim。有关所有流式选项，请参阅 <a class="reference internal" href="manual_livestream_clients.html#isaac-sim-manual-livestream-client"><span class="std std-ref">Livestream Clients</span></a>。</p></li>
+</ol>
+<p class="sd-card-text">3. 当需要退出时，在一个单独的终端中，在运行无头服务器的同一容器内启动一个交互式 bash 会话，并终止与 NVIDIA Isaac Sim 相关的进程。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>&lt;container_id&gt;<span class="w"> </span>bash
+<span class="gp">$ </span>pkill<span class="w"> </span>omniverse-kit
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text">重启 NVIDIA Isaac Sim。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./runheadless.sh
+</pre></div>
+</div>
+<p class="rubric" id="isaac-sim-save-docker-image">保存 Docker 镜像</p>
+<p class="sd-card-text">如果您在 Docker 内部进行了重大更改，例如安装了 ROS 或其他库，您可能希望保存 Docker 镜像，以便在重启 Docker 时无需重新安装所有内容。</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">找到容器的 ID 并提交它。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>ps
+<span class="gp">$ </span>docker<span class="w"> </span>commit<span class="w"> </span>&lt;CONTAINER<span class="w"> </span>ID&gt;<span class="w"> </span>&lt;new<span class="w"> </span>docker<span class="w"> </span>name&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p class="sd-card-text">要重新加载特定的 Docker：</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--entrypoint<span class="w"> </span>bash<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-e<span class="w"> </span><span class="s2">"ACCEPT_EULA=Y"</span><span class="w"> </span>--rm<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>-d<span class="w"> </span>&lt;new<span class="w"> </span>Docker<span class="w"> </span>name&gt;
+</pre></div>
+</div>
+<p class="rubric" id="isaac-sim-cached-docker-image">创建缓存的 Docker 镜像</p>
+<p class="sd-card-text">创建 Isaac Sim 的本地缓存镜像将有助于缩短在容器中运行 Isaac Sim 的加载时间，并包含自定义预安装的依赖项。</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">要创建此缓存镜像，首先从 NGC 拉取并运行最新的 Isaac Sim 容器。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>pull<span class="w"> </span>nvcr.io/nvidia/isaac-sim:6.1.0
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>isaac-sim<span class="w"> </span>--entrypoint<span class="w"> </span>bash<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="s2">"ACCEPT_EULA=Y"</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"PRIVACY_CONSENT=Y"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>nvcr.io/nvidia/isaac-sim:6.1.0
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p class="sd-card-text">安装任何依赖项（例如 ROS 或其他库）并预热着色器缓存。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./python.sh<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>stable-baselines3<span class="w"> </span>tensorboard
+<span class="gp">$ </span>./python.sh<span class="w"> </span>standalone_examples/api/isaacsim.simulation_app/hello_world.py<span class="w"> </span>-v
+<span class="gp">$ </span>./runheadless.sh<span class="w"> </span>-v<span class="w"> </span>--/app/quitAfter<span class="o">=</span><span class="m">1000</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text">创建缓存的 Docker 镜像。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>commit<span class="w"> </span>isaac-sim<span class="w"> </span>isaac-sim-cached
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text">如有需要，将 Docker 镜像保存为压缩归档文件，以便传输到另一台机器。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>save<span class="w"> </span>isaac-sim-cached<span class="w"> </span><span class="p">|</span><span class="w"> </span>gzip<span class="w"> </span>&gt;<span class="w"> </span>isaac-sim-cached.tar.gz
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p class="sd-card-text">将压缩归档文件加载为 Docker 镜像。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>load<span class="w"> </span>-i<span class="w"> </span>isaac-sim-cached.tar.gz<span class="w"> </span>isaac-sim-cached
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p class="sd-card-text">运行此缓存镜像。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>isaac-sim-cached<span class="w"> </span>--entrypoint<span class="w"> </span>bash<span class="w"> </span>-it<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>--rm<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="s2">"ACCEPT_EULA=Y"</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"PRIVACY_CONSENT=Y"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>isaac-sim-cached
+</pre></div>
+</div>
+<p class="rubric" id="isaac-sim-setup-docker-post-install">设置 Docker</p>
+<p class="sd-card-text">在 Linux 上安装 Docker 后，请按照 <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall">Linux 安装后步骤</a> 中的说明进行设置，以便运行 Docker 容器时无需使用 <em>sudo</em>。</p>
+<p class="rubric" id="isaac-sim-setup-mount-folder">将文件夹挂载到容器</p>
+<p class="sd-card-text">若要将主机机器的数据添加到容器中，必须挂载一个文件夹。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>--rm<span class="w"> </span>-e<span class="w"> </span><span class="s2">"ACCEPT_EULA=Y"</span><span class="w"> </span>-v<span class="w"> </span>~/docker/isaac-sim/documents:/root/Documents:rw<span class="w"> </span>nvcr.io/nvidia/isaac-sim:6.1.0
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p class="sd-card-text">现在可以将文件复制到主文件夹中的 docker/isaac-sim/documents 目录，这些文件将显示在 Isaac Sim 容器的 /root/Documents 目录中。</p>
+</div>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Cloud</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="rubric" id="isaac-sim-setup-aws-ip-address">获取 AWS EC2 实例的 IP 地址</p>
+<p class="sd-card-text">要获取 AWS EC2 实例的公共和私有 IP 地址，请转到 <strong>EC2 Dashboard</strong> 的 <strong>Instances</strong> 部分并选择该实例。有关私有和公共 IP 的示例，请参阅下图：</p>
+<figure class="align-center">
+<img alt="../_images/isaac_main_aws_ip_address.png" src="../_images/isaac_main_aws_ip_address.png"/>
+</figure>
+<p class="rubric" id="isaac-sim-setup-ssh-aws-instance">SSH 登录 AWS EC2 实例</p>
+<p class="sd-card-text">如果需要直接访问通过上述部署创建的 AWS EC2 实例，请执行以下步骤以 SSH 登录该实例：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ssh<span class="w"> </span>-i<span class="w"> </span><span class="s2">"&lt;ssh_key_name&gt;.pem"</span><span class="w"> </span>ubuntu@&lt;public_ip_address&gt;
+</pre></div>
+</div>
+<p class="rubric" id="isaac-sim-setup-create-aws-key">创建 AWS 访问密钥</p>
+<p class="sd-card-text">请按照以下说明创建 AWS 访问密钥：</p>
+<blockquote>
+<div><p class="sd-card-text"><a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey">管理访问密钥（控制台）</a></p>
+</div></blockquote>
+<p class="rubric" id="isaac-sim-setup-create-ssh-key">创建 SSH 密钥</p>
+<p class="sd-card-text"><strong>在 Linux 上</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">运行：</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir<span class="w"> </span>~/.ssh
+<span class="gp">$ </span>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>~/.ssh
+<span class="gp">$ </span>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>rsa
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p class="sd-card-text">输入您的密码短语两次。</p></li>
+<li><p class="sd-card-text">您的公钥位于主文件夹中的 <strong>.ssh/id_rsa.pub</strong>，私钥位于 <strong>.ssh/id_rsa</strong>。</p></li>
+</ol>
+<p class="sd-card-text"><strong>在 Windows 上</strong></p>
+<ol class="arabic">
+<li><p class="sd-card-text">下载 <a class="reference external" href="https://www.puttygen.com">PuTTYgen</a>。</p></li>
+<li><p class="sd-card-text">启动 PuTTYgen，并点击“Generate a public/private key pair”。</p></li>
+<li><p class="sd-card-text">点击 <strong>Save public key</strong>，并将文件命名为“${ssh_key_name}.pub”。这是您的公钥文件。</p></li>
+<li><p class="sd-card-text">从 <strong>Conversions</strong> 菜单中，选择 <strong>Export OpenSSH key</strong>，并将文件命名为“${ssh_key_name}.pem”。这是您的私钥文件。</p></li>
+<li><p class="sd-card-text">编辑“${ssh_key_name}.pem”文件的属性。</p>
+<blockquote>
+<div><ul class="simple">
+<li><p class="sd-card-text">转到安全设置，点击 <strong>Advanced</strong></p></li>
+<li><p class="sd-card-text">移除继承</p></li>
+<li><p class="sd-card-text">将当前用户设置为文件所有者，并仅授予该用户完全权限</p></li>
+<li><p class="sd-card-text">这是为了防止在尝试 SSH 登录实例时出现权限错误</p></li>
+</ul>
+</div></blockquote></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="assets-and-nucleus-ref">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Nucleus</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="rubric" id="isaac-sim-setup-nucleus-add-assets-mount">Nucleus 上的资源</p>
+<p class="sd-card-text">要访问 Isaac Sim 资源，需要互联网连接。</p>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<ul class="simple">
+<li><p class="sd-card-text">Isaac Sim 资源也位于每个 Nucleus 服务器的主 <strong>/NVIDIA/Assets/Isaac</strong> 文件夹中。</p></li>
+</ul>
+</div>
+<p class="rubric" id="isaac-sim-setup-set-omni-server">设置默认 Nucleus 服务器</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">要在原生运行时设置默认 Nucleus 服务器，请打开 <code class="docutils literal notranslate"><span class="pre">user.config.json</span></code> 文件进行编辑，并找到以下行：</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">"persistent": {</span>
+<span class="go">    "isaac": {</span>
+<span class="go">        "asset_root": {</span>
+<span class="go">            "default": "omniverse://localhost/NVIDIA/Assets/Isaac/6.1",</span>
+<span class="go">        }</span>
+<span class="go">    },</span>
+<span class="go">},</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p class="sd-card-text">将 <code class="docutils literal notranslate"><span class="pre">localhost</span></code> 更改为 Nucleus 服务器的 IP 地址。</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<ul>
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">user.config.json</span></code> 文件的位置：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p class="sd-card-text">Linux：<code class="docutils literal notranslate"><span class="pre">~/.local/share/ov/data/Kit/Isaac-Sim/5.0/user.config.json</span></code></p></li>
+<li><p class="sd-card-text">Windows：<code class="docutils literal notranslate"><span class="pre">C:\Users\{username}\AppData\Local\ov\data\Kit\Isaac-Sim\5.0\user.config.json</span></code></p></li>
+</ul>
+</div></blockquote></li>
+<li><p class="sd-card-text"><strong>persistent/isaac/asset_root/default</strong> 设置中的文件夹应同时包含 <strong>Isaac</strong> 和 <strong>NVIDIA</strong> 文件夹。</p></li>
+</ul>
+</div>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text">您也可以使用以下标志运行 Isaac Sim：</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">--/persistent/isaac/asset_root/default="omniverse://&lt;ip_address&gt;/NVIDIA/Assets/Isaac/6.1"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text">要在 Docker 中运行时设置默认的 Nucleus 服务器，请使用 <code class="docutils literal notranslate"><span class="pre">-e</span> <span class="pre">"OMNI_SERVER=omniverse://&lt;ip_address&gt;/NVIDIA/Assets/Isaac/6.1"</span></code> 标志，其中 <code class="docutils literal notranslate"><span class="pre">&lt;ip_address&gt;</span></code> 是 Nucleus 服务器的 IP 地址。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-e<span class="w"> </span><span class="s2">"ACCEPT_EULA=Y"</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"OMNI_SERVER=omniverse://&lt;ip_address&gt;/NVIDIA/Assets/Isaac/6.1"</span><span class="w"> </span>--rm<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>nvcr.io/nvidia/isaac-sim:6.1.0
+</pre></div>
+</div>
+<p class="rubric" id="isaac-sim-setup-set-omni-user">设置连接 Nucleus 服务器的默认用户名和密码</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">使用以下命令在本地运行时设置默认凭据：</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">OMNI_USER</span><span class="o">=</span>&lt;username&gt;
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">OMNI_PASS</span><span class="o">=</span>&lt;password&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p class="sd-card-text">要在 Docker 中运行时设置默认凭据，请使用 <code class="docutils literal notranslate"><span class="pre">-e</span> <span class="pre">"OMNI_USER=&lt;username&gt;"</span> <span class="pre">-e</span> <span class="pre">"OMNI_PASS=&lt;password&gt;"</span></code> 标志（默认值均为 “admin”）。</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-e<span class="w"> </span><span class="s2">"ACCEPT_EULA=Y"</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"OMNI_USER=&lt;username&gt;"</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"OMNI_PASS=&lt;password&gt;"</span><span class="w"> </span>--rm<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>nvcr.io/nvidia/isaac-sim:6.1.0
+</pre></div>
+</div>
+</div>
+</details></section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="install_ros.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">ROS 2 Installation</p>
+</div>
+</a>
+<a class="right-next" href="../overview/help.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Help &amp; FAQ</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<div class="bd-sidebar-secondary"></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer="" src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="../_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Your Privacy Choices</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2023-2026, NVIDIA Corporation.
+      <br/>
+</p>
+</div>
+<div class="footer-item"><p class="last-updated">
+  Last updated on Sep 18, 2026.
+  <br/>
+</p></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

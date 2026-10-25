@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html data-content_root="../" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>构建自定义 IPC OmniGraph 节点 — Isaac Sim 中文文档</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/nvidia-sphinx-theme.css?v=933278ad" rel="stylesheet" type="text/css"/>
+<link href="../_static/custom.css?v=767de534" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/image_lightbox.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="../_static/isaacsim-design.css?v=6415189c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script defer="" src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<link as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<script rel="preload" src="../_static/modal-table.js"></script>
+<script src="../_static/documentation_options.js?v=d9c7ea69"></script>
+<script src="../_static/doctools.js?v=9bcbadda"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/external-links.js"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=65e89d2a"></script>
+<script src="../_static/isaacsim-config-selector.js?v=58930015"></script>
+<script src="../_static/image_lightbox.js"></script>
+<script src="../_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'omnigraph/omnigraph_custom_ipc_nodes';</script>
+<script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '../versions1.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '6.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+<script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+<script src="../_static/version-patch.js?v=3e13fdd2"></script>
+<link href="../_static/favicon.png" rel="icon"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="omnigraph_tutorial.html" rel="next" title="Isaac Sim OmniGraph Tutorial"/>
+<link href="omnigraph_custom_cpp_nodes.html" rel="prev" title="Custom C++ Nodes"/>
+<link as="image" href="https://www.nvidia.com/content/dam/1x1-00000000.png" rel="preload"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<meta content="Sep 18, 2026" name="docbuild:last-update"/>
+<script src="../_static/searchtools.js"></script>
+<script src="../_static/language_data.js"></script>
+<script src="../searchindex.js"></script>
+<!-- Google tag (gtag.js) -->
+<meta content="本指南介绍如何在 Isaac Sim 中构建用于进程间通信 (IPC) 的 OmniGraph 节点。内容涵盖节点架构、使用 BaseResetNode 的传输生命周期、在 compute 中进行非阻塞 I/O，以及如何将你的传输库添加为依赖项。无论你使用哪种 IPC 技术栈，这些 OmniGrap — Isaac Sim 中文文档" name="description"/></head>
+<body data-default-mode="">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none" id="pst-header">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="me-auto navbar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-2" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-2" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-2" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-2" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-3" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-3" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-3" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-3" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Isaac Sim</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">What Is Isaac Sim?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/reference_architecture.html">Reference Architecture and Task Groupings</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/release_notes.html">Release Notes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/known_issues.html">Known Issues</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../migration_guides/index.html">Migration Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/index.html">Isaac Sim 6.1</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/robot_policy_examples.html">Robot Policy Examples Extension 7.0.0</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/index.html">Isaac Sim 6.0</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/migration_strategy.html">Isaac Sim 6.0 Migration Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/project_migration_audit.html">Project Migration Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/core_api_to_core_experimental.html">Core API to Core Experimental API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensor_timing_and_rtx_lidar_asset_migration.html">Sensor Timing and RTX Lidar Asset Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_camera_to_experimental_rtx.html">Camera Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_rtx_to_experimental_rtx.html">RTX Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physics_to_experimental_physics.html">Physics Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lidar_to_physics_raycast.html">PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_generic_to_physics_raycast.html">PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lightbeam_to_physics_raycast.html">PhysX Lightbeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/replicator_domain_randomization_to_experimental.html">Replicator Domain Randomization Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/mobility_gen_recordings_migration.html">MobilityGen Package and Recordings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_control_extensions_to_experimental.html">Manipulator and Wheeled Robot Extension Split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_motion_to_experimental_motion_generation.html">Robot Motion Generation APIs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/cortex_to_open_source_workflows.html">Cortex behavior workflow migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_setup_wizard_and_mesh_merge.html">Robot Wizard and Mesh Merge Tool Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_asset_path_migration.html">Robot Asset Path Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/urdf_mjcf_importer_exporter_pipeline.html">URDF, MJCF, and Robot Asset Pipeline Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_omnigraph_migration.html">ROS 2 OmniGraph Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_sensor_graph_migration.html">ROS 2 Sensor Graph Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_workspace_package_migration.html">ROS 2 Workspace Package Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/benchmark_services_migration.html">Benchmark Services Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/removed_tools_and_replacements.html">Removed Tools and Replacements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/extension_template_generator_to_cli_templates.html">Extension Template Generator to CLI Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ext_isaacsim_replicator_agent_migration_guide.html">Replicator Agent (IRA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/surface_gripper_bindings_import.html">Surface Gripper Bindings</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/index.html">Isaac Sim 4.5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/extensions_renaming.html">Renaming Extensions in Isaac Sim 4.5</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../installation/index.html">Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/requirements.html">Isaac Sim Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/download.html">Download Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/accessing_assets.html">Accessing assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_workstation.html">Workstation Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_container.html">Container Installation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../installation/install_cloud.html">Cloud Deployment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_launchable.html">Isaac Launchable Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_brev.html">NVIDIA Brev Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_aws.html">AWS Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_azure.html">Azure Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_gcp.html">Google Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_tencent.html">Tencent Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_alibaba.html">Alibaba Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_volcano.html">Volcano Engine Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_baidu.html">Baidu Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_remote_setup.html">Remote Workstation Deployment</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/manual_livestream_clients.html">Livestream Clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_python.html">Python Environment Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_faq.html">Setup Tips</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/help.html">Help &amp; FAQ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/isaac_sim_forums.html">Isaac Sim Developer Resources</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview/faq_index.html">FAQ</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../overview/troubleshooting.html">Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../assets/usd_assets_overview.html">Isaac Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_robots.html">Robot Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_wheeled.html">Wheeled Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_manipulator.html">Manipulator Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_humanoid.html">Humanoid Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_quadruped.html">Quadruped Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_holonomic.html">Holonomic Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_aerial.html">Aerial Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_isaac_sim_simple.html">Isaac Sim Simple Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_mobile_manipulator.html">Mobile Manipulator Robot Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_sensors.html">Sensor Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_camera_depth_sensors.html">Camera Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_depth_sensors.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nonvisual_sensors.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_radar_sensors.html">RTX Radar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_tactile_sensors.html">Tactile Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_imu_sensors.html">IMU Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_props.html">Prop Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_environments.html">Environment Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_third_party.html">Third-Party USD Assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_real_to_sim_index.html">Real to Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nurec.html">Neural Volume Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/nurec_utils.html">NuRec Rendering Utilities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/asset_utilities/index.html">Asset Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/open_usd.html">OpenUSD Fundamentals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/usd_tools.html">USD Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_omni_warehouse_creator.html">Warehouse Creator Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_isaacsim_asset_gen_conveyor.html">Conveyor Belt Utility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/tutorial_static_assets.html">Static Warehouse Assets</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/quickstart_index.html">Isaac Sim Basics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim.html">Isaac Sim Basic Usage Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim_robot.html">Basic Robot Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/python_scripting_concepts.html">Standalone vs Interactive Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/core_api_overview.html">Core API Overview</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../core_api_tutorials/index.html">Core API Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_world.html">Hello World</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_robot.html">Hello Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_manipulator.html">Adding a Manipulator Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_multiple_robots.html">Adding Multiple Robots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_multiple_tasks.html">Multiple Robot Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_props.html">Adding Props</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/tutorial_list.html">Tutorial Table</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/menu_examples.html">Interactive Examples Reference Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/standalone_examples_list.html">Standalone Examples Reference List</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../learn/gallery_view.html">Gallery View</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../gui/index.html">GUI</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_user_interface.html">User Interface Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_keyboard_shortcuts.html">Keyboard Shortcuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_create.html">Create Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_replicator.html">Replicator Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/preferences.html">Preferences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/selection-modes.html">Selection Modes</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/browsers.html">Browsers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/content_browser.html">Content Browser</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/material-browser.html" title="(in Omniverse Extensions)"><span>Material Browser</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/asset-browser.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">NVIDIA Asset Browser</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/layouts.html">Layout Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/intro_to_usd.html">Working with USD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/tutorial_search_extension.html">SimReady Content Browser Search Extension Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/build_and_simulate_robots.html">Setup and Simulate Robots</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../importer_exporter/importers_exporters.html">Importers and Exporters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_mjcf.html">MJCF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_onshape.html" title="(in Omniverse Extensions)"><span>Onshape importer</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_cad-converter.html" title="(in Omniverse Extensions)"><span>CAD Converter</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_isaac_shapenet.html">ShapeNet Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/formats.html">Formats</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../importer_exporter/importer_exporter_tutorials.html">Importer and Exporter Tutorials Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_urdf.html">Tutorial: Import URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/export_urdf.html">Tutorial: Export URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_mjcf.html">Tutorial: Import MJCF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/shapenet_importer.html">Tutorial: ShapeNet Importer</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_setup/index.html">Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/basic_stage_and_robot_setup.html">Basic Stage and Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_environment_setup.html">Stage Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_intro_assemble_robot.html">Assemble a Simple Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_simple_robot.html">Articulate a Basic Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_gui_camera_sensors.html">Add Camera and Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/rig_mobile_robot.html">Rig a Mobile Robot</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/setup_a_manipulator.html">Setup a Manipulator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_import_assemble_manipulator.html">Setup a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_configure_manipulator.html">Configure a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_generate_robot_config.html">Generate Robot Configuration File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_pickplace_example.html">Pick and Place Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/rig_closed_loop_structures.html">Setup a Closed-Loop Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_rig_legged_robot.html">Setup a Legged Robot</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../openusd_tuning_tutorials/index.html">Setup a Dexterous Hand in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/setup.html">Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_01_asset_structure.html">Import Robot and USD Asset Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_02_inspect_asset.html">Inspect Asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_03_collider_pairs.html">Collider Pairs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_04_joint_drive_tuning.html">Joint Drive Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_05_joint_gains_tuning.html">Joint Gains Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/practice.html">Using the Dexterous Hand in Practice</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/tuning_and_optimization.html">Tuning and Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/joint_tuning.html">Tuning Joint Drive Gains</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/optimizing_asset.html">Asset Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_franka_system_identification.html">Identify Franka System Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup_tutorials/tutorial_system_identification_simsim.html">Validate Identification with Sim-to-Sim Recovery</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_tutorials.html">Asset Transformer Tutorial Series</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/editing_tools.html">Editor Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_poser.html">Robot Poser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_util_merge_mesh.html">Mesh merge tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_gain_tuner.html">Gain Tuner Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_sysid.html">System Identification Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_collision_detector.html">Robot Self-Collision Detector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/assemble_robots.html">Robot Assembler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_surface_gripper.html">Surface Gripper Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/grasp_editor.html">Grasp Editor</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/inspector_tools.html">Inspector Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_inspector.html">Robot Inspector Window</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/joint_inspector.html">Joint Inspector</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/newton_robot_setup_tips.html">Robot Setup Tips for Newton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/troubleshooting.html">Robot Setup Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_validation.html">Asset Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer.html">Asset Transformer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_api.html">Asset Transformer API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_rules.html">Asset Transformer Rules Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_structure.html">Asset Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/robot_schema.html">Robot Schema</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_simulation/index.html">Robot Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/articulation_controller.html">Articulation Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/mobile_robot_controllers.html">Mobile Robot Controllers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_setup_virtual_gantry.html">Virtual Gantry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_tips.html">Robot Simulation Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_core_concepts.html">Useful Links</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_motion_experimental/index.html">Robot Motion</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_motion_experimental/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../motion_generation/index.html">Motion Generation (Experimental)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/scene_interaction.html">Scene Interaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/mobile_robot_control_example.html">Controllers and the RobotState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/trajectory_planning.html">Trajectory Planning and Execution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../controllers/index.html">Controllers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_differential_drive.html">Differential Drive Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_ackermann.html">Ackermann Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_holonomic.html">Holonomic Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cumotion/index.html">cuMotion Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_xrdf_editor.html">Generating an XRDF file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_world_interface.html">cuMotion World Interface Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_rmpflow.html">RMPflow Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_graph_planner.html">Graph-Based Motion Planner Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_generator.html">Trajectory Generator Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_optimizer.html">Trajectory Optimizer Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../pink/index.html">PINK Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_ik_controller.html">IK Controller Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_multi_task.html">Multi-Task Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples/manipulation_franka_pick_place.html">Franka Pick and Place Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../state_machine_tutorials/tutorial_state_machines.html">State Machines for Robot Behavior</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../manipulators/motion_generation_overview.html">(Deprecated) Robot Motion Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/concepts/index.html">Motion Generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_robot_description_editor.html">Lula Robot Description and XRDF Editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_rmpflow.html">Lula RMPflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_rrt.html">Lula RRT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_kinematics.html">Lula Kinematics Solver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_trajectory_generator.html">Lula Trajectory Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_configure_rmpflow_denso.html">Configuring RMPflow for a New Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_curobo.html">cuRobo and cuMotion</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../newton_actuators_tutorials/index.html">Newton Actuators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_python.html">Set Up Actuators from Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_usd.html">Author and Parse Actuators from USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_ui.html">Author Actuators from UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_omnigraph.html">Drive an Actuated Robot from OmniGraph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_tips.html">Tips</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../physics/index.html">Physics Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../physics/simulation_fundamentals.html">Physics Simulation Fundamentals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/new_physics_engine.html">Physics Data Flow and Engine Integration</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../physics/newton_physics.html">Newton Physics Backend</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact.html">Hydroelastic Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact_walkthrough.html">Configure Hydroelastic Contact for a Nut-and-Bolt Assembly</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_resources.html">Omniverse Physics and PhysX Limitations</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/sim_management.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Simulation Management</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/joint_inspector.html">Physics Inspector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_static_collision.html">Physics Static Collision Extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/ext_isaacsim_inspect_physics.html">Simulation Data Visualizer</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/physics_debug_wnd.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Debug Window</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/sensors_and_physics.html">Sensor Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_camera.html">Camera Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_depth.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_structured_light.html">Structured Light Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_usd_tutorial.html">Authoring a Camera Sensor USD Asset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx.html">RTX Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_lidar.html">RTX Lidar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_radar.html">RTX Radar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_acoustic.html">RTX Acoustic Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_annotators.html">RTX Sensor Annotators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_materials.html">RTX Sensor Non-Visual Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_multitick_rendering.html">Multi-Tick Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_custom.html">Creating Custom RTX Sensor Profiles</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physics.html">Physics-based Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_articulation_force.html">Articulation Joint Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_contact.html">Contact Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_effort.html">Effort Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_imu.html">IMU Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_joint_state.html">Joint State Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_raycast.html">Physics Raycast Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/sensor_schema.html">Sensor Schema</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physx.html">(Deprecated) PhysX SDK Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_generic.html">(Deprecated) PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lidar.html">(Deprecated) PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lightbeam.html">(Deprecated) PhysX Lightbeam Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_proximity.html">(Deprecated) Proximity Sensor</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../learn/develop_and_integrate.html">Develop and Integrate</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../development_tools/index.html">Development Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/workflows.html">Development Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/vscode.html">Visual Studio Code (VS Code)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/python_server.html">Python Server (Remote Code Execution)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/jupyter_notebook.html">Jupyter Notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/omniverse_script_editor.html">Omniverse Script Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/isaac_sim_mcp.html">Isaac Sim MCP Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/agent_skills.html">Agent Skills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/carb_settings.html">Modify Carb Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/updating_extensions.html">Adding and Updating Extensions Guide</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../python_scripting/index.html">Python Scripting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/manual_standalone_python.html">Python Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/environment_setup.html">Scene Setup Snippets and Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/util_snippets.html">Util Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/robots_simulation.html">Robot Simulation Snippets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">OmniGraph</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/interface.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Interface</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/getting-started/core_concepts.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Core Concepts</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="omnigraph_shortcuts.html">Commonly Used OmniGraph Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omnigraph_custom_python_nodes.html">Custom Python Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omnigraph_custom_cpp_nodes.html">Custom C++ Nodes</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Building Custom IPC OmniGraph Nodes</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Additional Resources</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/tutorials/gentle_intro.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Basic OmniGraph Tutorial</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="omnigraph_tutorial.html">Isaac Sim OmniGraph Tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omnigraph_scripting.html">OmniGraph via Python Scripting Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../external_interfaces/index.html">External Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../external_interfaces/tutorial_zmq_carter_warehouse.html">ZeroMQ Bridge</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/templates_index.html">Templates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/cli_extension_templates.html">CLI Extension Templates</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../utilities/extension_template_generator.html">(Deprecated) Extension Template Generator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../utilities/extension_templates_tutorial.html">Extension Template Generator Explained</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/vscode_extension_template_generator.html">Advanced Extension Template Generator from VS Code</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/debugging/index.html">Debugging and Profiling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_isaacsim_util_debug_draw.html">Debug Drawing Extension API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_omni_kit_commands.html">Omniverse Commands Tool Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/omniverse_tools.html">Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/tutorial_advanced_python_debugging.html">Debugging With Visual Studio Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/profiling_performance.html">Profiling Performance Using Tracy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../digital_twin/index.html">Other Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/warehouse_logistics/logistics_tutorial_cuopt.html">NVIDIA cuOpt</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_1_overview.html">(Deprecated) Isaac Cortex: Overview</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_2_decider_networks.html">Decider networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_3_example_peck_games.html">Behavior Examples: Peck Games</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_4_franka_block_stacking.html">Walkthrough: Franka Block Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_5_ur10_bin_stacking.html">Walkthrough: UR10 Bin Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_7_cortex_extension.html">Building Cortex Based Extensions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/ext_isaacsim_asset_generator_occupancy_map.html">Occupancy Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/rtsp_camera_streaming.html">Live Camera Streaming over RTSP</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../workflows/top_5/index.html">Top 5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_putting_it_all_together.html">Bring a new mobile base and navigate with ROS2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_setup_tutorials/tutorial_manipulator_workflow.html">Manipulator workflow: URDF to pick and place</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_mobility_gen.html">Data Generation with MobilityGen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_cosmos.html">Cosmos Synthetic Data Generation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow.html">Humanoid workflow: Train locomotion in AGILE and deploy in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_prepare_usd.html">Stage 1: Prepare the humanoid USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_create_task.html">Stage 2: Create a custom humanoid task in AGILE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_configure_mdp.html">Stage 3: Configure and validate the locomotion MDP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_train.html">Stage 4: Train, evaluate, and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup_tutorials/tutorial_humanoid_workflow_deploy.html">Stage 5: Deploy the policy</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../isaac_lab_tutorials/index.html">Deploying Policies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_policy_deployment.html">Deploying policies in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_policy_example.html">Reinforcement Learning Policies Examples in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_instanceable_assets.html">Instanceable Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ros2_tutorials/index.html">ROS 2</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/overview/index.html">Overview and Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/overview/ros2_reference_architecture.html">ROS 2 Reference Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/tutorial_series/index.html">ROS 2 Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_turtlebot.html">URDF Import: Turtlebot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_drive_turtlebot.html">Driving TurtleBot using ROS 2 Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_clock.html">ROS 2 Clock</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtf.html">ROS 2 Publish Real Time Factor (RTF)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_camera.html">ROS 2 Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtx_lidar.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_tf.html">ROS 2 Transform Trees and Odometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_publish_rate.html">ROS 2 Setting Publish Rates</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/index.html">Advanced Sensor Topics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_noise.html">Add Noise to Camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_publishing.html">Publishing Camera’s Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_compressed_image.html">ROS 2 Compressed Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_rtx_radar.html">RTX Radar Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/robot_control/index.html">Robot Control</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_manipulation.html">ROS 2 Joint Control: Extension Python Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_ackermann_controller.html">ROS 2 Ackermann Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_rl_controller.html">Running a Reinforcement Learning Policy through ROS 2 and Isaac Sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation.html">ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_multi_navigation.html">Multiple Robot ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation_heightmap.html">ROS 2 Navigation with Heightmap Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_moveit.html">MoveIt 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_control.html">ROS 2 Control</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/index.html">Bridge Configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_python.html">ROS 2 Bridge in Standalone Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_launch.html">ROS 2 Launch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_simulation_control.html">ROS 2 Simulation Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_qos.html">ROS 2 Quality of Service (QoS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_auto_namespace.html">Automatic ROS 2 Namespace Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_name_override.html">NameOverride Attribute</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/index.html">Custom Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_publisher_subscriber.html">ROS 2 Generic Publisher and Subscriber</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_server_client.html">ROS 2 Generic Server and Client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_prim_service.html">ROS 2 Service for Manipulating Prims Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_message_python.html">ROS 2 Python Custom Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_omnigraph_node_python.html">ROS 2 Python Custom OmniGraph Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_omnigraph_cpp_node.html">ROS 2 Custom C++ OmniGraph Node</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/urdf_import_export/index.html">URDF Import and Export</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/help/index.html">Help and Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/ros2_faq.html">ROS 2 Frequently Asked Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../nvidia_isaac_ros/isaac_ros_tutorials.html">NVIDIA Isaac ROS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../synthetic_data_generation/index.html">Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../replicator_tutorials/index.html">Perception Data Generation (Replicator)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_recorder.html">Synthetic Data Recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_getting_started.html">Getting Started Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_sdg_workflows.html">SDG Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_scene_based_sdg.html">Scene Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_object_based_sdg.html">Object Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_infinigen_sdg.html">Environment Based Synthetic Dataset Generation with Infinigen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_amr_navigation.html">Randomization in Simulation – AMR Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_ur10_palletizing.html">Randomization in Simulation – UR10 Palletizing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_augmentation.html">Data Augmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_custom_og_randomizer.html">Custom Replicator Randomization Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_modular_scripting.html">Modular Behavior Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_randomizers.html">Randomization Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_snippets.html">Useful Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../action_and_event_data_generation/index.html">Action and Event Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_agent.html">Actor Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration.html">Configuration File Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_sample_configs.html">Sample Configs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_anim_robot.html">Animated Robot Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration_editor.html">Configuration Editor API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_custom_writer_example.html">Example: RTSP Streaming with CustomWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_visual_noise_example.html">Visual Noise and Image Degradation Effects Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_behavior_tree_gen.html">Behavior Tree Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/context_files_and_schemas.html">Context Files and Metadata Schemas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/required_inputs.html">Required inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/example_walkthrough.html">Example Walkthrough</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/three_api_functions.html">Using the API Functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_object.html">Object Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/ext_chat_iro.html">Chat IRO: Natural Language Interface for Isaac Sim Replicator Object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/setting.html">Setting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable.html">Mutable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/camera.html">Camera</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/geometry.html">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/force.html">Force</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/light.html">Light</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable_attribute.html">Mutable Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/transformation.html">Transformation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/harmonizer.html">Harmonizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/empty_space_detection.html">Empty Space Detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/macro.html">Macro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/distribution_visualizer.html">Distribution Visualizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/randomization_dependency.html">Randomization Dependency: Incremental Examples</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_caption.html">VLM Scene Captioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_incident.html">Physical Space Event Generation</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_sensors_rtx_placement.html">RTX Sensors Placement and Calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_placement.html">Camera Placement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_calibration.html">Camera Calibration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/example_event_reactive_actors.html">Reacting to Events with Actor Triggers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_omni_metropolis_pipeline.html">Omni Metropolis Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_telemetry.html">Telemetry and Performance Tracking</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_grasping_sdg.html">Grasping Synthetic Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_teleop_sdg.html">Teleoperation Synthetic Data Generation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_python_api.html">API Documentation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference Information</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/community_highlights.html">Community Project Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_conventions.html">Isaac Sim Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/rendering_modes.html">Rendering modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/sim_performance_optimization_handbook.html">Isaac Sim Performance Optimization Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/benchmarks.html">Isaac Sim Benchmarks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../omniverse_usd/index.html">Omniverse and USD</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/building_cpp_usd_plugins.html">Building C++ USD Plugins Against the Standalone Installer</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/data-collection.html">Data Collection &amp; Usage</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/legal.html">Licenses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses-isaac-sim.html">Isaac Sim License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-additional.html">Isaac Sim Additional Software and Materials License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-webrtc-streaming-client.html">Isaac Sim WebRTC Streaming Client License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/NVIDIA_Omniverse_License_Agreement.html">Omniverse License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licensing-notices-disclaimers.html">Licensing Disclaimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses.html">Other Licenses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/redistributable-ov-software.html">Redistributable Omniverse Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-faq.html">License FAQ</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="../index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li class="breadcrumb-item"><a class="nav-link" href="../learn/develop_and_integrate.html">Develop and Integrate</a></li>
+<li class="breadcrumb-item"><a class="nav-link" href="index.html">OmniGraph</a></li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Building Custom IPC OmniGraph Nodes</span></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="header-article-items__end">
+<div class="header-article-item">
+<div class="header-article-item">
+<div class="d-flex justify-content-end w-100">
+<a href="https://surveys.hotjar.com/4904bf71-6484-47a7-83ff-4715cceabdb5" id="openPopupButton">Is this page helpful?</a>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="building-custom-ipc-omnigraph-nodes">
+<span id="isaac-sim-omnigraph-custom-ipc-nodes"></span><h1>构建自定义 IPC OmniGraph 节点<a class="headerlink" href="#building-custom-ipc-omnigraph-nodes" title="Link to this heading">#</a></h1>
+<div class="isaacsim-page-type-tag sd-mb-3 docutils">
+<span class="isaacsim-card-tag isaacsim-card-tag--neutral isaacsim-card-tag--kind-category">Tool Reference</span></div>
+<p>本指南介绍如何在 Isaac Sim 中构建用于进程间通信 (IPC) 的 OmniGraph 节点。内容涵盖节点架构、使用 <code class="docutils literal notranslate"><span class="pre">BaseResetNode</span></code> 的传输生命周期、在 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 中进行非阻塞 I/O，以及如何将你的传输库添加为依赖项。无论你使用哪种 IPC 技术栈，这些 OmniGraph 模式均适用。工作示例是 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc</span></code>，这是一对基于 C++ 和 Python 的 BSD 套接字的时钟发送和步骤接收节点。教程首先使用 CLI 模板搭建一个新的扩展，以便在编写任何 IPC 代码之前拥有一个可用的构建骨架。</p>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>此工作流需要 <strong>源代码检出</strong> 的 <a class="reference external" href="https://github.com/isaac-sim/IsaacSim">Isaac Sim</a> 仓库。不支持使用 pip 包或二进制发行版。请在开始之前克隆 GitHub 仓库。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>本教程中的所有命令均在 <strong>Isaac Sim 仓库根目录</strong>（包含 <code class="docutils literal notranslate"><span class="pre">build.sh</span></code>/<code class="docutils literal notranslate"><span class="pre">build.bat</span></code> 和 <code class="docutils literal notranslate"><span class="pre">repo.sh</span></code>/<code class="docutils literal notranslate"><span class="pre">repo.bat</span></code> 的目录）中运行。</p>
+</div>
+<section id="before-you-start">
+<h2>开始之前<a class="headerlink" href="#before-you-start" title="Link to this heading">#</a></h2>
+<p><strong>先决条件</strong>：</p>
+<ul class="simple">
+<li><p><strong>自定义 C++ 扩展</strong> — <a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/kit-extension-template-cpp/latest/index.html">Kit C++ Extension Template</a>。</p></li>
+<li><p><strong>OmniGraph</strong> — <a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/getting-started/core_concepts.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph 核心概念</span></a> 和 <a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/tutorials/gentle_intro.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph 基础教程</span></a>。</p></li>
+<li><p><strong>自定义节点</strong> — <a class="reference internal" href="omnigraph_custom_python_nodes.html#isaac-sim-app-omnigraph-custom-python-nodes"><span class="std std-ref">自定义 Python 节点</span></a> 和 <a class="reference internal" href="omnigraph_custom_cpp_nodes.html#isaac-sim-app-tutorial-advanced-omnigraph-custom-cpp-nodes"><span class="std std-ref">自定义 C++ 节点</span></a>。</p></li>
+</ul>
+<p>可选：<a class="reference internal" href="omnigraph_tutorial.html#isaac-sim-app-tutorial-gui-omnigraph"><span class="std std-ref">Isaac Sim OmniGraph 教程</span></a>，如果您不熟悉 Action Graph 编辑器。</p>
+<div class="admonition seealso">
+<p class="admonition-title">另请参阅</p>
+<p><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_omnigraph_node_python.html#isaac-sim-app-ros2-custom-omnigraph-node-python"><span class="std std-ref">ROS 2 Python 自定义 OmniGraph 节点</span></a> 提供了一个完整的 Python 节点示例。虽然涉及 ROS 2 上下文，但 <code class="docutils literal notranslate"><span class="pre">internal_state()</span></code> 工厂、<code class="docutils literal notranslate"><span class="pre">BaseResetNode</span></code>、<code class="docutils literal notranslate"><span class="pre">db.per_instance_state</span></code> 和 <code class="docutils literal notranslate"><span class="pre">og.ExecutionAttributeState.ENABLED</span></code> 模式对于任何 IPC 节点都是相同的。</p>
+</div>
+</section>
+<section id="scaffold-your-extension">
+<h2>搭建扩展脚手架<a class="headerlink" href="#scaffold-your-extension" title="Link to this heading">#</a></h2>
+<p>在编写 IPC 代码之前，请使用 CLI 模板创建扩展骨架：</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="linux" for="sd-tab-item-0">
+Linux</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./repo.sh<span class="w"> </span>template<span class="w"> </span>new
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="windows" for="sd-tab-item-1">
+Windows</label><div class="sd-tab-content docutils">
+<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span>.\repo.bat template new
+</pre></div>
+</div>
+</div>
+</div>
+<p>当出现提示时，选择 <strong>Isaac Sim OmniGraph Node Extension</strong>。系统将要求您提供以下信息：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">extension_name</span></code> 点分标识符，例如 <code class="docutils literal notranslate"><span class="pre">isaacsim.my.ipc.nodes</span></code>。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> 在 Extensions 窗口中显示的可读名称。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code> 简短摘要。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">category</span></code> 用于在 Action Graph 节点库中对您的节点进行分组（例如 <code class="docutils literal notranslate"><span class="pre">Simulation</span></code>）。</p></li>
+</ul>
+<p>模板会在 <code class="docutils literal notranslate"><span class="pre">source/extensions/&lt;extension_name&gt;/</span></code> 下创建完整的扩展骨架：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>source/extensions/&lt;extension_name&gt;/
+├── config/extension.toml          ← metadata, dependencies, test entries
+├── nodes/
+│   ├── OgnExampleCpp.ogn          ← rename/replace with your IPC node schema
+│   └── OgnExampleCpp.cpp          ← rename/replace with your IPC node implementation
+├── plugins/&lt;extension_name&gt;/
+│   └── PluginInterface.cpp        ← Carbonite plugin + OGN registration (keep as-is)
+├── bindings/&lt;extension_name&gt;/
+│   └── Bindings.cpp               ← pybind11 bindings; acquires the Carbonite interface (keep as-is)
+├── include/&lt;extension_name&gt;/
+│   └── IExampleNodes.hpp            ← Carbonite interface (keep as-is)
+├── python/nodes/
+│   ├── OgnExamplePython.ogn       ← rename/replace with your Python node schema
+│   └── OgnExamplePython.py        ← rename/replace with your Python Node Implementation
+├── python/impl/extension.py       ← calls acquire_example_ipc_interface() on startup to load the plugin
+├── python/tests/                  ← test modules go here
+└── premake5.lua                   ← build configuration
+</pre></div>
+</div>
+<p>在扩展加载到 Isaac Sim 之前，必须执行构建步骤——它会编译 C++ 插件并生成用于注册节点的 OmniGraph 数据库文件。现在运行它：</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio"/>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="linux" for="sd-tab-item-2">
+Linux</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./build.sh
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio"/>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="windows" for="sd-tab-item-3">
+Windows</label><div class="sd-tab-content docutils">
+<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span>.\build.bat
+</pre></div>
+</div>
+</div>
+</div>
+<p>生成的节点 —— <strong>Example C++ Node</strong> (<code class="docutils literal notranslate"><span class="pre">OgnExampleCpp</span></code>) 和 <strong>Example Python Node</strong> (<code class="docutils literal notranslate"><span class="pre">OgnExamplePython</span></code>) —— 是用于将输入值加倍的占位存根。Action Graph 库中的显示名称来自每个 <code class="docutils literal notranslate"><span class="pre">.ogn</span></code> 文件中的 <code class="docutils literal notranslate"><span class="pre">uiName</span></code> 字段，而不是文件名。在后续章节中，请用您实际的 IPC 节点替换或重命名它们。</p>
+<div class="admonition-try-it-verify-your-scaffold admonition">
+<p class="admonition-title">试一试：验证您的脚手架</p>
+<p>上述构建完成后，请确认脚手架已注册其占位节点：</p>
+<ol class="arabic">
+<li><p>启动仓库构建的 Isaac Sim —— 而非单独安装的 Isaac Sim：</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio"/>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="linux" for="sd-tab-item-4">
+Linux</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./_build/linux-x86_64/release/isaac-sim.sh
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio"/>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="windows" for="sd-tab-item-5">
+Windows</label><div class="sd-tab-content docutils">
+<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span>.\_build\windows-x86_64\release\isaac-sim.bat
+</pre></div>
+</div>
+</div>
+</div></li>
+<li><p>打开 <strong>Window → Extensions</strong>，搜索您的扩展名称（例如 <code class="docutils literal notranslate"><span class="pre">isaacsim.my.ipc.nodes</span></code>），然后启用它。</p></li>
+<li><p>打开 <strong>Window → Graph Editors → Action Graph</strong>，并在节点库中搜索 <code class="docutils literal notranslate"><span class="pre">Example</span> <span class="pre">C++</span> <span class="pre">Node</span></code> 和 <code class="docutils literal notranslate"><span class="pre">Example</span> <span class="pre">Python</span> <span class="pre">Node</span></code>。这些名称与脚手架 <code class="docutils literal notranslate"><span class="pre">.ogn</span></code> 文件中的 <code class="docutils literal notranslate"><span class="pre">uiName</span></code> 字段相匹配。</p></li>
+</ol>
+<p>如果两个节点都显示出来，则说明脚手架已正确连接。请继续执行<a class="reference internal" href="#design-and-implement-your-nodes">设计和实现您的节点</a>以替换占位符。</p>
+<p>如果节点未显示，请检查以下内容：</p>
+<ul class="simple">
+<li><p>构建（Linux 上的 <code class="docutils literal notranslate"><span class="pre">./build.sh</span></code>，Windows 上的 <code class="docutils literal notranslate"><span class="pre">.\build.bat</span></code>）已顺利完成且无错误。只有在编译 C++ 插件并由构建生成 OmniGraph 数据库文件后，节点才会被注册。</p></li>
+<li><p>您启动的是仓库构建的 Isaac Sim（<code class="docutils literal notranslate"><span class="pre">./_build/linux-x86_64/release/isaac-sim.sh</span></code> 或 <code class="docutils literal notranslate"><span class="pre">.\_build\windows-x86_64\release\isaac-sim.bat</span></code>）。单独安装的 Isaac Sim 不会搜索仓库的 <code class="docutils literal notranslate"><span class="pre">exts/</span></code> 目录，因此无法找到您的扩展。</p></li>
+<li><p>该扩展在 <strong>Window → Extensions</strong> 中已启用（绿色开关）。如果在构建运行之前它已启用，请先禁用再重新启用。</p></li>
+<li><p>在任何 <code class="docutils literal notranslate"><span class="pre">.ogn</span></code> schema 或代码更改后，必须重新运行构建并重启 Isaac Sim，更新后的节点才会显示。</p></li>
+</ul>
+</div>
+</section>
+<section id="add-your-transport-library">
+<h2>添加您的传输库<a class="headerlink" href="#add-your-transport-library" title="Link to this heading">#</a></h2>
+<p>在编写节点代码之前，请接入提供 IPC 和序列化功能的库。生成的 <code class="docutils literal notranslate"><span class="pre">config/extension.toml</span></code> 和 <code class="docutils literal notranslate"><span class="pre">premake5.lua</span></code> 已就位。以下各节展示了添加条目的位置。</p>
+<section id="python">
+<h3>Python<a class="headerlink" href="#python" title="Link to this heading">#</a></h3>
+<p>Isaac Sim 附带了一个 pip 归档文件（<code class="docutils literal notranslate"><span class="pre">omni.isaac.core_archive</span></code> 及相关扩展），其中预捆绑了许多常用包，包括 NumPy 和 SciPy。如果您的库已包含在该归档文件中，则可以直接导入，无需额外配置。</p>
+<p>如果该包尚未捆绑，请在 <code class="docutils literal notranslate"><span class="pre">config/extension.toml</span></code> 中声明它，例如：</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[python.pipapi]</span>
+<span class="n">requirements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pyzmq&gt;=25"</span><span class="p">,</span><span class="w"> </span><span class="s2">"grpcio"</span><span class="p">]</span><span class="w">  </span><span class="c1"># replace with your actual packages</span>
+<span class="n">use_online_index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+</pre></div>
+</div>
+<p>Isaac Sim 会在扩展启动时解析这些依赖项。必须设置 <code class="docutils literal notranslate"><span class="pre">use_online_index</span> <span class="pre">=</span> <span class="pre">true</span></code>。如果省略该设置或将其设置为 <code class="docutils literal notranslate"><span class="pre">false</span></code>，<code class="docutils literal notranslate"><span class="pre">omni.kit.pipapi</span></code> 会记录警告并完全跳过 <code class="docutils literal notranslate"><span class="pre">requirements</span></code> 列表。</p>
+</section>
+<section id="c">
+<h3>C++<a class="headerlink" href="#c" title="Link to this heading">#</a></h3>
+<p>预构建的原生库通过 packman 获取。这些步骤遵循 <a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/kit-extension-template-cpp/latest/index.html">Kit Extension C++ 模板文档</a>中描述的相同模式：</p>
+<ol class="arabic">
+<li><p><strong>声明依赖项。</strong> 将您的库添加到 <code class="docutils literal notranslate"><span class="pre">deps/ext-deps.packman.xml</span></code>。该文件是用于指定扩展特定依赖项的指定文件（与 Kit SDK 依赖项分开）。解包后的目录树通常位于 <code class="docutils literal notranslate"><span class="pre">_build/target-deps/&lt;libname&gt;/</span></code> 下：</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">toolsVersion=</span><span class="s">"5.0"</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;dependency</span><span class="w"> </span><span class="na">name=</span><span class="s">"mylib"</span><span class="w"> </span><span class="na">linkPath=</span><span class="s">"../_build/target-deps/mylib"</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;package</span><span class="w"> </span><span class="na">name=</span><span class="s">"mylib"</span><span class="w"> </span><span class="na">version=</span><span class="s">"1.2.3"</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+</div></li>
+<li><p><strong>更新 ``premake5.lua``。</strong> 指向包含目录和库目录，并添加链接：</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">includedirs</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"%{target_deps}/mylib/include"</span><span class="w"> </span><span class="p">}</span>
+<span class="nv">libdirs</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="s2">"%{target_deps}/mylib/lib/%{platform}"</span><span class="w"> </span><span class="p">}</span>
+<span class="nv">links</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="s2">"mylib"</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div></li>
+<li><p><strong>运行时的共享库。</strong> 如果库以 <code class="docutils literal notranslate"><span class="pre">.so</span></code> / <code class="docutils literal notranslate"><span class="pre">.dll</span></code> 形式发布，请将其与扩展插件捆绑在一起，或在 <code class="docutils literal notranslate"><span class="pre">extension.toml</span></code> 的 <code class="docutils literal notranslate"><span class="pre">[native.library]</span></code> 下列出，以便 Kit 的加载器找到它。</p></li>
+</ol>
+<p>示例扩展仅使用标准 BSD socket API，除插件本身外没有额外的原生库条目。</p>
+</section>
+</section>
+<section id="design-and-implement-your-nodes">
+<h2>设计和实现您的节点<a class="headerlink" href="#design-and-implement-your-nodes" title="Link to this heading">#</a></h2>
+<section id="design-principle">
+<h3>设计原则<a class="headerlink" href="#design-principle" title="Link to this heading">#</a></h3>
+<p>保持 IPC 节点轻量。它们应仅处理<strong>序列化和传输</strong>。仿真数据读取（关节位置、传感器数据、仿真时间）属于上游内置节点，这些节点应在您的 IPC 节点之前接入图中。下游处理或命令写入属于其后的其他节点。这使 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 保持快速，并使图布局具有自文档性。</p>
+</section>
+<section id="what-every-ipc-node-requires">
+<h3>每个 IPC 节点所需的内容<a class="headerlink" href="#what-every-ipc-node-requires" title="Link to this heading">#</a></h3>
+<p>无论使用何种传输方式，每个自定义 IPC 节点都需要相同的六项内容：</p>
+<ul>
+<li><p><strong>节点架构</strong>（<code class="docutils literal notranslate"><span class="pre">.ogn</span></code> 文件）— 声明输入（URI、配置）、输出（数据、<code class="docutils literal notranslate"><span class="pre">execOut</span></code>）和状态。请参考 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc</span></code> 中 <code class="docutils literal notranslate"><span class="pre">nodes/</span></code> 下的示例 <code class="docutils literal notranslate"><span class="pre">.ogn</span></code> 文件。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BaseResetNode</span></code> 子类 — 持有每个实例的状态（套接字、缓冲区、句柄）。实现 <code class="docutils literal notranslate"><span class="pre">reset()</span></code>（C++）或 <code class="docutils literal notranslate"><span class="pre">custom_reset()</span></code>（Python），以便在时间线停止或输入更改时拆除传输。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute(db)</span></code> 具有生命周期拆分：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>检测输入变化（URI、配置）→ 调用 reset 和 teardown</p></li>
+<li><p>如果未就绪，尝试打开传输 → 失败时提前返回（在下次评估时重试）</p></li>
+<li><p>执行非阻塞 I/O（发送或尝试接收）</p></li>
+<li><p>写入 <code class="docutils literal notranslate"><span class="pre">db.outputs</span></code> 并触发 <code class="docutils literal notranslate"><span class="pre">execOut</span></code></p></li>
+</ul>
+</div></blockquote></li>
+<li><p><strong>非阻塞 I/O</strong> — 切勿在 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 中无限期阻塞。使用 try-receive、超时机制，或将慢速路径卸载到工作线程（请参阅 <a class="reference internal" href="#performance-considerations">Performance Considerations</a>）。</p></li>
+<li><p><strong>触发</strong> <code class="docutils literal notranslate"><span class="pre">execOut</span></code> 在 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 结束时，以向下游节点发出信号，表明传输操作已完成和/或新数据已就绪。你可以控制触发时机。例如，可以在每次评估时触发，仅在发送成功时触发，或仅在接收到完整消息时触发。</p></li>
+<li><p><strong>你的传输库</strong> — 将其添加为依赖项（请参阅上文 <a class="reference internal" href="#add-your-transport-library">Add Your Transport Library</a>），并用你的技术栈 API 替换 TCP 辅助函数。</p></li>
+</ul>
+</section>
+<section id="ogn-schema-quick-reference">
+<h3>OGN Schema 快速参考<a class="headerlink" href="#ogn-schema-quick-reference" title="Link to this heading">#</a></h3>
+<p>每个 <code class="docutils literal notranslate"><span class="pre">.ogn</span></code> 文件都是一个单一的 JSON 对象，以节点注册的类型名称作为键。Python IPC 节点的最小 schema 如下所示：</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"MyNodeName"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Python"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"One-line description shown in the node library."</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"uiName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Node Display Name"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">"categoryDefinitions"</span><span class="p">:</span><span class="w"> </span><span class="s2">"config/CategoryDefinition.json"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"categories"</span><span class="p">:</span><span class="w"> </span><span class="s2">"myCategory"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"execIn"</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"execution"</span><span class="p">,</span><span class="w"> </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Trigger."</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">"uri"</span><span class="p">:</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">    </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tcp://127.0.0.1:5550"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">"myValue"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"double"</span><span class="p">,</span><span class="w">    </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"default"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"execOut"</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"execution"</span><span class="p">,</span><span class="w"> </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Output execution port."</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">"myTokens"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token[]"</span><span class="p">,</span><span class="w">   </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Array of token outputs."</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>常见标量类型：<code class="docutils literal notranslate"><span class="pre">"string"</span></code>、<code class="docutils literal notranslate"><span class="pre">"double"</span></code>、<code class="docutils literal notranslate"><span class="pre">"float"</span></code>、<code class="docutils literal notranslate"><span class="pre">"int"</span></code>、
+<code class="docutils literal notranslate"><span class="pre">"uint"</span></code>、<code class="docutils literal notranslate"><span class="pre">"bool"</span></code>、<code class="docutils literal notranslate"><span class="pre">"execution"</span></code>。数组变体追加 <code class="docutils literal notranslate"><span class="pre">[]</span></code>：
+<code class="docutils literal notranslate"><span class="pre">"double[]"</span></code>、<code class="docutils literal notranslate"><span class="pre">"float[]"</span></code>、<code class="docutils literal notranslate"><span class="pre">"token[]"</span></code> 等。对于非执行标量输入，<code class="docutils literal notranslate"><span class="pre">"default"</span></code> 键是
+必需的；对于数组输入，使用 <code class="docutils literal notranslate"><span class="pre">[]</span></code>。</p>
+<p><code class="docutils literal notranslate"><span class="pre">categoryDefinitions</span></code> 是相对于 <code class="docutils literal notranslate"><span class="pre">nodes/</span></code> 目录的路径，指向一个 JSON 文件，该文件将类别键映射为人类可读的显示字符串：</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"categoryDefinitions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"myCategory"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My node group label in the Action Graph library"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="c-node-implementation">
+<h3>C++ 节点实现<a class="headerlink" href="#c-node-implementation" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">BaseResetNode</span></code> 在 <code class="docutils literal notranslate"><span class="pre">isaacsim.core.includes</span></code> 中声明。此扩展仅作为编译时依赖项，请<strong>不要</strong>将其添加到 <code class="docutils literal notranslate"><span class="pre">extension.toml</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">[dependencies]</span></code>。相反，请在 <code class="docutils literal notranslate"><span class="pre">premake5.lua</span></code> 中添加头文件路径：</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">includedirs</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"%{root}/source/extensions/isaacsim.core.includes/include"</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>然后在你的 <code class="docutils literal notranslate"><span class="pre">.cpp</span></code> 文件中包含该头文件：</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;isaacsim/core/includes/BaseResetNode.hpp&gt;</span>
+</pre></div>
+</div>
+<p>让你的每个实例节点类从 <code class="docutils literal notranslate"><span class="pre">isaacsim::core::includes::BaseResetNode</span></code> 派生。该基类会订阅时间线停止事件，并调用你的 <code class="docutils literal notranslate"><span class="pre">reset()</span></code>，以确保在模拟停止后不会遗留打开的传输句柄。</p>
+<p>将生成的 <code class="docutils literal notranslate"><span class="pre">OgnExampleCpp</span></code> 存根替换为如下所示的类（有关 TCP 实现，请参阅 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">OgnSimpleSendSimulationClockCpp.cpp</span></code>）：</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;isaacsim/core/includes/BaseResetNode.hpp&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;OgnMyIpcNodeCppDatabase.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;memory&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">isaacsim</span><span class="o">::</span><span class="n">core</span><span class="o">::</span><span class="n">includes</span><span class="o">::</span><span class="n">BaseResetNode</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">OgnMyIpcNodeCpp</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">BaseResetNode</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">compute</span><span class="p">(</span><span class="n">OgnMyIpcNodeCppDatabase</span><span class="o">&amp;</span><span class="w"> </span><span class="n">db</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">perInstanceState</span><span class="o">&lt;</span><span class="n">OgnMyIpcNodeCpp</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Detect input changes (e.g. URI) and reset transport.</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">uriIn</span><span class="p">(</span><span class="n">db</span><span class="p">.</span><span class="n">inputs</span><span class="p">.</span><span class="n">uri</span><span class="p">());</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="n">m_handle</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">m_handle</span><span class="o">-&gt;</span><span class="n">getUri</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">uriIn</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">state</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">ensureOpenAndTransfer</span><span class="p">(</span><span class="n">db</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Fire execOut unconditionally (send nodes). For receive nodes, fire only when</span>
+<span class="w">        </span><span class="c1">// a complete message arrives (i.e. only when success == true).</span>
+<span class="w">        </span><span class="n">db</span><span class="p">.</span><span class="n">outputs</span><span class="p">.</span><span class="n">execOut</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">omni</span><span class="o">::</span><span class="n">graph</span><span class="o">::</span><span class="n">core</span><span class="o">::</span><span class="n">kExecutionAttributeStateEnabled</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">success</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">releaseInstance</span><span class="p">(</span><span class="n">NodeObj</span><span class="w"> </span><span class="k">const</span><span class="o">&amp;</span><span class="w"> </span><span class="n">nodeObj</span><span class="p">,</span><span class="w"> </span><span class="n">GraphInstanceID</span><span class="w"> </span><span class="n">instanceId</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OgnMyIpcNodeCppDatabase</span><span class="o">::</span><span class="n">sPerInstanceState</span><span class="o">&lt;</span><span class="n">OgnMyIpcNodeCpp</span><span class="o">&gt;</span><span class="p">(</span><span class="n">nodeObj</span><span class="p">,</span><span class="w"> </span><span class="n">instanceId</span><span class="p">);</span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">reset</span><span class="p">()</span><span class="w"> </span><span class="k">override</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_handle</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">m_handle</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">();</span>
+<span class="w">            </span><span class="n">m_handle</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">isOpen</span><span class="p">()</span><span class="w"> </span><span class="k">const</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">m_handle</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_handle</span><span class="o">-&gt;</span><span class="n">isOpen</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">tryOpen</span><span class="p">(</span><span class="n">OgnMyIpcNodeCppDatabase</span><span class="o">&amp;</span><span class="w"> </span><span class="n">db</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Open transport from db.inputs (e.g. URI, config).</span>
+<span class="w">        </span><span class="c1">// m_handle = std::make_unique&lt;MyTransportHandle&gt;(std::string(db.inputs.uri()));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">transfer</span><span class="p">(</span><span class="n">OgnMyIpcNodeCppDatabase</span><span class="o">&amp;</span><span class="w"> </span><span class="n">db</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Non-blocking send or try-receive; write db.outputs on success.</span>
+<span class="w">        </span><span class="c1">// See Performance Considerations for time-budget guidance.</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="c1">// replace with actual transfer</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">ensureOpenAndTransfer</span><span class="p">(</span><span class="n">OgnMyIpcNodeCppDatabase</span><span class="o">&amp;</span><span class="w"> </span><span class="n">db</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isOpen</span><span class="p">())</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">tryOpen</span><span class="p">(</span><span class="n">db</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isOpen</span><span class="p">())</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">transfer</span><span class="p">(</span><span class="n">db</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">MyTransportHandle</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_handle</span><span class="p">;</span><span class="w"> </span><span class="c1">// replace with your transport type</span>
+<span class="p">};</span>
+
+<span class="n">REGISTER_OGN_NODE</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>生成的 <code class="docutils literal notranslate"><span class="pre">python/impl/extension.py</span></code> 在 <code class="docutils literal notranslate"><span class="pre">on_startup()</span></code> 中调用 <code class="docutils literal notranslate"><span class="pre">acquire_example_ipc_interface()</span></code>。这会触发 Carbonite 插件加载并运行 <code class="docutils literal notranslate"><span class="pre">INITIALIZE_OGN_NODES()</span></code>，从而注册你的 C++ 节点。如果你的节点未出现在 Action Graph 库中，请验证 <code class="docutils literal notranslate"><span class="pre">extension.py</span></code> 是否调用了 acquire 函数，并且 <code class="docutils literal notranslate"><span class="pre">PluginInterface.cpp</span></code> 中<strong>不</strong>包含 <code class="docutils literal notranslate"><span class="pre">CARB_PLUGIN_IMPL_DEPS</span></code> 行，因为该宏可能会阻止插件加载。</p>
+</div>
+</section>
+<section id="python-node-implementation">
+<h3>Python 节点实现<a class="headerlink" href="#python-node-implementation" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">BaseResetNode</span></code> 由 <code class="docutils literal notranslate"><span class="pre">isaacsim.core.nodes</span></code> 扩展提供。请在 <code class="docutils literal notranslate"><span class="pre">config/extension.toml</span></code> 中将其添加为依赖项，并在你的节点文件中导入它：</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[dependencies]</span>
+<span class="s2">"isaacsim.core.nodes"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">omni.graph.core</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">og</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaacsim.core.nodes</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseResetNode</span>
+</pre></div>
+</div>
+<p>将每个实例的数据放在一个继承自 <code class="docutils literal notranslate"><span class="pre">BaseResetNode</span></code> 的小型类中。如果你在 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 中延迟打开套接字（如示例所示），请将 <code class="docutils literal notranslate"><span class="pre">initialize=False</span></code> 传递给 <code class="docutils literal notranslate"><span class="pre">super().__init__</span></code>。如果不这样做，<code class="docutils literal notranslate"><span class="pre">BaseResetNode.__init__</span></code> 会在构造期间立即调用 <code class="docutils literal notranslate"><span class="pre">custom_reset()</span></code>，此时你的实例属性（例如 <code class="docutils literal notranslate"><span class="pre">self.sock</span> <span class="pre">=</span> <span class="pre">None</span></code>）尚未设置，从而引发 <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code>。实现 <code class="docutils literal notranslate"><span class="pre">custom_reset()</span></code> 以关闭套接字并清除缓冲区。<code class="docutils literal notranslate"><span class="pre">custom_reset()</span></code> 在时间轴停止时运行，并镜像 C++ 的 <code class="docutils literal notranslate"><span class="pre">reset()</span></code>。</p>
+<p>将生成的 <code class="docutils literal notranslate"><span class="pre">OgnExamplePython</span></code> 存根替换为如下所示的类（有关完整的 TCP 实现，请参阅 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">OgnSimpleSendSimulationClockPy.py</span></code>）：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">omni.graph.core</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">og</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaacsim.core.nodes</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseResetNode</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">OgnMyIpcNodePyState</span><span class="p">(</span><span class="n">BaseResetNode</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Per-instance state for the template IPC node."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Declare all attributes BEFORE calling super().__init__,</span>
+        <span class="c1"># because BaseResetNode.__init__ calls custom_reset() immediately.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># replace with your transport handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Reset transport state when timeline or inputs change."""</span>
+        <span class="c1"># Called on timeline stop and when inputs change.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="s2">""</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">OgnMyIpcNodePy</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Template OmniGraph node for custom IPC transports."""</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">internal_state</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">OgnMyIpcNodePyState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create per-instance state for the node.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Per-instance node state.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">OgnMyIpcNodePyState</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate one non-blocking IPC transfer step.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db: OmniGraph database object for the current node evaluation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if the transfer completed successfully, otherwise False.</span>
+<span class="sd">        """</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">per_instance_state</span>
+
+        <span class="n">uri</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">uri</span>
+        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">handle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">state</span><span class="o">.</span><span class="n">uri</span> <span class="o">!=</span> <span class="n">uri</span><span class="p">:</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">custom_reset</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">handle</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Open transport from inputs (e.g. URI, config).</span>
+            <span class="c1"># state.handle = open_my_transport(uri)</span>
+            <span class="c1"># state.uri = uri</span>
+            <span class="c1"># Fire execOut even on failure so downstream nodes keep running.</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">execOut</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">ExecutionAttributeState</span><span class="o">.</span><span class="n">ENABLED</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Non-blocking send or try-receive; write db.outputs on success.</span>
+        <span class="c1"># See Performance Considerations for time-budget guidance.</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># replace with actual transfer</span>
+
+        <span class="c1"># For send nodes: fire execOut every tick.</span>
+        <span class="c1"># For receive nodes: fire execOut only when a full message arrives.</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">execOut</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">ExecutionAttributeState</span><span class="o">.</span><span class="n">ENABLED</span>
+        <span class="k">return</span> <span class="n">success</span>
+
+
+</pre></div>
+</div>
+<div class="admonition-try-it-implement-and-build-your-node admonition">
+<p class="admonition-title">试一试：实现并构建你的节点</p>
+<p>将你的脚手架扩展调整为最小化的 IPC 发送器：</p>
+<ol class="arabic simple">
+<li><p><strong>更新 OGN 架构。</strong> 在 <code class="docutils literal notranslate"><span class="pre">nodes/OgnExampleCpp.ogn</span></code>（或 <code class="docutils literal notranslate"><span class="pre">OgnExamplePython.ogn</span></code>）中，重命名节点，添加一个 <code class="docutils literal notranslate"><span class="pre">uri</span></code> 字符串输入（默认值为 <code class="docutils literal notranslate"><span class="pre">"127.0.0.1:9000"</span></code>）以及 <code class="docutils literal notranslate"><span class="pre">execIn</span></code>/<code class="docutils literal notranslate"><span class="pre">execOut</span></code> 执行端口。</p></li>
+<li><p><strong>替换实现。</strong> 将上述模板复制到 <code class="docutils literal notranslate"><span class="pre">OgnExampleCpp.cpp</span></code>（或 <code class="docutils literal notranslate"><span class="pre">OgnExamplePython.py</span></code>）中，重命名类以匹配，并填充一个始终返回 <code class="docutils literal notranslate"><span class="pre">true</span></code> 的空操作 <code class="docutils literal notranslate"><span class="pre">transfer()</span></code>。</p></li>
+<li><p><strong>重新构建：</strong> <code class="docutils literal notranslate"><span class="pre">./build.sh</span></code>（Linux）或 <code class="docutils literal notranslate"><span class="pre">.\build.bat</span></code>（Windows）。</p></li>
+<li><p><strong>重启 Isaac Sim</strong>，关闭并重新启动 <code class="docutils literal notranslate"><span class="pre">./_build/linux-x86_64/release/isaac-sim.sh</span></code>（Linux）或 <code class="docutils literal notranslate"><span class="pre">.\_build\windows-x86_64\release\isaac-sim.bat</span></code>（Windows）。</p></li>
+<li><p><strong>验证：</strong> 在 Isaac Sim 中启用你的扩展，并确认重命名后的节点以其新的 <code class="docutils literal notranslate"><span class="pre">uiName</span></code> 出现在 Action Graph 库中。</p></li>
+</ol>
+<p>有关相同模式的完整 TCP 实现，请研究 <code class="docutils literal notranslate"><span class="pre">source/extensions/isaacsim.examples.ipc/</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">OgnSimpleSendSimulationClockCpp.cpp</span></code>（或 Python 等效版本）。</p>
+</div>
+<p>对于仅使用 Python 的扩展（无 C++ 插件），请从 <code class="docutils literal notranslate"><span class="pre">premake5.lua</span></code> 中省略 <code class="docutils literal notranslate"><span class="pre">project_ext_plugin</span></code>、<code class="docutils literal notranslate"><span class="pre">project_ext_bindings</span></code> 以及所有 <code class="docutils literal notranslate"><span class="pre">includedirs</span></code> / <code class="docutils literal notranslate"><span class="pre">links</span></code> 条目。保留 <code class="docutils literal notranslate"><span class="pre">add_ogn_dependencies</span></code>（处理 <code class="docutils literal notranslate"><span class="pre">.ogn</span></code> 文件并生成 <code class="docutils literal notranslate"><span class="pre">*Database.py</span></code> 模块）和 <code class="docutils literal notranslate"><span class="pre">repo_build.prebuild_link</span></code> 块：</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span><span class="w"> </span><span class="nv">ext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_current_extension_info</span><span class="p">()</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">ogn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_ogn_project_information</span><span class="p">(</span><span class="nv">ext</span><span class="p">,</span><span class="w"> </span><span class="s2">"myorg/my/ipc/nodes"</span><span class="p">)</span>
+<span class="nf">project_ext</span><span class="p">(</span><span class="nv">ext</span><span class="p">)</span>
+
+<span class="nf">add_ogn_dependencies</span><span class="p">(</span><span class="nv">ogn</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"python/nodes"</span><span class="w"> </span><span class="p">})</span>
+
+<span class="nv">repo_build</span><span class="p">.</span><span class="py">prebuild_copy</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="s2">"python/__init__.py"</span><span class="p">,</span><span class="w">  </span><span class="nv">ogn</span><span class="p">.</span><span class="py">python_target_path</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="s2">"python/extension.py"</span><span class="p">,</span><span class="w"> </span><span class="nv">ogn</span><span class="p">.</span><span class="py">python_target_path</span><span class="w"> </span><span class="p">},</span>
+<span class="p">}</span>
+
+<span class="nv">repo_build</span><span class="p">.</span><span class="py">prebuild_link</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="s2">"python/nodes"</span><span class="p">,</span><span class="w">  </span><span class="nv">ogn</span><span class="p">.</span><span class="py">python_target_path</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="s2">"/nodes"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="s2">"python/tests"</span><span class="p">,</span><span class="w">  </span><span class="nv">ogn</span><span class="p">.</span><span class="py">python_target_path</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="s2">"/tests"</span><span class="w"> </span><span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="sample-extension-reference">
+<h3>示例扩展参考<a class="headerlink" href="#sample-extension-reference" title="Link to this heading">#</a></h3>
+<p>来源：<code class="docutils literal notranslate"><span class="pre">source/extensions/isaacsim.examples.ipc/</span></code>。</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>已注册类型名称</p></th>
+<th class="head"><p>实现</p></th>
+<th class="head"><p>角色</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SimpleSendSimulationClockCpp</span></code> / <code class="docutils literal notranslate"><span class="pre">SimpleSendSimulationClockPy</span></code></p></td>
+<td><p>C++ / Python</p></td>
+<td><p>在每次评估时将仿真时钟转发给外部进程。作为 TCP 客户端连接到 <code class="docutils literal notranslate"><span class="pre">uri</span></code>（<code class="docutils literal notranslate"><span class="pre">host:port</span></code>）。输入：<code class="docutils literal notranslate"><span class="pre">simulationTime</span></code>（<code class="docutils literal notranslate"><span class="pre">double</span></code>，单位：秒；从 <code class="docutils literal notranslate"><span class="pre">IsaacReadSimulationTime</span></code> 连接）。将该值编码为 8 字节有符号 int64（小端序）的纳秒值并发送。在每次评估时触发 <code class="docutils literal notranslate"><span class="pre">execOut</span></code>。</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SimpleReceiveExternalStepCpp</span></code> / <code class="docutils literal notranslate"><span class="pre">SimpleReceiveExternalStepPy</span></code></p></td>
+<td><p>C++ / Python</p></td>
+<td><p>从外部进程接收步数计数器，并将其暴露给下游节点。在 <code class="docutils literal notranslate"><span class="pre">uri</span></code> 上绑定为 TCP 服务器并接受一个客户端。输出 <code class="docutils literal notranslate"><span class="pre">step</span></code>（uint32）。仅在接收到完整的 4 字节消息时触发 <code class="docutils literal notranslate"><span class="pre">execOut</span></code>。部分读取的数据会在多次评估之间进行缓冲。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>在图中，完整路径通常为 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc.&lt;TypeName&gt;</span></code>（请参阅扩展的 <code class="docutils literal notranslate"><span class="pre">config/extension.toml</span></code>）。</p>
+<p>C++ 和 Python 在 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 中遵循相同的序列。它们仅在名称和状态连接方面有所不同。例如，<code class="docutils literal notranslate"><span class="pre">reset()</span></code> 与 <code class="docutils literal notranslate"><span class="pre">custom_reset()</span></code> 相比，以及来自 OGN 数据库的 C++ <code class="docutils literal notranslate"><span class="pre">state</span></code> 与 Python <code class="docutils literal notranslate"><span class="pre">internal_state()</span></code> 相比。</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>compute(db)
+     │
+     ├─► uri (or relevant inputs) changed? ──yes──► teardown transport
+     │                    C++: state.reset()    Python: custom_reset()
+     ▼
+try open: connect or listen / accept
+     │         (retry next eval if not ready)
+     ▼
+transport ready? ──no──► return false
+     │    (recv: often "no full message yet")
+     yes
+     ▼
+framed try-send / try-recv  (see Performance Considerations for time budget)
+     │
+     ▼
+write db.outputs and set execOut
+     │
+     ▼
+return true/false  (per node type / sample rules)
+</pre></div>
+</div>
+</section>
+</section>
+<section id="use-your-nodes-in-isaac-sim-short">
+<h2>在 Isaac Sim 中使用您的节点<a class="headerlink" href="#use-your-nodes-in-isaac-sim-short" title="Link to this heading">#</a></h2>
+<section id="enable-your-extension-and-find-your-nodes">
+<h3>启用您的扩展并查找您的节点<a class="headerlink" href="#enable-your-extension-and-find-your-nodes" title="Link to this heading">#</a></h3>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>如果您尚未替换脚手架占位符，可以按照以下步骤使用 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc</span></code> 作为替代——它随 Isaac Sim 一起提供，并且具有完全可用的节点，可以随时启用和查找。一旦您实现并构建了节点，请使用您自己的扩展名称重复这些步骤。</p>
+</div>
+<p>构建过程（Linux 上使用 <code class="docutils literal notranslate"><span class="pre">./build.sh</span></code>，Windows 上使用 <code class="docutils literal notranslate"><span class="pre">.\build.bat</span></code>）会编译您的扩展，并将输出放置在 <code class="docutils literal notranslate"><span class="pre">_build/&lt;platform&gt;/release/exts/&lt;extension_name&gt;/</span></code> 目录下（根据主机系统不同，分别为 <code class="docutils literal notranslate"><span class="pre">linux-x86_64</span></code> 或 <code class="docutils literal notranslate"><span class="pre">windows-x86_64</span></code>）。从同一仓库启动的 Isaac Sim 会自动搜索该目录，因此无需进行额外的路径配置。</p>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>务必从仓库构建版本启动 Isaac Sim。单独安装的 Isaac Sim 不会搜索仓库的 <code class="docutils literal notranslate"><span class="pre">exts/</span></code> 目录，因此无法找到您的扩展。每次构建运行后，请重启 Isaac Sim —— 已加载的 C++ 插件无法进行热替换。</p>
+</div>
+<p>从仓库构建版本启动（或重启）Isaac Sim：</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-3" type="radio"/>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="linux" for="sd-tab-item-6">
+Linux</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./_build/linux-x86_64/release/isaac-sim.sh
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-7" name="sd-tab-set-3" type="radio"/>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="windows" for="sd-tab-item-7">
+Windows</label><div class="sd-tab-content docutils">
+<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span>.\_build\windows-x86_64\release\isaac-sim.bat
+</pre></div>
+</div>
+</div>
+</div>
+<p>然后启用您的扩展：</p>
+<ol class="arabic simple">
+<li><p>打开 <strong>Window &gt; Extensions</strong>。</p></li>
+<li><p>搜索您的扩展名称（例如 <code class="docutils literal notranslate"><span class="pre">isaacsim.my.ipc.nodes</span></code>）并启用它。</p></li>
+</ol>
+<p>随后，您的节点将出现在 Action Graph 节点库中，位于您在脚手架生成期间选择的类别下。请根据 <code class="docutils literal notranslate"><span class="pre">.ogn</span></code> 文件中定义的 <code class="docutils literal notranslate"><span class="pre">uiName</span></code> 值进行搜索（对于脚手架默认值：<code class="docutils literal notranslate"><span class="pre">Example</span> <span class="pre">C++</span> <span class="pre">Node</span></code> 和 <code class="docutils literal notranslate"><span class="pre">Example</span> <span class="pre">Python</span> <span class="pre">Node</span></code>）。</p>
+</section>
+<section id="building-an-example-graph">
+<h3>构建示例图<a class="headerlink" href="#building-an-example-graph" title="Link to this heading">#</a></h3>
+<p>以下步骤使用来自 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc</span></code> 的参考节点，为 <code class="docutils literal notranslate"><span class="pre">tcp_tutorial_playback_bridge.py</span></code> 构建示例图。在接入您自己的节点之前，请使用此图验证端到端的 IPC 模式。</p>
+<ol class="arabic">
+<li><p>启用示例扩展。<strong>打开 Window &gt; Extensions</strong>，搜索 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc</span></code>，并启用 IPC OmniGraph Node Examples。</p></li>
+<li><p>打开 Action Graph 编辑器。<strong>Window &gt; Graph Editors &gt; Action Graph</strong>。</p></li>
+<li><p>放置教程节点。在节点库的 Isaac Examples 下，添加 Receive External Step 和 Send Simulation Clock。使用搜索框添加 On Playback Tick 和来自 <code class="docutils literal notranslate"><span class="pre">isaacsim.core.nodes</span></code> 的 Isaac Read Simulation Time。C++ 或 Python 节点对均可与桥接脚本配合使用。</p></li>
+<li><p>连接图。</p>
+<p>执行链：</p>
+<ul class="simple">
+<li><p>On Playback Tick <code class="docutils literal notranslate"><span class="pre">execOut</span></code> â Receive External Step <code class="docutils literal notranslate"><span class="pre">execIn</span></code></p></li>
+<li><p>Receive External Step <code class="docutils literal notranslate"><span class="pre">execOut</span></code> â Send Simulation Clock <code class="docutils literal notranslate"><span class="pre">execIn</span></code></p></li>
+</ul>
+<p>数据：</p>
+<ul class="simple">
+<li><p>Isaac Read Simulation Time <code class="docutils literal notranslate"><span class="pre">simulationTime</span></code> â Send Simulation Clock <code class="docutils literal notranslate"><span class="pre">simulationTime</span></code></p></li>
+</ul>
+<p>默认 <code class="docutils literal notranslate"><span class="pre">uri</span></code> 值为接收节点上的 <code class="docutils literal notranslate"><span class="pre">127.0.0.1:9001</span></code> 和发送节点上的 <code class="docutils literal notranslate"><span class="pre">127.0.0.1:9000</span></code>。</p></li>
+<li><p><strong>开始播放。</strong>点击工具栏中的 <strong>Play</strong> 按钮（或按 <strong>Space</strong> 键）以开始仿真。</p></li>
+</ol>
+<p>通用 Action Graph UI 已在 <a class="reference internal" href="omnigraph_tutorial.html#isaac-sim-app-tutorial-gui-omnigraph"><span class="std std-ref">Isaac Sim OmniGraph Tutorial</span></a> 以及 <a class="reference internal" href="#before-you-start">Before You Start</a> 中链接的 OmniGraph 文档中介绍。</p>
+<p>图连接完成且播放运行后，Receive External Step 会在其 URI 上监听，桥接脚本连接并发送第一个步骤令牌，Send Simulation Clock 则在每次 tick 后将当前仿真时间报告回脚本。脚本驱动计时循环，Isaac Sim 每收到一个步骤便推进一个 tick。</p>
+<div class="admonition-try-it-run-the-bridge-with-your-own-node admonition">
+<p class="admonition-title">试一试：使用您自己的节点运行桥接脚本</p>
+<p>一旦参考图与 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc</span></code> 节点端到端工作正常，请替换为您自定义的节点：</p>
+<ol class="arabic simple">
+<li><p>在图中，删除 <code class="docutils literal notranslate"><span class="pre">SimpleSendSimulationClock</span></code> 节点。</p></li>
+<li><p>添加您在上述练习中重命名的节点。</p></li>
+<li><p>以相同方式连接：Receive External Step <code class="docutils literal notranslate"><span class="pre">execOut</span></code> â 您的节点 <code class="docutils literal notranslate"><span class="pre">execIn</span></code>，以及 Isaac Read Simulation Time <code class="docutils literal notranslate"><span class="pre">simulationTime</span></code> â 您的节点 <code class="docutils literal notranslate"><span class="pre">simulationTime</span></code>。</p></li>
+<li><p>运行桥接脚本。由于 <code class="docutils literal notranslate"><span class="pre">transfer()</span></code> 目前仍是一个返回 <code class="docutils literal notranslate"><span class="pre">true</span></code> 而不发送数据的存根，脚本将建立连接但不会接收时钟输出——这是预期行为。这证实了您的扩展已加载、启用并参与图形执行。</p></li>
+<li><p>要完成实现，请在 <code class="docutils literal notranslate"><span class="pre">transfer()</span></code> 中添加实际的发送逻辑。请参考 <code class="docutils literal notranslate"><span class="pre">source/extensions/isaacsim.examples.ipc/</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">OgnSimpleSendSimulationClockCpp.cpp</span></code>（或 Python 等效实现）。</p></li>
+</ol>
+</div>
+</section>
+<section id="external-python-playback-bridge">
+<h3>外部 Python 播放桥接<a class="headerlink" href="#external-python-playback-bridge" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">tcp_tutorial_playback_bridge.py</span></code> 脚本演示了完整的往返流程。它监听 Send 节点发出的八字节时钟，连接到 Receive 节点的监听端口，预置一个步骤，然后对于每一帧读取时钟并发送回下一步骤，以便下一个 <code class="docutils literal notranslate"><span class="pre">OnPlaybackTick</span></code> 可以触发。</p>
+<p>该脚本仅使用 Python 标准库（<code class="docutils literal notranslate"><span class="pre">socket</span></code>、<code class="docutils literal notranslate"><span class="pre">struct</span></code>、<code class="docutils literal notranslate"><span class="pre">argparse</span></code>），没有 Isaac Sim 或第三方依赖项。请在仓库根目录下使用任意系统 <code class="docutils literal notranslate"><span class="pre">python3</span></code> 运行它：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>source/extensions/isaacsim.examples.ipc/python/scripts/tcp_tutorial_playback_bridge.py
+</pre></div>
+</div>
+<p>传递 <code class="docutils literal notranslate"><span class="pre">--help</span></code> 以查看 <code class="docutils literal notranslate"><span class="pre">--clock-host</span></code>、<code class="docutils literal notranslate"><span class="pre">--clock-port</span></code>、<code class="docutils literal notranslate"><span class="pre">--step-host</span></code>、<code class="docutils literal notranslate"><span class="pre">--step-port</span></code> 和 <code class="docutils literal notranslate"><span class="pre">--max-frames</span></code> 选项。</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>该脚本在 <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> 上绑定 TCP 监听器。对于实际部署，除非您有意暴露端口，否则请仅绑定到回环地址。开放的接口可能会增加攻击面。请将任何 IPC 桥接视为网络服务，其中身份验证、TLS 或等效机制以及防火墙规则由您负责。</p>
+</div>
+</section>
+</section>
+<section id="performance-considerations">
+<h2>性能注意事项<a class="headerlink" href="#performance-considerations" title="Link to this heading">#</a></h2>
+<p><strong>保持在您的帧预算范围内。</strong></p>
+<blockquote>
+<div><p>OmniGraph 在那些必须相对于仿真、UI 和其他图保持响应能力的路径上评估 <code class="docutils literal notranslate"><span class="pre">compute</span></code>。常见的失败模式是执行时间不可预测地过长，这本身并不是“同步” I/O 造成的。等待慢速对端、进行大量数据拷贝、争用锁，或执行可能停滞数毫秒的 RPC，都可能导致性能问题。</p>
+</div></blockquote>
+<p><strong>小型、快速的路径通常没问题。</strong></p>
+<blockquote>
+<div><p>在 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 中，一个微小、固定大小、发后即忘的操作（教程中在套接字连接后发送一次 8 字节时钟信号），如果它在目标帧率下始终能在每节点预算内完成，则可以保留在图线程上。对于其他技术栈，如果你已经测量过该路径，并且它不会等待来自远程端的背压，同样适用此规则。</p>
+</div></blockquote>
+<p><strong>何时使用工作线程、队列或异步 API。</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>如果调用可能会阻塞未知时长（请求/响应、就绪等待、大负载，或任何可能超出每节点预算的操作），请在 worker 线程上运行该 IPC。使用将结果入队的回调，并让 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 仅执行非阻塞出队和写入 <code class="docutils literal notranslate"><span class="pre">db.outputs</span></code>。</p></li>
+<li><p>对于入站数据，尝试接收（如教程中的 step 节点）可避免在外部进程未按你的计划发送时无限期等待。</p></li>
+<li><p><strong>异步或基于回调的 I/O：</strong>在 worker 线程上驱动网络或 IPC，将解码后的消息推送到线程安全队列，并让 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 仅执行出队（非阻塞）和写入 <code class="docutils literal notranslate"><span class="pre">db.outputs</span></code>。</p></li>
+<li><p><strong>延迟完成：</strong>从 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 提交工作而不等待回复。后台线程将结果入队，供后续评估使用。</p></li>
+</ul>
+</div></blockquote>
+<p><strong>结构化消息与固定字节。</strong></p>
+<blockquote>
+<div><p>教程中的固定大小帧格式是为了清晰起见。生产环境的桥接通常使用你的库的消息格式（IDL 生成的类型、JSON 或其他模式）。你仍然需要决定何时发送、如何解析传入数据，以及如何使每个 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 保持在预算范围内。</p>
+</div></blockquote>
+<p><strong>大型消息（相机帧、点云）。</strong></p>
+<blockquote>
+<div><p>移动多兆字节有效载荷的单次调用可能会给内存和调度带来压力。使用流式 API、显式背压（在慢速消费者上丢弃或跳过帧），或在 OmniGraph 之外使用共享内存和零拷贝路径，节点仅传递句柄或小型元数据。</p>
+</div></blockquote>
+</section>
+<section id="built-in-nodes-for-data-in-and-out">
+<span id="isaac-sim-omnigraph-custom-ipc-nodes-builtin"></span><h2>用于数据输入和输出的内置节点<a class="headerlink" href="#built-in-nodes-for-data-in-and-out" title="Link to this heading">#</a></h2>
+<p>除了 <code class="docutils literal notranslate"><span class="pre">isaacsim.examples.ipc</span></code> 之外，几个扩展注册了 OmniGraph 节点，这些节点在 Isaac Sim 中读取仿真状态或驱动仿真，而不作为到另一个进程的通用桥接。下表重点介绍了在桥接图中通常与自定义 IPC 节点相邻的类型。</p>
+<p>在设计自定义节点的输入和输出之前，请检查你计划连接的内置节点的 <code class="docutils literal notranslate"><span class="pre">.ogn</span></code>——它们的输出属性名称和类型决定了你的节点需要消费或生产什么。</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-text">用于桥接式图的常见内置 OmniGraph 节点</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 18.0%"/>
+<col style="width: 28.0%"/>
+<col style="width: 22.0%"/>
+<col style="width: 32.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>目标</p></th>
+<th class="head"><p>节点（注册类型）</p></th>
+<th class="head"><p>扩展</p></th>
+<th class="head"><p>关键输入 / 输出（缩写）</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>读取关节位置 / 速度（和力矩）以进行发布</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">IsaacArticulationState</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.nodes</span></code></p></td>
+<td><p>输入：<code class="docutils literal notranslate"><span class="pre">robotPath</span></code> 或 <code class="docutils literal notranslate"><span class="pre">targetPrim</span></code>，可选 <code class="docutils literal notranslate"><span class="pre">jointNames</span></code> / <code class="docutils literal notranslate"><span class="pre">jointIndices</span></code>。输出：<code class="docutils literal notranslate"><span class="pre">jointPositions</span></code>、<code class="docutils literal notranslate"><span class="pre">jointVelocities</span></code>（<code class="docutils literal notranslate"><span class="pre">double[]</span></code>）、<code class="docutils literal notranslate"><span class="pre">jointNames</span></code>（<code class="docutils literal notranslate"><span class="pre">token[]</span></code>），以及测量的力矩数组。</p></td>
+</tr>
+<tr class="row-odd"><td><p>替代关节状态（物理传感器路径）</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.physics.IsaacReadJointState</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.physics.nodes</span></code></p></td>
+<td><p>输入：<code class="docutils literal notranslate"><span class="pre">prim</span></code>（关节根节点）。输出：<code class="docutils literal notranslate"><span class="pre">jointPositions</span></code>、<code class="docutils literal notranslate"><span class="pre">jointVelocities</span></code>、<code class="docutils literal notranslate"><span class="pre">jointEfforts</span></code>、<code class="docutils literal notranslate"><span class="pre">jointNames</span></code>、<code class="docutils literal notranslate"><span class="pre">execOut</span></code> 等。</p></td>
+</tr>
+<tr class="row-even"><td><p>应用关节位置 / 速度 / 力矩命令</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">IsaacArticulationController</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.nodes</span></code></p></td>
+<td><p>输入：与上述相同的机器人目标；<code class="docutils literal notranslate"><span class="pre">positionCommand</span></code>、<code class="docutils literal notranslate"><span class="pre">velocityCommand</span></code>、<code class="docutils literal notranslate"><span class="pre">effortCommand</span></code>（<code class="docutils literal notranslate"><span class="pre">double[]</span></code>）。在控制器 API 中，角度单位为弧度。</p></td>
+</tr>
+<tr class="row-odd"><td><p>仿真步进 / 门控</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OnPhysicsStep</span></code>, <code class="docutils literal notranslate"><span class="pre">IsaacSimulationGate</span></code>, <code class="docutils literal notranslate"><span class="pre">IsaacReadSimulationTime</span></code>, …</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.nodes</span></code></p></td>
+<td><p>用于一致地控制状态读取和命令写入的节奏（具体属性因节点而异）。</p></td>
+</tr>
+<tr class="row-even"><td><p>相机 / 视口渲染产品路径（仅设置）</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">IsaacGetViewportRenderProduct</span></code>, <code class="docutils literal notranslate"><span class="pre">IsaacCreateRenderProduct</span></code>, <code class="docutils literal notranslate"><span class="pre">IsaacAttachHydraTexture</span></code>, <code class="docutils literal notranslate"><span class="pre">IsaacSetCameraOnRenderProduct</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.nodes</span></code></p></td>
+<td><p>主要是路径和目标（<code class="docutils literal notranslate"><span class="pre">renderProductPath</span></code>、<code class="docutils literal notranslate"><span class="pre">renderProductPrim</span></code>）。像素数据需要单独的读回步骤。请参阅 <a class="reference internal" href="#camera-and-render-products">Camera and Render Products</a>。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>在自定义发送器之前可以链式使用的其他读取扩展：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.physics.nodes</span></code> — 惯性测量单元 (IMU)、接触、力矩等，由 <code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.experimental.physics</span></code> 支持。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.physx</span></code> — 例如 Isaac Read Lidar Beams、Isaac Read Lidar Point Cloud、Isaac Read Light Beam Sensor。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.rtx.nodes</span></code> — 例如 Isaac Extract RTX Sensor Point Cloud。</p></li>
+</ul>
+<p>对于与外部应用程序（主题、服务或其他运行时）进行 IPC 通信，请使用专用的桥接扩展，而不是将上表中的节点视为传输层。示例包括 <code class="docutils literal notranslate"><span class="pre">isaacsim.ros2.nodes</span></code>（ROS 2）或 <code class="docutils literal notranslate"><span class="pre">isaacsim.ucx.nodes</span></code>（UCX）。这些扩展的作用与 TCP 教程节点相同，而不是表中的传感器读取节点。</p>
+<p><strong>本仓库中的参考实现。</strong></p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">source/extensions/</span></code> 目录包含完整的 IPC 桥接实现，
+当 TCP 教程无法满足需求时，您可以研究这些实现。提供两种技术栈：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>ROS 2</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.ros2.nodes</span></code>、<code class="docutils literal notranslate"><span class="pre">isaacsim.ros2.bridge</span></code> 及相关
+包。</p></li>
+<li><p><strong>UCX</strong>：<code class="docutils literal notranslate"><span class="pre">isaacsim.ucx.nodes</span></code>、<code class="docutils literal notranslate"><span class="pre">isaacsim.ucx.core</span></code>、
+<code class="docutils literal notranslate"><span class="pre">isaacsim.ucx.bridge</span></code>。</p></li>
+</ul>
+</div></blockquote>
+<p>每种技术栈都展示了完整桥接的布局方式：<code class="docutils literal notranslate"><span class="pre">extension.toml</span></code>
+依赖项、原生插件、C++ 和 Python OmniGraph 节点以及传输后端。</p>
+</div></blockquote>
+<p>在 Kit 文档的 OmniGraph 节点库中按名称搜索：<a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph</span></a>。</p>
+</section>
+<section id="camera-and-render-products">
+<h2>Camera 和 Render Products<a class="headerlink" href="#camera-and-render-products" title="Link to this heading">#</a></h2>
+<p>将原始 RGB 像素传入自定义 IPC 节点，仅靠普通的 <code class="docutils literal notranslate"><span class="pre">uchar[]</span></code> OGN 输入是不够的。图像数据通常先经过 Replicator 流水线或 render product 链，然后才到达任何 IPC 编码器，而不是在图形编辑器中通过单根连线直接传输。关键步骤如下：</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>设置一个 render product（<code class="docutils literal notranslate"><span class="pre">IsaacCreateRenderProduct</span></code> 或 <code class="docutils literal notranslate"><span class="pre">IsaacGetViewportRenderProduct</span></code>）并附加一个 camera。</p></li>
+<li><p>通过以下任一方式将 render product 接入回读机制：</p>
+<ul class="simple">
+<li><p>Replicator 标注器（提供主机友好的 NumPy 数组）</p></li>
+<li><p>Hydra 纹理链（通过 <code class="docutils literal notranslate"><span class="pre">IsaacAttachHydraTexture</span></code> 获取 GPU 句柄）</p></li>
+</ul></li>
+<li><p>将生成的 CPU 可寻址字节或数组传入你的 IPC 编码器节点。</p></li>
+</ol>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">isaacsim.ros2.bridge</span></code> 扩展的 camera 辅助节点是展示如何组装此流水线的具体参考示例。ROS 2 camera 发布者将 render product 连接到主机回读，再连接到 IPC。在构建自己的实现之前，浏览该源代码是理解此模式的最快方式。</p>
+<p>在通过 <code class="docutils literal notranslate"><span class="pre">compute</span></code> 传递大型缓冲区之前，请参阅 <a class="reference internal" href="#performance-considerations">Performance Considerations</a>。Camera 帧是导致帧预算超支的常见原因。</p>
+</section>
+<section id="testing-your-omnigraph-node-implementation">
+<h2>测试你的 OmniGraph 节点实现<a class="headerlink" href="#testing-your-omnigraph-node-implementation" title="Link to this heading">#</a></h2>
+<p>用于 OmniGraph 节点的 Python 集成测试可以在运行时使用 <code class="docutils literal notranslate"><span class="pre">og.Controller.edit</span></code> 构建 Action Graph，以编程方式连接节点，驱动时间线，并对输出属性值进行断言。值得覆盖的领域包括：</p>
+<ul class="simple">
+<li><p><strong>正确的输出</strong>：给定已知输入，节点产生预期的 <code class="docutils literal notranslate"><span class="pre">db.outputs</span></code> 值。</p></li>
+<li><p><strong>execOut 时序</strong>：节点仅在预期条件下触发 <code class="docutils literal notranslate"><span class="pre">execOut</span></code>。对于发送节点，这意味着每次评估都会触发。对于接收节点，这意味着仅在接收到数据时触发。</p></li>
+<li><p><strong>重置行为</strong>：更改 URI 输入或停止时间线会关闭传输，随后的评估会干净地重新打开它。</p></li>
+<li><p><strong>边缘情况</strong>：部分消息、对等方断开连接以及来自外部进程的格式错误数据。</p></li>
+</ul>
+<p>对于 C++ 辅助函数（解析、编码和字节序），单元测试可以通过原生测试库（如 doctest）在 Isaac Sim 之外运行，这些库在 <code class="docutils literal notranslate"><span class="pre">premake5.lua</span></code> 中配置，并在 <code class="docutils literal notranslate"><span class="pre">extension.toml</span></code> 中引用。</p>
+<p>将 <code class="docutils literal notranslate"><span class="pre">[[test]]</span></code> 条目指向你的测试模块，该条目位于你的 <code class="docutils literal notranslate"><span class="pre">extension.toml</span></code> 中。生成的测试驱动程序通常为 <code class="docutils literal notranslate"><span class="pre">_build/&lt;platform&gt;/&lt;config&gt;/tests/tests-&lt;your.extension.id&gt;.sh</span></code>。对于脚手架生成的扩展，测试位于 <code class="docutils literal notranslate"><span class="pre">python/tests/</span></code> 中（模板已自动创建）。</p>
+<p>有关上述模式（异步测试、<code class="docutils literal notranslate"><span class="pre">OnImpulseEvent</span></code>、空闲端口辅助函数和时间线控制）的示例，请参阅 <code class="docutils literal notranslate"><span class="pre">source/extensions/isaacsim.examples.ipc/python/tests/</span></code>。</p>
+</section>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="omnigraph_custom_cpp_nodes.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Custom C++ Nodes</p>
+</div>
+</a>
+<a class="right-next" href="omnigraph_tutorial.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Isaac Sim OmniGraph Tutorial</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="page-toc" id="pst-page-toc-nav">
+<ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#before-you-start">Before You Start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scaffold-your-extension">Scaffold Your Extension</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-your-transport-library">Add Your Transport Library</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Python</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c">C++</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-and-implement-your-nodes">Design and Implement Your Nodes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#design-principle">Design Principle</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-every-ipc-node-requires">What Every IPC Node Requires</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogn-schema-quick-reference">OGN Schema Quick Reference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c-node-implementation">C++ Node Implementation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-node-implementation">Python Node Implementation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-extension-reference">Sample Extension Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-your-nodes-in-isaac-sim-short">Use Your Nodes in Isaac Sim</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enable-your-extension-and-find-your-nodes">Enable Your Extension and Find Your Nodes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-an-example-graph">Building an Example Graph</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#external-python-playback-bridge">External Python Playback Bridge</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-considerations">Performance Considerations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-nodes-for-data-in-and-out">Built-In Nodes for Data in and Out</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#camera-and-render-products">Camera and Render Products</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-your-omnigraph-node-implementation">Testing Your OmniGraph Node Implementation</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer="" src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="../_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Your Privacy Choices</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2023-2026, NVIDIA Corporation.
+      <br/>
+</p>
+</div>
+<div class="footer-item"><p class="last-updated">
+  Last updated on Sep 18, 2026.
+  <br/>
+</p></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

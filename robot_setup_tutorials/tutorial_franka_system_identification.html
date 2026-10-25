@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html data-content_root="../" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>教程 14：Franka 系统辨识 — Isaac Sim 中文文档</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet"/>
+<link href="../_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="../_static/styles/nvidia-sphinx-theme.css?v=933278ad" rel="stylesheet" type="text/css"/>
+<link href="../_static/custom.css?v=767de534" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/image_lightbox.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="../_static/isaacsim-design.css?v=6415189c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script defer="" src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<link as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" rel="preload"/>
+<script rel="preload" src="../_static/modal-table.js"></script>
+<script src="../_static/documentation_options.js?v=d9c7ea69"></script>
+<script src="../_static/doctools.js?v=9bcbadda"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/external-links.js"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=65e89d2a"></script>
+<script src="../_static/isaacsim-config-selector.js?v=58930015"></script>
+<script src="../_static/image_lightbox.js"></script>
+<script src="../_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'robot_setup_tutorials/tutorial_franka_system_identification';</script>
+<script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '../versions1.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '6.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+<script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+<script src="../_static/version-patch.js?v=3e13fdd2"></script>
+<link href="../_static/favicon.png" rel="icon"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="tutorial_system_identification_simsim.html" rel="next" title="Tutorial 15: Validate System Identification with Sim-to-Sim Recovery"/>
+<link href="optimizing_asset.html" rel="prev" title="Tutorial 12: Asset Optimization"/>
+<link as="image" href="https://www.nvidia.com/content/dam/1x1-00000000.png" rel="preload"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<meta content="Sep 18, 2026" name="docbuild:last-update"/>
+<script src="../_static/searchtools.js"></script>
+<script src="../_static/language_data.js"></script>
+<script src="../searchindex.js"></script>
+<!-- Google tag (gtag.js) -->
+<meta content="System Identification 扩展目前处于 Beta 阶段。其工作流程、运行契约、导出的运行规范以及 API 不保证未来兼容性。 — Isaac Sim 中文文档" name="description"/></head>
+<body data-default-mode="">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none" id="pst-header">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="me-auto navbar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-2" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-2" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-2" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-2" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="../index.html">
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Isaac Sim Documentation - Home" class="logo__image only-dark pst-js-only" src="../_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Isaac Sim Documentation</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__center">
+<div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+<button aria-controls="pst-version-switcher-list-3" aria-haspopup="listbox" aria-label="Version switcher list" class="version-switcher__button btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pst-version-switcher-button-3" type="button">
+    Choose version  <!-- this text may get changed later by javascript -->
+<span class="caret"></span>
+</button>
+<div aria-labelledby="pst-version-switcher-button-3" class="version-switcher__menu dropdown-menu list-group-flush py-0" id="pst-version-switcher-list-3" role="listbox">
+<!-- dropdown will be populated by javascript on page load -->
+</div>
+</div></div>
+</div>
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="http://discord.gg/nvidiaomniverse" rel="noopener" target="_blank" title="discord"><i aria-hidden="true" class="fa-brands fa-discord fa-lg"></i>
+<span class="sr-only">discord</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://github.com/isaac-sim" rel="noopener" target="_blank" title="github"><i aria-hidden="true" class="fa-brands fa-github fa-lg"></i>
+<span class="sr-only">github</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://twitter.com/nvidiaomniverse" rel="noopener" target="_blank" title="twitter"><i aria-hidden="true" class="fa-brands fa-twitter fa-lg"></i>
+<span class="sr-only">twitter</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.youtube.com/channel/UCSKUoczbGAcMld7HjpCR8OA" rel="noopener" target="_blank" title="youtube"><i aria-hidden="true" class="fa-brands fa-youtube fa-lg"></i>
+<span class="sr-only">youtube</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.instagram.com/nvidiarobotics" rel="noopener" target="_blank" title="instagram"><i aria-hidden="true" class="fa-brands fa-instagram fa-lg"></i>
+<span class="sr-only">instagram</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://developer.nvidia.com/isaac/sim" rel="noopener" target="_blank" title="www"><i aria-hidden="true" class="fa-solid fa-globe fa-lg"></i>
+<span class="sr-only">www</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.linkedin.com/showcase/nvidiarobotics" rel="noopener" target="_blank" title="linkedin"><i aria-hidden="true" class="fa-brands fa-linkedin fa-lg"></i>
+<span class="sr-only">linkedin</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://www.twitch.tv/nvidiaomniverse" rel="noopener" target="_blank" title="twitch"><i aria-hidden="true" class="fa-brands fa-twitch fa-lg"></i>
+<span class="sr-only">twitch</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Isaac Sim</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">What Is Isaac Sim?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/reference_architecture.html">Reference Architecture and Task Groupings</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/release_notes.html">Release Notes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/known_issues.html">Known Issues</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../migration_guides/index.html">Migration Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/index.html">Isaac Sim 6.1</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_1/robot_policy_examples.html">Robot Policy Examples Extension 7.0.0</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/index.html">Isaac Sim 6.0</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/migration_strategy.html">Isaac Sim 6.0 Migration Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/project_migration_audit.html">Project Migration Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/core_api_to_core_experimental.html">Core API to Core Experimental API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensor_timing_and_rtx_lidar_asset_migration.html">Sensor Timing and RTX Lidar Asset Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_camera_to_experimental_rtx.html">Camera Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_rtx_to_experimental_rtx.html">RTX Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physics_to_experimental_physics.html">Physics Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lidar_to_physics_raycast.html">PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_generic_to_physics_raycast.html">PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/sensors_physx_lightbeam_to_physics_raycast.html">PhysX Lightbeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/replicator_domain_randomization_to_experimental.html">Replicator Domain Randomization Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/mobility_gen_recordings_migration.html">MobilityGen Package and Recordings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_control_extensions_to_experimental.html">Manipulator and Wheeled Robot Extension Split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_motion_to_experimental_motion_generation.html">Robot Motion Generation APIs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/cortex_to_open_source_workflows.html">Cortex behavior workflow migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_setup_wizard_and_mesh_merge.html">Robot Wizard and Mesh Merge Tool Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/robot_asset_path_migration.html">Robot Asset Path Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/urdf_mjcf_importer_exporter_pipeline.html">URDF, MJCF, and Robot Asset Pipeline Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_omnigraph_migration.html">ROS 2 OmniGraph Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_sensor_graph_migration.html">ROS 2 Sensor Graph Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ros2_workspace_package_migration.html">ROS 2 Workspace Package Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/benchmark_services_migration.html">Benchmark Services Migration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/removed_tools_and_replacements.html">Removed Tools and Replacements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/extension_template_generator_to_cli_templates.html">Extension Template Generator to CLI Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/ext_isaacsim_replicator_agent_migration_guide.html">Replicator Agent (IRA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_6_0/surface_gripper_bindings_import.html">Surface Gripper Bindings</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/index.html">Isaac Sim 4.5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../migration_guides/isaac_sim_4_5/extensions_renaming.html">Renaming Extensions in Isaac Sim 4.5</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../installation/index.html">Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/requirements.html">Isaac Sim Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/download.html">Download Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/accessing_assets.html">Accessing assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_workstation.html">Workstation Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_container.html">Container Installation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../installation/install_cloud.html">Cloud Deployment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_launchable.html">Isaac Launchable Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_brev.html">NVIDIA Brev Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_aws.html">AWS Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_azure.html">Azure Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_gcp.html">Google Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_tencent.html">Tencent Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_alibaba.html">Alibaba Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_volcano.html">Volcano Engine Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_cloud_setup_baidu.html">Baidu Cloud Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_advanced_remote_setup.html">Remote Workstation Deployment</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/manual_livestream_clients.html">Livestream Clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_python.html">Python Environment Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/install_faq.html">Setup Tips</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview/help.html">Help &amp; FAQ</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview/isaac_sim_forums.html">Isaac Sim Developer Resources</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview/faq_index.html">FAQ</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../overview/troubleshooting.html">Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../assets/usd_assets_overview.html">Isaac Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_robots.html">Robot Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_wheeled.html">Wheeled Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_manipulator.html">Manipulator Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_humanoid.html">Humanoid Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_quadruped.html">Quadruped Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_holonomic.html">Holonomic Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_aerial.html">Aerial Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_isaac_sim_simple.html">Isaac Sim Simple Robot Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_robots_mobile_manipulator.html">Mobile Manipulator Robot Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_sensors.html">Sensor Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_camera_depth_sensors.html">Camera Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_depth_sensors.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nonvisual_sensors.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_radar_sensors.html">RTX Radar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_tactile_sensors.html">Tactile Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_imu_sensors.html">IMU Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_props.html">Prop Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_environments.html">Environment Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assets/usd_assets_third_party.html">Third-Party USD Assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/usd_assets_real_to_sim_index.html">Real to Sim Assets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assets/usd_assets_nurec.html">Neural Volume Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/nurec_utils.html">NuRec Rendering Utilities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../assets/asset_utilities/index.html">Asset Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/open_usd.html">OpenUSD Fundamentals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/usd_tools.html">USD Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_omni_warehouse_creator.html">Warehouse Creator Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/ext_isaacsim_asset_gen_conveyor.html">Conveyor Belt Utility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assets/asset_utilities/tutorial_static_assets.html">Static Warehouse Assets</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation/quick-install.html">Quick Install</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/quickstart_index.html">Isaac Sim Basics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim.html">Isaac Sim Basic Usage Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart_isaacsim_robot.html">Basic Robot Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/python_scripting_concepts.html">Standalone vs Interactive Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python_scripting/core_api_overview.html">Core API Overview</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../core_api_tutorials/index.html">Core API Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_world.html">Hello World</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_hello_robot.html">Hello Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_manipulator.html">Adding a Manipulator Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_multiple_robots.html">Adding Multiple Robots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_multiple_tasks.html">Multiple Robot Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core_api_tutorials/tutorial_core_adding_props.html">Adding Props</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/tutorial_list.html">Tutorial Table</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../introduction/examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/menu_examples.html">Interactive Examples Reference Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/standalone_examples_list.html">Standalone Examples Reference List</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../learn/gallery_view.html">Gallery View</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../gui/index.html">GUI</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_user_interface.html">User Interface Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/reference_keyboard_shortcuts.html">Keyboard Shortcuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_create.html">Create Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/menu_replicator.html">Replicator Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/preferences.html">Preferences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/selection-modes.html">Selection Modes</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/browsers.html">Browsers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/content_browser.html">Content Browser</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/material-browser.html" title="(in Omniverse Extensions)"><span>Material Browser</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_browser-extensions/asset-browser.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">NVIDIA Asset Browser</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui/layouts.html">Layout Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/intro_to_usd.html">Working with USD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/tutorial_search_extension.html">SimReady Content Browser Search Extension Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../learn/build_and_simulate_robots.html">Setup and Simulate Robots</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../importer_exporter/importers_exporters.html">Importers and Exporters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_mjcf.html">MJCF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_onshape.html" title="(in Omniverse Extensions)"><span>Onshape importer</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_cad-converter.html" title="(in Omniverse Extensions)"><span>CAD Converter</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_isaac_shapenet.html">ShapeNet Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/formats.html">Formats</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../importer_exporter/importer_exporter_tutorials.html">Importer and Exporter Tutorials Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_urdf.html">Tutorial: Import URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/export_urdf.html">Tutorial: Export URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/import_mjcf.html">Tutorial: Import MJCF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../importer_exporter/shapenet_importer.html">Tutorial: ShapeNet Importer</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../robot_setup/index.html">Robot Setup</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/basic_stage_and_robot_setup.html">Basic Stage and Robot Setup</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tutorial_intro_environment_setup.html">Stage Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial_intro_assemble_robot.html">Assemble a Simple Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial_gui_simple_robot.html">Articulate a Basic Robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial_gui_camera_sensors.html">Add Camera and Sensors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rig_mobile_robot.html">Rig a Mobile Robot</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../learn/setup_a_manipulator.html">Setup a Manipulator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tutorial_import_assemble_manipulator.html">Setup a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial_configure_manipulator.html">Configure a Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial_generate_robot_config.html">Generate Robot Configuration File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial_pickplace_example.html">Pick and Place Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="rig_closed_loop_structures.html">Setup a Closed-Loop Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_rig_legged_robot.html">Setup a Legged Robot</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../openusd_tuning_tutorials/index.html">Setup a Dexterous Hand in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/setup.html">Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_01_asset_structure.html">Import Robot and USD Asset Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_02_inspect_asset.html">Inspect Asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_03_collider_pairs.html">Collider Pairs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_04_joint_drive_tuning.html">Joint Drive Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/tutorial_05_joint_gains_tuning.html">Joint Gains Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openusd_tuning_tutorials/practice.html">Using the Dexterous Hand in Practice</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../learn/tuning_and_optimization.html">Tuning and Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="joint_tuning.html">Tuning Joint Drive Gains</a></li>
+<li class="toctree-l4"><a class="reference internal" href="optimizing_asset.html">Asset Optimization</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">Identify Franka System Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial_system_identification_simsim.html">Validate Identification with Sim-to-Sim Recovery</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_tutorials.html">Asset Transformer Tutorial Series</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/editing_tools.html">Editor Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_poser.html">Robot Poser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_util_merge_mesh.html">Mesh merge tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_gain_tuner.html">Gain Tuner Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_sysid.html">System Identification Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_collision_detector.html">Robot Self-Collision Detector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/assemble_robots.html">Robot Assembler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_surface_gripper.html">Surface Gripper Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/grasp_editor.html">Grasp Editor</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../robot_setup/inspector_tools.html">Inspector Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/robot_inspector.html">Robot Inspector Window</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../robot_setup/joint_inspector.html">Joint Inspector</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/newton_robot_setup_tips.html">Robot Setup Tips for Newton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/troubleshooting.html">Robot Setup Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_validation.html">Asset Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer.html">Asset Transformer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_api.html">Asset Transformer API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_transformer_rules.html">Asset Transformer Rules Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_setup/asset_structure.html">Asset Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/robot_schema.html">Robot Schema</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_simulation/index.html">Robot Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/articulation_controller.html">Articulation Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/mobile_robot_controllers.html">Mobile Robot Controllers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_setup_virtual_gantry.html">Virtual Gantry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_tips.html">Robot Simulation Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../robot_simulation/robot_simulation_core_concepts.html">Useful Links</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../robot_motion_experimental/index.html">Robot Motion</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../robot_motion_experimental/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../motion_generation/index.html">Motion Generation (Experimental)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/scene_interaction.html">Scene Interaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/mobile_robot_control_example.html">Controllers and the RobotState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../motion_generation/trajectory_planning.html">Trajectory Planning and Execution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../controllers/index.html">Controllers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_differential_drive.html">Differential Drive Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_ackermann.html">Ackermann Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../controllers/tutorial_holonomic.html">Holonomic Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cumotion/index.html">cuMotion Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_xrdf_editor.html">Generating an XRDF file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_world_interface.html">cuMotion World Interface Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_rmpflow.html">RMPflow Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_graph_planner.html">Graph-Based Motion Planner Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_generator.html">Trajectory Generator Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cumotion/tutorial_trajectory_optimizer.html">Trajectory Optimizer Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../pink/index.html">PINK Integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_robot_configuration.html">Robot Configuration Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_ik_controller.html">IK Controller Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pink/tutorial_multi_task.html">Multi-Task Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples/manipulation_franka_pick_place.html">Franka Pick and Place Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../state_machine_tutorials/tutorial_state_machines.html">State Machines for Robot Behavior</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../manipulators/motion_generation_overview.html">(Deprecated) Robot Motion Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/concepts/index.html">Motion Generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_robot_description_editor.html">Lula Robot Description and XRDF Editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_rmpflow.html">Lula RMPflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_rrt.html">Lula RRT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_kinematics.html">Lula Kinematics Solver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_lula_trajectory_generator.html">Lula Trajectory Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_configure_rmpflow_denso.html">Configuring RMPflow for a New Manipulator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manipulators/manipulators_curobo.html">cuRobo and cuMotion</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../newton_actuators_tutorials/index.html">Newton Actuators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_python.html">Set Up Actuators from Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_usd.html">Author and Parse Actuators from USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_ui.html">Author Actuators from UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_omnigraph.html">Drive an Actuated Robot from OmniGraph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../newton_actuators_tutorials/newton_actuators_tips.html">Tips</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../physics/index.html">Physics Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../physics/simulation_fundamentals.html">Physics Simulation Fundamentals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/new_physics_engine.html">Physics Data Flow and Engine Integration</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../physics/newton_physics.html">Newton Physics Backend</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact.html">Hydroelastic Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics/hydroelastic_contact_walkthrough.html">Configure Hydroelastic Contact for a Nut-and-Bolt Assembly</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_resources.html">Omniverse Physics and PhysX Limitations</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/sim_management.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Simulation Management</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/joint_inspector.html">Physics Inspector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/physics_static_collision.html">Physics Static Collision Extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics/ext_isaacsim_inspect_physics.html">Simulation Data Visualizer</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.omniverse.nvidia.com/kit/docs/omni_physics/latest/extensions/ux/source/omni.physx.ui/docs/dev_guide/physics_debug_wnd.html" title="(in Omni Physics)"><span class="xref std std-doc">Physics Debug Window</span></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/sensors_and_physics.html">Sensor Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_camera.html">Camera Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_depth.html">Depth Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_structured_light.html">Structured Light Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_camera_usd_tutorial.html">Authoring a Camera Sensor USD Asset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx.html">RTX Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_lidar.html">RTX Lidar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_radar.html">RTX Radar Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_acoustic.html">RTX Acoustic Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_annotators.html">RTX Sensor Annotators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_materials.html">RTX Sensor Non-Visual Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_multitick_rendering.html">Multi-Tick Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_rtx_custom.html">Creating Custom RTX Sensor Profiles</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physics.html">Physics-based Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_articulation_force.html">Articulation Joint Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_contact.html">Contact Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_effort.html">Effort Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_imu.html">IMU Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_joint_state.html">Joint State Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/isaacsim_sensors_physics_raycast.html">Physics Raycast Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/sensor_schema.html">Sensor Schema</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../sensors/isaacsim_sensors_physx.html">(Deprecated) PhysX SDK Sensors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_generic.html">(Deprecated) PhysX Generic Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lidar.html">(Deprecated) PhysX Lidar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_lightbeam.html">(Deprecated) PhysX Lightbeam Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sensors/isaacsim_sensors_physx_proximity.html">(Deprecated) Proximity Sensor</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../learn/develop_and_integrate.html">Develop and Integrate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../development_tools/index.html">Development Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/workflows.html">Development Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/vscode.html">Visual Studio Code (VS Code)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/python_server.html">Python Server (Remote Code Execution)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/jupyter_notebook.html">Jupyter Notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/omniverse_script_editor.html">Omniverse Script Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/isaac_sim_mcp.html">Isaac Sim MCP Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/agent_skills.html">Agent Skills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_tools/carb_settings.html">Modify Carb Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/updating_extensions.html">Adding and Updating Extensions Guide</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../python_scripting/index.html">Python Scripting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/manual_standalone_python.html">Python Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/environment_setup.html">Scene Setup Snippets and Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/util_snippets.html">Util Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_scripting/robots_simulation.html">Robot Simulation Snippets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../omnigraph/index.html">OmniGraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/interface.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Interface</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/getting-started/core_concepts.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">OmniGraph Core Concepts</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_shortcuts.html">Commonly Used OmniGraph Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_python_nodes.html">Custom Python Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_cpp_nodes.html">Custom C++ Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_custom_ipc_nodes.html">Building Custom IPC OmniGraph Nodes</a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Additional Resources</span></a></li>
+<li class="toctree-l3"><a class="reference external" href="https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/tutorials/gentle_intro.html" title="(in Omniverse Extensions)"><span class="xref std std-doc">Basic OmniGraph Tutorial</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_tutorial.html">Isaac Sim OmniGraph Tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omnigraph/omnigraph_scripting.html">OmniGraph via Python Scripting Tutorial</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../external_interfaces/index.html">External Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../external_interfaces/tutorial_zmq_carter_warehouse.html">ZeroMQ Bridge</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/templates_index.html">Templates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/cli_extension_templates.html">CLI Extension Templates</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../utilities/extension_template_generator.html">(Deprecated) Extension Template Generator</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../utilities/extension_templates_tutorial.html">Extension Template Generator Explained</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/vscode_extension_template_generator.html">Advanced Extension Template Generator from VS Code</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/debugging/index.html">Debugging and Profiling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_isaacsim_util_debug_draw.html">Debug Drawing Extension API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/ext_omni_kit_commands.html">Omniverse Commands Tool Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omniverse_usd/omniverse_tools.html">Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/tutorial_advanced_python_debugging.html">Debugging With Visual Studio Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/debugging/profiling_performance.html">Profiling Performance Using Tracy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../digital_twin/index.html">Other Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/warehouse_logistics/logistics_tutorial_cuopt.html">NVIDIA cuOpt</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_1_overview.html">(Deprecated) Isaac Cortex: Overview</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_2_decider_networks.html">Decider networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_3_example_peck_games.html">Behavior Examples: Peck Games</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_4_franka_block_stacking.html">Walkthrough: Franka Block Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_5_ur10_bin_stacking.html">Walkthrough: UR10 Bin Stacking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cortex_tutorials/tutorial_cortex_7_cortex_extension.html">Building Cortex Based Extensions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/ext_isaacsim_asset_generator_occupancy_map.html">Occupancy Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../digital_twin/rtsp_camera_streaming.html">Live Camera Streaming over RTSP</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../workflows/top_5/index.html">Top 5</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_putting_it_all_together.html">Bring a new mobile base and navigate with ROS2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_manipulator_workflow.html">Manipulator workflow: URDF to pick and place</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_mobility_gen.html">Data Generation with MobilityGen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_cosmos.html">Cosmos Synthetic Data Generation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="tutorial_humanoid_workflow.html">Humanoid workflow: Train locomotion in AGILE and deploy in Isaac Sim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_humanoid_workflow_prepare_usd.html">Stage 1: Prepare the humanoid USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_humanoid_workflow_create_task.html">Stage 2: Create a custom humanoid task in AGILE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_humanoid_workflow_configure_mdp.html">Stage 3: Configure and validate the locomotion MDP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_humanoid_workflow_train.html">Stage 4: Train, evaluate, and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_humanoid_workflow_deploy.html">Stage 5: Deploy the policy</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../isaac_lab_tutorials/index.html">Deploying Policies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_policy_deployment.html">Deploying policies in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robot_simulation/ext_isaacsim_robot_policy_example.html">Reinforcement Learning Policies Examples in Isaac Sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isaac_lab_tutorials/tutorial_instanceable_assets.html">Instanceable Assets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ros2_tutorials/index.html">ROS 2</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/overview/index.html">Overview and Installation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/install_ros.html">ROS 2 Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/overview/ros2_reference_architecture.html">ROS 2 Reference Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/tutorial_series/index.html">ROS 2 Tutorial Series</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_turtlebot.html">URDF Import: Turtlebot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_drive_turtlebot.html">Driving TurtleBot using ROS 2 Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_clock.html">ROS 2 Clock</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtf.html">ROS 2 Publish Real Time Factor (RTF)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_camera.html">ROS 2 Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_rtx_lidar.html">RTX Lidar Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_tf.html">ROS 2 Transform Trees and Odometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/tutorial_series/tutorial_ros2_publish_rate.html">ROS 2 Setting Publish Rates</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/index.html">Advanced Sensor Topics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_noise.html">Add Noise to Camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_camera_publishing.html">Publishing Camera’s Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_compressed_image.html">ROS 2 Compressed Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/advanced_sensors/tutorial_ros2_rtx_radar.html">RTX Radar Sensors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/robot_control/index.html">Robot Control</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_manipulation.html">ROS 2 Joint Control: Extension Python Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_ackermann_controller.html">ROS 2 Ackermann Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_rl_controller.html">Running a Reinforcement Learning Policy through ROS 2 and Isaac Sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation.html">ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_multi_navigation.html">Multiple Robot ROS 2 Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_navigation_heightmap.html">ROS 2 Navigation with Heightmap Importer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_moveit.html">MoveIt 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/robot_control/tutorial_ros2_control.html">ROS 2 Control</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/index.html">Bridge Configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_python.html">ROS 2 Bridge in Standalone Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_launch.html">ROS 2 Launch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_simulation_control.html">ROS 2 Simulation Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_qos.html">ROS 2 Quality of Service (QoS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_auto_namespace.html">Automatic ROS 2 Namespace Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/bridge_configuration/tutorial_ros2_name_override.html">NameOverride Attribute</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/index.html">Custom Interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_publisher_subscriber.html">ROS 2 Generic Publisher and Subscriber</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_generic_server_client.html">ROS 2 Generic Server and Client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_prim_service.html">ROS 2 Service for Manipulating Prims Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_message_python.html">ROS 2 Python Custom Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_custom_omnigraph_node_python.html">ROS 2 Python Custom OmniGraph Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/custom_interfaces/tutorial_ros2_omnigraph_cpp_node.html">ROS 2 Custom C++ OmniGraph Node</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/urdf_import_export/index.html">URDF Import and Export</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_isaacsim_asset_importer_urdf.html">URDF Importer Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../importer_exporter/ext_omni_exporter_urdf.html">USD to URDF Exporter Extension</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../ros2_tutorials/help/index.html">Help and Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/ros2_faq.html">ROS 2 Frequently Asked Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ros2_tutorials/help/troubleshooting.html">ROS 2 Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../nvidia_isaac_ros/isaac_ros_tutorials.html">NVIDIA Isaac ROS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../synthetic_data_generation/index.html">Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../replicator_tutorials/index.html">Perception Data Generation (Replicator)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_recorder.html">Synthetic Data Recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_getting_started.html">Getting Started Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_sdg_workflows.html">SDG Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_scene_based_sdg.html">Scene Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_object_based_sdg.html">Object Based Synthetic Dataset Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_infinigen_sdg.html">Environment Based Synthetic Dataset Generation with Infinigen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_amr_navigation.html">Randomization in Simulation – AMR Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_ur10_palletizing.html">Randomization in Simulation – UR10 Palletizing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_augmentation.html">Data Augmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_custom_og_randomizer.html">Custom Replicator Randomization Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_modular_scripting.html">Modular Behavior Scripting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_randomizers.html">Randomization Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/tutorial_replicator_isaac_snippets.html">Useful Snippets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../replicator_tutorials/troubleshooting.html">Replicator Troubleshooting</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../action_and_event_data_generation/index.html">Action and Event Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_agent.html">Actor Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration.html">Configuration File Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_sample_configs.html">Sample Configs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_anim_robot.html">Animated Robot Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_configuration_editor.html">Configuration Editor API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_custom_writer_example.html">Example: RTSP Streaming with CustomWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-agent/ext_isaacsim_replicator_agent_visual_noise_example.html">Visual Noise and Image Degradation Effects Example</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_behavior_tree_gen.html">Behavior Tree Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/context_files_and_schemas.html">Context Files and Metadata Schemas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/required_inputs.html">Required inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/example_walkthrough.html">Example Walkthrough</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_behavior_tree_gen/three_api_functions.html">Using the API Functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_object.html">Object Simulation and Synthetic Data Generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/ext_chat_iro.html">Chat IRO: Natural Language Interface for Isaac Sim Replicator Object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/setting.html">Setting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable.html">Mutable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/camera.html">Camera</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/geometry.html">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/force.html">Force</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/light.html">Light</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/mutable_attribute.html">Mutable Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/transformation.html">Transformation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/harmonizer.html">Harmonizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/empty_space_detection.html">Empty Space Detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/macro.html">Macro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/distribution_visualizer.html">Distribution Visualizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_replicator-object/randomization_dependency.html">Randomization Dependency: Incremental Examples</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_caption.html">VLM Scene Captioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_replicator_incident.html">Physical Space Event Generation</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../action_and_event_data_generation/tutorial_sensors_rtx_placement.html">RTX Sensors Placement and Calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_placement.html">Camera Placement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../action_and_event_data_generation/ext_sensors_rtx_placement/camera_calibration.html">Camera Calibration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/example_event_reactive_actors.html">Reacting to Events with Actor Triggers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_omni_metropolis_pipeline.html">Omni Metropolis Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../action_and_event_data_generation/tutorial_telemetry.html">Telemetry and Performance Tracking</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_grasping_sdg.html">Grasping Synthetic Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../synthetic_data_generation/tutorial_replicator_teleop_sdg.html">Teleoperation Synthetic Data Generation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_python_api.html">API Documentation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference Information</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/community_highlights.html">Community Project Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/reference_conventions.html">Isaac Sim Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/rendering_modes.html">Rendering modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/sim_performance_optimization_handbook.html">Isaac Sim Performance Optimization Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_material/benchmarks.html">Isaac Sim Benchmarks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../omniverse_usd/index.html">Omniverse and USD</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../omniverse_usd/building_cpp_usd_plugins.html">Building C++ USD Plugins Against the Standalone Installer</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/feedback.html">Omniverse Feedback and Forums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/general-feedback-form.html">General Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/feedback-form.html">Documentation Fix Request</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/data-collection.html">Data Collection &amp; Usage</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/legal.html">Licenses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses-isaac-sim.html">Isaac Sim License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-additional.html">Isaac Sim Additional Software and Materials License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-isaac-sim-webrtc-streaming-client.html">Isaac Sim WebRTC Streaming Client License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/NVIDIA_Omniverse_License_Agreement.html">Omniverse License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licensing-notices-disclaimers.html">Licensing Disclaimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/licenses.html">Other Licenses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/redistributable-ov-software.html">Redistributable Omniverse Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/license-faq.html">License FAQ</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="../index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li class="breadcrumb-item"><a class="nav-link" href="../learn/build_and_simulate_robots.html">Setup and Simulate Robots</a></li>
+<li class="breadcrumb-item"><a class="nav-link" href="../robot_setup/index.html">Robot Setup</a></li>
+<li class="breadcrumb-item"><a class="nav-link" href="../learn/tuning_and_optimization.html">Tuning and Optimization</a></li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Tutorial 14: System Identification of a Franka</span></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="header-article-items__end">
+<div class="header-article-item">
+<div class="header-article-item">
+<div class="d-flex justify-content-end w-100">
+<a href="https://surveys.hotjar.com/4904bf71-6484-47a7-83ff-4715cceabdb5" id="openPopupButton">Is this page helpful?</a>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="tutorial-14-system-identification-of-a-franka">
+<span id="isaac-sim-app-tutorial-advanced-franka-sysid"></span><h1>教程 14：Franka 系统辨识<a class="headerlink" href="#tutorial-14-system-identification-of-a-franka" title="Link to this heading">#</a></h1>
+<div class="isaacsim-page-type-tag sd-mb-3 docutils">
+<span class="isaacsim-card-tag isaacsim-card-tag--neutral isaacsim-card-tag--kind-category">Tutorial</span></div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>System Identification 扩展目前处于 Beta 阶段。其工作流程、运行契约、导出的运行规范以及 API 不保证未来兼容性。</p>
+</div>
+<p>本教程针对固定基座 Franka Panda 执行一个可复现的自由空间系统辨识实验。为了使优化行为可见，教程从一个故意设置过高摩擦的工作资产开始。源资产保持不变；仅对单独的教程覆盖层进行降级处理。在恢复关节摩擦后，教程将诊断剩余的留出集残差，并运行一个单独限界的关节阻尼阶段。每个阶段都从之前持久化的候选模型开始，并且必须通过其自身的重放门控。</p>
+<p>该示例使用记录的 MCAP 遥测数据、显式命令对齐、独立的训练和验证动作、未捕获的 Newton MuJoCo 展开（rollouts）以及 CMA-ES。优化、USD 修改、重放和提升（promotion）保持为独立操作，以便每个阶段都可审查且可逆。</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/isim_6.0_full_ext-isaacsim.robot_setup.sysid-1.3.0_viewport_system_identification_hero.png"><img alt="Franka system identification in Isaac Sim, progressing from an excited reference through a mismatched initial model to an identified model that reproduces the reference pose." src="../_images/isim_6.0_full_ext-isaacsim.robot_setup.sysid-1.3.0_viewport_system_identification_hero.png" style="width: 100%;"/>
+</a>
+<figcaption><p><span class="caption-text">本演练遵循相同的进程：左侧为参考激励和遥测数据，橙色为故意设置的较差初始模型，绿色为恢复后的候选模型。</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p></figcaption>
+</figure>
+<p>完成本教程后，您将能够：</p>
+<ul class="simple">
+<li><p>在不修改源资产的情况下构建受控的较差初始化。</p></li>
+<li><p>验证遥测映射、时序、激励和力矩语义。</p></li>
+<li><p>配置并导出一个限界的仅摩擦 RunSpec。</p></li>
+<li><p>求解、持久化并独立重放一个参数阶段。</p></li>
+<li><p>诊断留出集残差并配置保守的第二阶段。</p></li>
+<li><p>使用预先声明的接受策略比较候选方案。</p></li>
+<li><p>决定何时提升候选方案以及何时收集新的激励数据。</p></li>
+<li><p>解读预测性能的提升，同时避免夸大物理可辨识性。</p></li>
+</ul>
+<p>有关完整的功能参考，请参阅
+<a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_sysid.html#isaac-sim-robot-setup-sysid"><span class="std std-ref">System Identification Extension</span></a>。</p>
+<p><em>35-50 分钟教程，不包括优化时间</em></p>
+<section id="reference-outcome">
+<h2>参考结果<a class="headerlink" href="#reference-outcome" title="Link to this heading">#</a></h2>
+<p>本教程在拟合之前，故意在一个可用的覆盖层中将所有七个手臂关节的摩擦值加倍。
+独立重新加载的摩擦候选方案将留出集归一化成本降低了 42.7%。位置、
+速度和扭矩 RMSE 分别改善了 8.3%、13.7% 和 24.4%。</p>
+<p>第二阶段仅开放七个关节阻尼比例。其独立重新加载的候选方案将扭矩
+RMSE 从 1.6573 N*m 降低到 1.3946 N*m，归一化成本又降低了 28.9%。相对于摩擦候选方案，位置和速度 RMSE
+略有回归，分别增加了 2.0% 和 1.1%，但仍优于较差的初始种子。
+因此，最终决策展示了一种明确的应用权衡，而不是在未审查的情况下选择最低标量目标。</p>
+<p>这是一种压力测试初始化，并非推荐的工程先验。它演示了从一个明显较差的模型开始的阶段性调优
+循环，同时保持每个实验的稳定性和可审查性。</p>
+</section>
+<section id="prerequisites">
+<h2>先决条件<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
+<ul>
+<li><p>已构建的 NVIDIA Isaac Sim 源代码检出。</p></li>
+<li><p>启用 <code class="docutils literal notranslate"><span class="pre">isaacsim.robot_setup.sysid.ui</span></code>。打开 <strong>Window &gt; Extensions</strong>，搜索
+<strong>system identification</strong>，并启用 <code class="docutils literal notranslate"><span class="pre">isaacsim.robot_setup.sysid.ui</span></code>。交互式扩展
+会自动启用 <code class="docutils literal notranslate"><span class="pre">isaacsim.robot_setup.sysid</span></code> 后端。</p></li>
+<li><p>来自 Content Browser 的打包 Franka 教程位于
+<code class="docutils literal notranslate"><span class="pre">IsaacSim/Samples/SystemIdentification/franka_sysid_tutorial/</span></code>。请使用以下确切路径：</p>
+<ul class="simple">
+<li><p>Stage：<code class="docutils literal notranslate"><span class="pre">assets/franka_poor_seed.usda</span></code>。</p></li>
+<li><p>RunSpec：<code class="docutils literal notranslate"><span class="pre">config/franka_friction_run_spec.json</span></code>。</p></li>
+<li><p>MCAP 录制：<code class="docutils literal notranslate"><span class="pre">data/bag_0.mcap</span></code>。</p></li>
+<li><p>Topic 映射：<code class="docutils literal notranslate"><span class="pre">data/franka_sysid_topic_map.yaml</span></code>。</p></li>
+<li><p>Collection 清单：<code class="docutils literal notranslate"><span class="pre">data/collection_manifest.json</span></code>。</p></li>
+<li><p>参考结果：<code class="docutils literal notranslate"><span class="pre">results/franka_friction_result.json</span></code>。</p></li>
+</ul>
+<p>固定基座 stage 的关节结构解析为 <code class="docutils literal notranslate"><span class="pre">/World/envs/env_0/panda_instanceable</span></code>。</p></li>
+<li><p>用于 Newton MuJoCo 群体滚动的支持 CUDA 的 GPU。</p></li>
+<li><p>用于存放 RunSpecs、报告、检查点和输出 USD 的本地工作目录。当无头命令
+需要文件系统路径时，请复制完整的 <code class="docutils literal notranslate"><span class="pre">franka_sysid_tutorial</span></code> 目录并保留其打包的
+子目录结构。RunSpec 会相对于其在 <code class="docutils literal notranslate"><span class="pre">config/</span></code> 下的位置解析 <code class="docutils literal notranslate"><span class="pre">../assets</span></code>、<code class="docutils literal notranslate"><span class="pre">../data</span></code> 和 <code class="docutils literal notranslate"><span class="pre">../results</span></code>。
+请将可写输出保留在本地，且不要修改 Samples 原始文件。</p></li>
+</ul>
+<p>参考录制包含 9,439 个样本，涵盖七个手臂关节，频率约为 30 Hz。它提供了
+关节位置、速度、指令以及连杆侧扭矩数据。</p>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>System Identification 消耗激励数据；它不会生成或认证安全的机器人指令。
+在硬件上执行轨迹之前，请验证关节、速度、加速度、力矩、碰撞和工作空间限制。
+有关外部实验设计资源，请参阅 <a class="reference internal" href="../robot_setup/ext_isaacsim_robot_setup_sysid.html#isaac-sim-robot-setup-sysid-excitation"><span class="std std-ref">轨迹生成与激励</span></a>。</p>
+</div>
+</section>
+<section id="step-1-create-a-deliberately-poor-working-asset">
+<h2>步骤 1：创建一个故意设置不佳的工作资产<a class="headerlink" href="#step-1-create-a-deliberately-poor-working-asset" title="Link to this heading">#</a></h2>
+<p>将完整的 <code class="docutils literal notranslate"><span class="pre">IsaacSim/Samples/SystemIdentification/franka_sysid_tutorial/</span></code> 目录复制到本地工作目录（例如 <code class="docutils literal notranslate"><span class="pre">C:\sysid_tutorial\</span></code>），然后打开 <code class="docutils literal notranslate"><span class="pre">assets/franka_poor_seed.usda</span></code>。或者，打开 <code class="docutils literal notranslate"><span class="pre">assets/franka.usda</span></code>，确认关节结构初始化成功，并保存一个包含以下过高摩擦值的独立本地覆盖层。请勿编辑 Samples 原始文件。</p>
+<p>标称教程覆盖文件在每个手臂关节上使用了 0.5 N*m*s/rad 的物理摩擦。对于此实验，将七个工作副本中的每个值设置为 1.0 N*m*s/rad。保持刚度、阻尼、电枢、质量、惯量和控制器设置不变。这将注入的误差隔离到将被优化的参数族中。</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 38.0%"/>
+<col style="width: 31.0%"/>
+<col style="width: 31.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>属性</p></th>
+<th class="head"><p>标称教程覆盖文件</p></th>
+<th class="head"><p>不佳工作覆盖文件</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>关节 1-7 物理摩擦</p></td>
+<td><p>0.5 N*m*s/rad</p></td>
+<td><p>1.0 N*m*s/rad</p></td>
+</tr>
+<tr class="row-odd"><td><p>其他物理属性</p></td>
+<td><p>保持不变</p></td>
+<td><p>保持不变</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>不佳种子在数值上保持稳定，但其过大的摩擦会导致可测量的轨迹和力矩不匹配。这种受控构建优于同时更改多个耦合族，因为初始误差的原因已知。</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>0.5 N*m*s/rad 的标称值是教程种子值，并非物理 Franka 的真实测量值。恢复的结果被评估为针对此录制的更好预测模型，而非真实关节摩擦的证明。</p>
+</div>
+</section>
+<section id="step-2-load-and-verify-telemetry">
+<h2>步骤 2：加载并验证遥测数据<a class="headerlink" href="#step-2-load-and-verify-telemetry" title="Link to this heading">#</a></h2>
+<p>启用 <code class="docutils literal notranslate"><span class="pre">isaacsim.robot_setup.sysid.ui</span></code> 后，打开 <strong>Tools</strong> &gt; <strong>Robotics</strong> &gt; <strong>Asset Editors</strong> &gt;
+<strong>System Identification</strong>。在 <strong>Data</strong> 中：</p>
+<ol class="arabic simple">
+<li><p>选择 <code class="docutils literal notranslate"><span class="pre">/World/envs/env_0/panda_instanceable</span></code>。</p></li>
+<li><p>选择 <strong>MCAP</strong>，并从打包的 Franka 教程中选择 <code class="docutils literal notranslate"><span class="pre">data/bag_0.mcap</span></code>。</p></li>
+<li><p>选择 <code class="docutils literal notranslate"><span class="pre">data/franka_sysid_topic_map.yaml</span></code> 作为主题映射。</p></li>
+<li><p>选择 <code class="docutils literal notranslate"><span class="pre">data/collection_manifest.json</span></code> 作为集合清单。</p></li>
+<li><p>点击 <strong>Load Trajectory</strong>。</p></li>
+<li><p>确认有 9,439 个样本、七个关节、约 30 Hz 的频率以及预期的信号通道。</p></li>
+<li><p>确认力矩映射明确声明了 <code class="docutils literal notranslate"><span class="pre">torque_semantics:</span> <span class="pre">link_side</span></code>。</p></li>
+</ol>
+<p>力矩语义字段很重要，因为电机侧、连杆侧、指令和测量力矩不可互换。此外，还需验证关节顺序、符号、单位、时间戳间隙、削波和长时间平坦区间。</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/isim_6.0_full_ext-isaacsim.robot_setup.sysid-1.3.0_gui_workflow.png"><img alt="System Identification Data page with a loaded Franka trajectory and separate train and validation chunks." src="../_images/isim_6.0_full_ext-isaacsim.robot_setup.sysid-1.3.0_gui_workflow.png" style="width: 94%;"/>
+</a>
+<figcaption><p><span class="caption-text">在配置求解之前，请一起查看轨迹预览、分块表和质量摘要。</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p></figcaption>
+</figure>
+</section>
+<section id="step-3-correct-recording-alignment">
+<h2>步骤 3：校正记录对齐<a class="headerlink" href="#step-3-correct-recording-alignment" title="Link to this heading">#</a></h2>
+<p>遥测诊断估计指令与测量响应之间的公共时间偏移。参考记录产生：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 58.0%"/>
+<col style="width: 42.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>诊断项</p></th>
+<th class="head"><p>值</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>公共滞后</p></td>
+<td><p>16.0825 个样本</p></td>
+</tr>
+<tr class="row-odd"><td><p>公共滞后</p></td>
+<td><p>0.536075 s</p></td>
+</tr>
+<tr class="row-even"><td><p>关节间残差分布</p></td>
+<td><p>0.5336 个样本</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>将 <code class="docutils literal notranslate"><span class="pre">telemetry.command_alignment_seconds</span></code> 设置为 0.5360748729665944，并在此阶段禁用执行器指令延迟参数。</p>
+<p>指令对齐在拟合之前校正记录的序列。执行器指令延迟会改变仿真模型。对同一日志偏移同时应用两者会导致重复计算该效应。</p>
+</section>
+<section id="step-4-separate-training-and-validation">
+<h2>步骤 4：分离训练集和验证集<a class="headerlink" href="#step-4-separate-training-and-validation" title="Link to this heading">#</a></h2>
+<p>禁用 <strong>Auto split</strong> 并保留两个不重叠的运动：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 42.0%"/>
+<col style="width: 18.0%"/>
+<col style="width: 18.0%"/>
+<col style="width: 22.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>数据块</p></th>
+<th class="head"><p>角色</p></th>
+<th class="head"><p>激励</p></th>
+<th class="head"><p>持续时间</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">coupled_multisine_fast</span></code></p></td>
+<td><p>训练</p></td>
+<td><p>正弦</p></td>
+<td><p>23.721 s</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">coupled_multisine_validation</span></code></p></td>
+<td><p>验证</p></td>
+<td><p>正弦</p></td>
+<td><p>27.374 s</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>训练多正弦信号参与优化器计算。验证多正弦信号不参与优化，
+用于模型选择和最终回放。两种运动均驱动所有七个关节，但并不
+保证每个选定的物理参数都是独立可辨识的。</p>
+</section>
+<section id="step-5-configure-the-rollout">
+<h2>步骤 5：配置推演<a class="headerlink" href="#step-5-configure-the-rollout" title="Link to this heading">#</a></h2>
+<p>使用以下 Newton 设置：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 46.0%"/>
+<col style="width: 54.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>设置</p></th>
+<th class="head"><p>参考值</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>仿真引擎</p></td>
+<td><p>牛顿</p></td>
+</tr>
+<tr class="row-odd"><td><p>Newton 求解器</p></td>
+<td><p>MuJoCo</p></td>
+</tr>
+<tr class="row-even"><td><p>机器人 Prim</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/World/envs/env_0/panda_instanceable</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>设备</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cuda:0</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>控制器</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pd</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>前馈</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">inverse_dynamics</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>力矩限制</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">max_effort</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>离线步进</p></td>
+<td><p>启用</p></td>
+</tr>
+<tr class="row-even"><td><p>CUDA 图捕获</p></td>
+<td><p>启用（默认）</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Newton MuJoCo 支持批处理、无导数的种群评估。可微分的 Newton
+Featherstone 推演是一条独立的仅无头模式路径，支持的参数集较窄；本 CMA-ES
+演练不使用该路径。</p>
+<p>对于重复的、固定形状的 CMA-ES 评估，请保持 CUDA 图捕获启用。首次评估会预热
+内核和求解器存储，下一次捕获该形状，后续评估则复用该图。每次捕获和未捕获的 MuJoCo 推演
+在恢复初始关节状态之前，都会重置推演局部的热启动、执行器激活、施加力
+和控制缓冲区，因此前一个候选批次不会为下一个批次提供种子。</p>
+<p>在包含 16 个候选项和 800 步的参考 Franka 运行中，图重放将中位评估时间从未捕获时的 13.59 秒降低到捕获后的 0.515 秒，预热后实现了 26.4 倍的加速。该比率特定于该工作负载和硬件。对于新的阶段或 RunSpec，请使用声明的数值容差比较捕获结果与未捕获结果。预期会出现微小的 GPU 浮点差异；如果差异超过接受阈值，请禁用捕获，而不是要求位级相等。</p>
+</section>
+<section id="step-6-select-and-check-the-parameter-phase">
+<h2>步骤 6：选择并检查参数阶段<a class="headerlink" href="#step-6-select-and-check-the-parameter-phase" title="Link to this heading">#</a></h2>
+<p>选择七个关节摩擦缩放参数：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 36.0%"/>
+<col style="width: 16.0%"/>
+<col style="width: 16.0%"/>
+<col style="width: 16.0%"/>
+<col style="width: 16.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>族</p></th>
+<th class="head"><p>数量</p></th>
+<th class="head"><p>初始值</p></th>
+<th class="head"><p>最小值</p></th>
+<th class="head"><p>最大值</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>关节摩擦</p></td>
+<td><p>7</p></td>
+<td><p>1.0</p></td>
+<td><p>0.1</p></td>
+<td><p>1.5</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>缩放值 1.0 代表在步骤 1 中故意设置的较差属性 1.0 N*m*s/rad。因此，在此工作资产上，边界对应于 0.1-1.5 N*m*s/rad。</p>
+<p>点击 <strong>Run Check</strong> 并阅读当前报告。参考仅摩擦回归器的秩为 7，条件数为 1.024。所有七行都是可识别的。使用上述边界，四个解析种子在边界内，三个保持不变，因为其无约束估计值超出了配置范围。诸如 <code class="docutils literal notranslate"><span class="pre">7</span> <span class="pre">selected</span></code> 这样的计数不是可识别性结果；请使用每个参数的灵敏度、秩、条件数和判定结果。</p>
+<p>不要仅仅因为 UI 允许就在第一阶段添加刚度、阻尼或电枢。添加耦合族会使较大的数值改进更难解释，并且不再与步骤 1 中引入的受控误差相匹配。只有在摩擦候选项已持久化、重放并被接受为其自身的基线后，后续的阻尼阶段才会开始。</p>
+</section>
+<section id="step-7-configure-and-export">
+<h2>步骤 7：配置和导出<a class="headerlink" href="#step-7-configure-and-export" title="Link to this heading">#</a></h2>
+<p>在 <strong>Solve</strong> 中，使用：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 52.0%"/>
+<col style="width: 48.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>设置</p></th>
+<th class="head"><p>参考值</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>优化器</p></td>
+<td><p>CMA-ES</p></td>
+</tr>
+<tr class="row-odd"><td><p>最大迭代次数</p></td>
+<td><p>48</p></td>
+</tr>
+<tr class="row-even"><td><p>种群和批量大小</p></td>
+<td><p>16</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sigma</p></td>
+<td><p>0.2</p></td>
+</tr>
+<tr class="row-even"><td><p>种子</p></td>
+<td><p>20260730</p></td>
+</tr>
+<tr class="row-odd"><td><p>最大展开步数</p></td>
+<td><p>800</p></td>
+</tr>
+<tr class="row-even"><td><p>位置权重</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>速度权重</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-even"><td><p>扭矩权重</p></td>
+<td><p>0.01</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>将 <code class="docutils literal notranslate"><span class="pre">franka_friction_run_spec.json</span></code> 导出到本地工作目录。检查每个输入路径、输出路径、边界和写回标志。将输入路径指向 <code class="docutils literal notranslate"><span class="pre">franka_sysid_tutorial/assets/franka_poor_seed.usda</span></code>、<code class="docutils literal notranslate"><span class="pre">franka_sysid_tutorial/data/bag_0.mcap</span></code>、<code class="docutils literal notranslate"><span class="pre">franka_sysid_tutorial/data/franka_sysid_topic_map.yaml</span></code> 和 <code class="docutils literal notranslate"><span class="pre">franka_sysid_tutorial/data/collection_manifest.json</span></code> 的本地副本。保持输出路径为本地路径。将导出的文件与其主题映射、集合清单、源修订版本和输入哈希一起存储。</p>
+</section>
+<section id="step-8-establish-the-poor-seed-baseline">
+<h2>步骤 8：建立劣质种子基线<a class="headerlink" href="#step-8-establish-the-poor-seed-baseline" title="Link to this heading">#</a></h2>
+<p>在优化之前运行分析器。以下示例使用 <code class="docutils literal notranslate"><span class="pre">C:\sysid_tutorial</span></code> 作为本地工作目录，其中包含 Samples 输入的副本以及可写的 RunSpecs、报告和候选 USD：</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">_build</span><span class="p">\</span><span class="n">windows-x86_64</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">bat</span> <span class="p">`</span>
+    <span class="n">source</span><span class="p">\</span><span class="n">extensions</span><span class="p">\</span><span class="n">isaacsim</span><span class="p">.</span><span class="n">robot_setup</span><span class="p">.</span><span class="n">sysid</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">headless_sysid_analyze</span><span class="p">.</span><span class="n">py</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-run-spec</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_run_spec</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-stage</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_poor_seed</span><span class="p">.</span><span class="n">usda</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-result-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">poor_seed_baseline</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-mode</span> <span class="n">baseline</span>
+</pre></div>
+</div>
+<p>对齐的保留基线为：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 38.0%"/>
+<col style="width: 62.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>指标</p></th>
+<th class="head"><p>值</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>归一化成本</p></td>
+<td><p>0.008066</p></td>
+</tr>
+<tr class="row-odd"><td><p>位置 RMSE</p></td>
+<td><p>0.004443 rad</p></td>
+</tr>
+<tr class="row-even"><td><p>速度 RMSE</p></td>
+<td><p>0.017925 rad/s</p></td>
+</tr>
+<tr class="row-odd"><td><p>扭矩 RMSE</p></td>
+<td><p>2.1922 N*m</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>保持此报告不变。如果没有相同阶段、相同 RunSpec 的基线，求解后的值无法确立改进。</p>
+</section>
+<section id="step-9-solve-then-apply-to-a-new-usd">
+<h2>步骤 9：求解，然后应用到新的 USD<a class="headerlink" href="#step-9-solve-then-apply-to-a-new-usd" title="Link to this heading">#</a></h2>
+<p>运行导出的规范，不执行写回：</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">_build</span><span class="p">\</span><span class="n">windows-x86_64</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">bat</span> <span class="p">`</span>
+    <span class="n">source</span><span class="p">\</span><span class="n">extensions</span><span class="p">\</span><span class="n">isaacsim</span><span class="p">.</span><span class="n">robot_setup</span><span class="p">.</span><span class="n">sysid</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">headless_sysid_solve</span><span class="p">.</span><span class="n">py</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-run-spec</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_run_spec</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-result-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_result</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-checkpoint-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_checkpoint</span><span class="p">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<p>选定的候选项是第 47 次迭代中最后被接受的候选项。请审查 <code class="docutils literal notranslate"><span class="pre">selected_status</span></code>，而不是假设最后一次尝试生成的候选项已被接受。选定的缩放比例为：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 28.0%"/>
+<col style="width: 24.0%"/>
+<col style="width: 24.0%"/>
+<col style="width: 24.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>关节</p></th>
+<th class="head"><p>初始缩放</p></th>
+<th class="head"><p>恢复的缩放比例</p></th>
+<th class="head"><p>边界状态</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>关节 1</p></td>
+<td><p>1.000</p></td>
+<td><p>0.214</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-odd"><td><p>关节 2</p></td>
+<td><p>1.000</p></td>
+<td><p>0.105</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-even"><td><p>关节 3</p></td>
+<td><p>1.000</p></td>
+<td><p>0.848</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-odd"><td><p>关节 4</p></td>
+<td><p>1.000</p></td>
+<td><p>0.184</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-even"><td><p>关节 5</p></td>
+<td><p>1.000</p></td>
+<td><p>0.172</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-odd"><td><p>关节 6</p></td>
+<td><p>1.000</p></td>
+<td><p>0.147</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-even"><td><p>关节 7</p></td>
+<td><p>1.000</p></td>
+<td><p>0.156</p></td>
+<td><p>内部</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>没有选定的值被归类为命中边界。关节 2 接近下界，因此在对其值进行物理解释之前，扩展搜索范围将是一项有用的敏感性研究。</p>
+<p>将选定的向量写入新的阶段：</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">_build</span><span class="p">\</span><span class="n">windows-x86_64</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">bat</span> <span class="p">`</span>
+    <span class="n">source</span><span class="p">\</span><span class="n">extensions</span><span class="p">\</span><span class="n">isaacsim</span><span class="p">.</span><span class="n">robot_setup</span><span class="p">.</span><span class="n">sysid</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">headless_sysid_apply_theta_to_stage</span><span class="p">.</span><span class="n">py</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-run-spec</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_run_spec</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-result-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_result</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-stage</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_poor_seed</span><span class="p">.</span><span class="n">usda</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-output-stage</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_candidate</span><span class="p">.</span><span class="n">usda</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-summary-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_apply_summary</span><span class="p">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<p>这使得优化、资产变更和接受过程可以分别进行审查。</p>
+</section>
+<section id="step-10-reload-and-compare-held-out-metrics">
+<h2>步骤 10：重新加载并比较留出集指标<a class="headerlink" href="#step-10-reload-and-compare-held-out-metrics" title="Link to this heading">#</a></h2>
+<p>在一个新进程中重新加载持久化的候选项，并运行空操作基线分析：</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">_build</span><span class="p">\</span><span class="n">windows-x86_64</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">bat</span> <span class="p">`</span>
+    <span class="n">source</span><span class="p">\</span><span class="n">extensions</span><span class="p">\</span><span class="n">isaacsim</span><span class="p">.</span><span class="n">robot_setup</span><span class="p">.</span><span class="n">sysid</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">headless_sysid_analyze</span><span class="p">.</span><span class="n">py</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-run-spec</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_run_spec</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-stage</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_candidate</span><span class="p">.</span><span class="n">usda</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-result-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_candidate_replay</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-mode</span> <span class="n">baseline</span>
+</pre></div>
+</div>
+<p>独立重新加载的候选项产生了以下结果：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 31.0%"/>
+<col style="width: 23.0%"/>
+<col style="width: 23.0%"/>
+<col style="width: 23.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>留出集指标</p></th>
+<th class="head"><p>较差种子</p></th>
+<th class="head"><p>持久化候选项</p></th>
+<th class="head"><p>变更</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>归一化成本</p></td>
+<td><p>0.008066</p></td>
+<td><p>0.004620</p></td>
+<td><p>降低 42.7%</p></td>
+</tr>
+<tr class="row-odd"><td><p>位置 RMSE</p></td>
+<td><p>0.004443 rad</p></td>
+<td><p>0.004073 弧度</p></td>
+<td><p>降低 8.3%</p></td>
+</tr>
+<tr class="row-even"><td><p>速度 RMSE</p></td>
+<td><p>0.017925 rad/s</p></td>
+<td><p>0.015476 弧度/秒</p></td>
+<td><p>降低 13.7%</p></td>
+</tr>
+<tr class="row-odd"><td><p>扭矩 RMSE</p></td>
+<td><p>2.1922 N*m</p></td>
+<td><p>1.6573 N*m</p></td>
+<td><p>降低 24.4%</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/isim_6.0_full_tut_external_franka_sysid_validation_rmse.png"><img alt="Franka held-out error and joint-friction scales for the poor seed and independently reloaded candidate." src="../_images/isim_6.0_full_tut_external_franka_sysid_validation_rmse.png" style="width: 96%;"/>
+</a>
+<figcaption><p><span class="caption-text">左侧面板将每个误差通道按其自身的劣质种子值进行归一化。右侧面板显示了由故意设置过高摩擦的初始化所产生的大规模校正。</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p></figcaption>
+</figure>
+<p>检查时间序列一致性以及聚合值：</p>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/isim_6.0_full_tut_external_franka_sysid_position_validation.png"><img alt="Measured and simulated Franka joint-position traces from the persisted candidate on the held-out multisine." src="../_images/isim_6.0_full_tut_external_franka_sysid_position_validation.png" style="width: 92%;"/>
+</a>
+<figcaption><p><span class="caption-text">持久化的候选模型在所有七个关节上均跟随留出集的位置运动。注意寻找聚合 RMSE 可能掩盖的相位误差、偏差和局部发散。</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p></figcaption>
+</figure>
+<figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="../_images/isim_6.0_full_tut_external_franka_sysid_effort_validation.png"><img alt="Measured and simulated Franka joint-effort traces from the persisted candidate on the held-out multisine." src="../_images/isim_6.0_full_tut_external_franka_sysid_effort_validation.png" style="width: 92%;"/>
+</a>
+<figcaption><p><span class="caption-text">力矩 RMSE 显著改善，但在绝对单位上仍高于状态通道 RMSE。残余力矩误差可能包含模型形式、控制器、力矩校准、未建模摩擦以及时间不匹配等因素；仅进行摩擦拟合预计无法消除所有误差。</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p></figcaption>
+</figure>
+</section>
+<section id="step-11-diagnose-the-residual-and-declare-the-next-gate">
+<h2>步骤 11：诊断残差并声明下一个门槛<a class="headerlink" href="#step-11-diagnose-the-residual-and-declare-the-next-gate" title="Link to this heading">#</a></h2>
+<p>摩擦候选模型通过了第一阶段拟合门槛，因为在结果持久化并重新加载后，归一化代价和所有三个聚合留出通道均有所改善。然而，力矩叠加图仍包含结构化的幅值和偏差误差。调优循环应利用该残差形成一个新的、可测试的阶段，而不是一次性添加所有可用参数。</p>
+<p>对于本教程，在运行第二次求解之前定义一个示例性的力矩细化门槛：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 46.0%"/>
+<col style="width: 54.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>要求</p></th>
+<th class="head"><p>检查点</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>持久化阶段归一化代价</p></td>
+<td><p>低于摩擦候选模型</p></td>
+</tr>
+<tr class="row-odd"><td><p>持久化阶段扭矩 RMSE</p></td>
+<td><p>至少比摩擦候选模型低 10%</p></td>
+</tr>
+<tr class="row-even"><td><p>位置和速度 RMSE</p></td>
+<td><p>不超过摩擦候选模型的 2.5%</p></td>
+</tr>
+<tr class="row-odd"><td><p>参数边界</p></td>
+<td><p>无选中值触及边界</p></td>
+</tr>
+<tr class="row-even"><td><p>证据来源</p></td>
+<td><p>对新写入 USD 进行全新进程回放</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>这些阈值展示了该机制；在拟合您自己的机器人之前，请定义特定于应用的容差。严格的帕累托策略则会拒绝任何在任何通道上表现变差的候选模型。</p>
+<p>复制摩擦 RunSpec 并将其源阶段更改为
+<code class="docutils literal notranslate"><span class="pre">franka_friction_candidate.usda</span></code>。将摩擦条目替换为七个关节阻尼缩放参数：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 36.0%"/>
+<col style="width: 16.0%"/>
+<col style="width: 16.0%"/>
+<col style="width: 16.0%"/>
+<col style="width: 16.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>族</p></th>
+<th class="head"><p>数量</p></th>
+<th class="head"><p>初始值</p></th>
+<th class="head"><p>最小值</p></th>
+<th class="head"><p>最大值</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>关节阻尼</p></td>
+<td><p>7</p></td>
+<td><p>1.0</p></td>
+<td><p>0.5</p></td>
+<td><p>1.5</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>保持遥测、数据块、命令对齐、后端、控制器和通道权重不变。使用 CMA-ES，种群大小为 16，迭代 48 次，sigma 为 0.15，种子为 20260731。将新契约导出为
+<code class="docutils literal notranslate"><span class="pre">franka_damping_run_spec.json</span></code>。</p>
+<p>在优化之前运行局部敏感性分析：</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">_build</span><span class="p">\</span><span class="n">windows-x86_64</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">bat</span> <span class="p">`</span>
+    <span class="n">source</span><span class="p">\</span><span class="n">extensions</span><span class="p">\</span><span class="n">isaacsim</span><span class="p">.</span><span class="n">robot_setup</span><span class="p">.</span><span class="n">sysid</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">headless_sysid_analyze</span><span class="p">.</span><span class="n">py</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-run-spec</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_damping_run_spec</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-stage</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_candidate</span><span class="p">.</span><span class="n">usda</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-result-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">damping_baseline_sensitivity</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-mode</span> <span class="n">sensitivity</span>
+</pre></div>
+</div>
+<p>所有七个参考扰动均产生了非低敏感性，且训练/验证梯度符号一致。检查报告还警告，在真实轨迹下，驱动阻尼无法从连杆侧扭矩解析地观测到；优化器通过模拟位置响应来识别它。敏感性支持保守试验，但这并非唯一物理辨识的证明。</p>
+</section>
+<section id="step-12-solve-persist-and-replay-the-damping-phase">
+<h2>步骤 12：求解、持久化并回放阻尼阶段<a class="headerlink" href="#step-12-solve-persist-and-replay-the-damping-phase" title="Link to this heading">#</a></h2>
+<p>运行第二个 RunSpec 而不进行写回：</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">_build</span><span class="p">\</span><span class="n">windows-x86_64</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">bat</span> <span class="p">`</span>
+    <span class="n">source</span><span class="p">\</span><span class="n">extensions</span><span class="p">\</span><span class="n">isaacsim</span><span class="p">.</span><span class="n">robot_setup</span><span class="p">.</span><span class="n">sysid</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">headless_sysid_solve</span><span class="p">.</span><span class="n">py</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-run-spec</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_damping_run_spec</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-result-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_damping_result</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-checkpoint-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_damping_checkpoint</span><span class="p">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<p>参考求解选择了第 33 次迭代中最后接受的候选模型：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 28.0%"/>
+<col style="width: 24.0%"/>
+<col style="width: 24.0%"/>
+<col style="width: 24.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>关节</p></th>
+<th class="head"><p>初始缩放</p></th>
+<th class="head"><p>选中缩放</p></th>
+<th class="head"><p>边界状态</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>关节 1</p></td>
+<td><p>1.000</p></td>
+<td><p>1.290</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-odd"><td><p>关节 2</p></td>
+<td><p>1.000</p></td>
+<td><p>0.670</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-even"><td><p>关节 3</p></td>
+<td><p>1.000</p></td>
+<td><p>0.923</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-odd"><td><p>关节 4</p></td>
+<td><p>1.000</p></td>
+<td><p>0.871</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-even"><td><p>关节 5</p></td>
+<td><p>1.000</p></td>
+<td><p>0.567</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-odd"><td><p>关节 6</p></td>
+<td><p>1.000</p></td>
+<td><p>0.836</p></td>
+<td><p>内部</p></td>
+</tr>
+<tr class="row-even"><td><p>关节 7</p></td>
+<td><p>1.000</p></td>
+<td><p>0.579</p></td>
+<td><p>内部</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>将选定的向量写入另一个新阶段：</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">_build</span><span class="p">\</span><span class="n">windows-x86_64</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">bat</span> <span class="p">`</span>
+    <span class="n">source</span><span class="p">\</span><span class="n">extensions</span><span class="p">\</span><span class="n">isaacsim</span><span class="p">.</span><span class="n">robot_setup</span><span class="p">.</span><span class="n">sysid</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">headless_sysid_apply_theta_to_stage</span><span class="p">.</span><span class="n">py</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-run-spec</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_damping_run_spec</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-result-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_damping_result</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-stage</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_candidate</span><span class="p">.</span><span class="n">usda</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-output-stage</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_damping_candidate</span><span class="p">.</span><span class="n">usda</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-summary-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_damping_apply_summary</span><span class="p">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<p>然后在新进程中重新加载已写入的阶段：</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.\</span><span class="n">_build</span><span class="p">\</span><span class="n">windows-x86_64</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">bat</span> <span class="p">`</span>
+    <span class="n">source</span><span class="p">\</span><span class="n">extensions</span><span class="p">\</span><span class="n">isaacsim</span><span class="p">.</span><span class="n">robot_setup</span><span class="p">.</span><span class="n">sysid</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">headless_sysid_analyze</span><span class="p">.</span><span class="n">py</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-run-spec</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_damping_run_spec</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-stage</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_friction_damping_candidate</span><span class="p">.</span><span class="n">usda</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-result-json</span> <span class="n">C</span><span class="p">:\</span><span class="n">sysid_tutorial</span><span class="p">\</span><span class="n">franka_damping_candidate_replay</span><span class="p">.</span><span class="n">json</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-mode</span> <span class="n">baseline</span>
+</pre></div>
+</div>
+<p>使用重放报告作为证据记录。不要使用优化器的进程内验证值进行替代。</p>
+</section>
+<section id="step-13-compare-the-stages-and-choose-the-candidate">
+<h2>步骤 13：比较各阶段并选择候选项<a class="headerlink" href="#step-13-compare-the-stages-and-choose-the-candidate" title="Link to this heading">#</a></h2>
+<p>独立重放生成的各阶段结果如下：</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 28.0%"/>
+<col style="width: 22.0%"/>
+<col style="width: 24.0%"/>
+<col style="width: 26.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>留出集指标</p></th>
+<th class="head"><p>较差种子</p></th>
+<th class="head"><p>摩擦候选项</p></th>
+<th class="head"><p>摩擦+阻尼候选项</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>归一化成本</p></td>
+<td><p>0.008066</p></td>
+<td><p>0.004620</p></td>
+<td><p><strong>0.003285</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>位置 RMSE</p></td>
+<td><p>0.004443 rad</p></td>
+<td><p><strong>0.004073 弧度</strong></p></td>
+<td><p>0.004153 弧度</p></td>
+</tr>
+<tr class="row-even"><td><p>速度 RMSE</p></td>
+<td><p>0.017925 rad/s</p></td>
+<td><p><strong>0.015476 弧度/秒</strong></p></td>
+<td><p>0.015644 弧度/秒</p></td>
+</tr>
+<tr class="row-odd"><td><p>扭矩 RMSE</p></td>
+<td><p>2.1922 N*m</p></td>
+<td><p>1.6573 N*m</p></td>
+<td><p><strong>1.3946 N*m</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-center" id="id6">
+<a class="reference internal image-reference" href="../_images/isim_6.1_full_tut_external_franka_sysid_staged_validation_rmse.png"><img alt="Held-out Franka error for the poor seed, friction candidate, and friction-plus-damping candidate." src="../_images/isim_6.1_full_tut_external_franka_sysid_staged_validation_rmse.png" style="width: 96%;"/>
+</a>
+<figcaption><p><span class="caption-text">阻尼阶段降低了总体成本和力矩误差，但相对于仅包含摩擦的候选项，位置和速度略有退化。
+所有数值均来自独立持久化阶段的重放。</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p></figcaption>
+</figure>
+<p>相对于摩擦候选项，第二阶段将归一化成本降低了 28.9%，力矩 RMSE 降低了
+15.9%。位置和速度 RMSE 分别增加了 2.0% 和 1.1%。它通过了示例性的力矩细化
+门槛，但并未严格优于摩擦候选项。</p>
+<p>根据步骤 11 中声明的策略进行选择：</p>
+<ul class="simple">
+<li><p>对于具有所述状态误差容限的力矩敏感型验证，将摩擦+阻尼
+候选项推进至任务级测试。</p></li>
+<li><p>对于严格的无回退策略或位置优先任务，保留仅摩擦候选项。</p></li>
+<li><p>保留两个阶段。推进操作绝不需要覆盖先前已接受的结果。</p></li>
+</ul>
+</section>
+<section id="step-14-decide-whether-another-parameter-phase-is-justified">
+<h2>步骤 14：决定是否有理由进行另一参数阶段<a class="headerlink" href="#step-14-decide-whether-another-parameter-phase-is-justified" title="Link to this heading">#</a></h2>
+<p>第二阶段报告包含有用的停止证据：</p>
+<ul class="simple">
+<li><p>没有阻尼缩放触及边界。</p></li>
+<li><p>对于所有七个阻尼缩放，参数置信度曲率均无定论。</p></li>
+<li><p>验证成本仍约为估计噪声底的 8.15 倍。</p></li>
+<li><p>关节 2 在报告中保留了最大的力矩残差功率。</p></li>
+<li><p>训练和验证仍然是同一个多正弦记录的两个片段。</p></li>
+</ul>
+<p>不要通过在同一数据上同时打开电枢、连杆质量、质心和惯性来响应。这些参数族可以解释重叠的加速度相关残差。相反，应收集独立设计的运动：用于重力项的慢速或静态配置，用于惯性项的富含加速度的片段，以及一组单独的留出频率。然后，每次针对一个支持的参数族重复相同的循环：</p>
+<ol class="arabic simple">
+<li><p>建立持久化阶段基线。</p></li>
+<li><p>运行检查和局部敏感性分析。</p></li>
+<li><p>在不写回的情况下求解。</p></li>
+<li><p>将经过审查的选定状态应用到新的 USD。</p></li>
+<li><p>在新进程中重放新阶段。</p></li>
+<li><p>与预先声明的门限进行比较，并保留或拒绝该阶段。</p></li>
+</ol>
+<p>对于独立的已知真值算法和后端检查，请运行
+<a class="reference internal" href="tutorial_system_identification_simsim.html#isaac-sim-app-tutorial-advanced-sysid-simsim"><span class="std std-ref">教程 15：使用 Sim-to-Sim 恢复验证系统辨识</span></a>。该教程使用一个简单的双摆，并将通过 Newton 恢复的模型传输到 NVIDIA Isaac Sim PhysX 阶段。它补充了本录制数据演练；它不会将 Franka 拟合结果转化为已知真值结果。</p>
+</section>
+<section id="step-15-preserve-evidence-and-decide">
+<h2>步骤 15：保留证据并做出决定<a class="headerlink" href="#step-15-preserve-evidence-and-decide" title="Link to this heading">#</a></h2>
+<p>保留：</p>
+<ul class="simple">
+<li><p>源文件、劣质种子以及每个候选 USD。</p></li>
+<li><p>录制数据、主题映射、收集清单以及声明的训练/验证划分。</p></li>
+<li><p>每个参数阶段导出的一个 RunSpec。</p></li>
+<li><p>基线、敏感性、结果、检查点、应用摘要以及独立重放报告。</p></li>
+<li><p>验证图表、验收策略以及任何失败的诊断报告。</p></li>
+<li><p>源修订版、扩展版本、输入哈希值、GPU、驱动程序以及优化器种子。</p></li>
+</ul>
+<p>所选候选项仅在其求解之前您声明的策略下，才适合进行额外的任务验证。保持源 USD 不变，并且不要将任一教程的结果视为硬件安全或物理参数认证。</p>
+</section>
+<section id="summary">
+<h2>总结<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>本教程涵盖了：</p>
+<ol class="arabic simple">
+<li><p>在不修改源文件的情况下创建受控的过度摩擦工作资产。</p></li>
+<li><p>声明连杆侧扭矩语义并纠正测得的 0.5361 秒录制偏移。</p></li>
+<li><p>分离耦合多正弦训练数据和保留的频率内容。</p></li>
+<li><p>求解并独立重放有界的七摩擦阶段。</p></li>
+<li><p>在开启第二个参数族之前，诊断已持久化的残差。</p></li>
+<li><p>求解并独立重放有界的七阻尼阶段。</p></li>
+<li><p>通过明确的应用权衡比较两个候选方案。</p></li>
+<li><p>当现有激励不再支持合理的更广泛求解时停止。</p></li>
+<li><p>将预测拟合质量与物理可辨识性及已知真值验证分离。</p></li>
+</ol>
+</section>
+<p class="isaacsim-action-row sd-mt-5 sd-mb-3"><a class="sd-btn sd-btn-outline-primary isaacsim-action reference internal" href="../learn/gallery_view.html">返回画廊视图</a></p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="optimizing_asset.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Tutorial 12: Asset Optimization</p>
+</div>
+</a>
+<a class="right-next" href="tutorial_system_identification_simsim.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Tutorial 15: Validate System Identification with Sim-to-Sim Recovery</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="page-toc" id="pst-page-toc-nav">
+<ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-outcome">Reference outcome</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-create-a-deliberately-poor-working-asset">Step 1: Create a deliberately poor working asset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-load-and-verify-telemetry">Step 2: Load and verify telemetry</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-correct-recording-alignment">Step 3: Correct recording alignment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-separate-training-and-validation">Step 4: Separate training and validation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-configure-the-rollout">Step 5: Configure the rollout</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-select-and-check-the-parameter-phase">Step 6: Select and check the parameter phase</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-configure-and-export">Step 7: Configure and export</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-establish-the-poor-seed-baseline">Step 8: Establish the poor-seed baseline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-solve-then-apply-to-a-new-usd">Step 9: Solve, then apply to a new USD</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-10-reload-and-compare-held-out-metrics">Step 10: Reload and compare held-out metrics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-11-diagnose-the-residual-and-declare-the-next-gate">Step 11: Diagnose the residual and declare the next gate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-12-solve-persist-and-replay-the-damping-phase">Step 12: Solve, persist, and replay the damping phase</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-13-compare-the-stages-and-choose-the-candidate">Step 13: Compare the stages and choose the candidate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-14-decide-whether-another-parameter-phase-is-justified">Step 14: Decide whether another parameter phase is justified</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-15-preserve-evidence-and-decide">Step 15: Preserve evidence and decide</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer="" src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="../_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="../_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Your Privacy Choices</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2023-2026, NVIDIA Corporation.
+      <br/>
+</p>
+</div>
+<div class="footer-item"><p class="last-updated">
+  Last updated on Sep 18, 2026.
+  <br/>
+</p></div>
+</div>
+</div>
+</footer>
+</body>
+</html>
